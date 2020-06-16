@@ -1,3 +1,5 @@
+const Item = require('../models/item');
+
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
     pageTitle: 'IMS Dashboard',
@@ -5,15 +7,58 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getItems = (req, res, next) => {
-  res.render('./dashboard/items', {
-    pageTitle: 'Item List',
-  });
+  Item.fetchAll()
+    .then((items) => {
+      res.render('./dashboard/items', {
+        items: items,
+        pageTitle: 'Item List',
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getItem = (req, res, next) => {
-    res.render('./dashboard/item', {
+  const prodID = req.params.productId;
+  Item.findById()
+    .then((item) => {
+      res.render('./dashboard/item', {
+        item: item,
         pageTitle: 'Item Profile',
+      });
     })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.getAddItem = (req, res, next) => {
+  res.render('dashboard/edit-item', {
+    pageTitle: 'Add Item',
+    path: '/dashboard/add-item',
+    editing: false
+  });
+};
+
+exports.postAddItem = (req, res, next) => {
+  const description = req.body.description;
+  const category = req.body.category;
+  const totalQtyOnHand = req.body.totalQtyOnHand;
+  const uom = req.body.uom;
+  const avgCost = req.body.avgCost;
+  const retailPrice = req.body.retailPrice;
+  const item = new Item(description, category, totalQtyOnHand, uom, avgCost, retailPrice);
+  item
+    .save()
+    .then(result => {
+      // console.log(result);
+      console.log('Created Item');
+      res.redirect('/items');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 // router.get('/', adminController.getIndex);

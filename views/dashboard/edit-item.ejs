@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <h1>This is the add item page</h1>
+    <div>
+      <h1 class="">Item Info</h1>
+      
+      <main>
+          <form action="/add-item"method="POST">
+            <div>
+                <label for="description">Description</label>
+                <input type="description" name="description" id="description" value="">
+            </div>
+            <div>
+                <label for="category">Category</label>
+                <input type="category" name="category" id="category" value="">
+            </div>
+            <div>
+                <label for="totalQtyOnHand">Total Qty On Hand</label>
+                <input type="totalQtyOnHand" name="totalQtyOnHand" id="totalQtyOnHand" value="">
+            </div>
+            <div>
+                <label for="uom">UOM</label>
+                <input type="uom" name="uom" id="uom" value="">
+            </div>
+            <div>
+                <label for="avgCost">avgCost</label>
+                <input type="avgCost" name="avgCost" id="avgCost" value="">
+            </div>
+            <div>
+                <label for="retailPrice">retailPrice</label>
+                <input type="retailPrice" name="retailPrice" id="retailPrice" value="">
+            </div>
+            <button class="btn" type="submit">Add Item</button>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>
