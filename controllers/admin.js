@@ -12,6 +12,7 @@ exports.getItems = (req, res, next) => {
       res.render('./dashboard/items', {
         items: items,
         pageTitle: 'Item List',
+        path: '/items',
       });
     })
     .catch((err) => {
@@ -20,8 +21,8 @@ exports.getItems = (req, res, next) => {
 };
 
 exports.getItem = (req, res, next) => {
-  const prodID = req.params.productId;
-  Item.findById()
+  const itemId = req.params.itemId;
+  Item.findById(itemId)
     .then((item) => {
       res.render('./dashboard/item', {
         item: item,
@@ -34,10 +35,10 @@ exports.getItem = (req, res, next) => {
 };
 
 exports.getAddItem = (req, res, next) => {
-  res.render('dashboard/edit-item', {
+  res.render('dashboard/add-item', {
     pageTitle: 'Add Item',
     path: '/dashboard/add-item',
-    editing: false
+    editing: false,
   });
 };
 
@@ -48,18 +49,35 @@ exports.postAddItem = (req, res, next) => {
   const uom = req.body.uom;
   const avgCost = req.body.avgCost;
   const retailPrice = req.body.retailPrice;
-  const item = new Item(description, category, totalQtyOnHand, uom, avgCost, retailPrice);
+  const item = new Item(
+    description,
+    category,
+    totalQtyOnHand,
+    uom,
+    avgCost,
+    retailPrice
+  );
   item
     .save()
-    .then(result => {
+    .then((result) => {
       // console.log(result);
       console.log('Created Item');
       res.redirect('/items');
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
+
+exports.getEditItem = (req, res, next) => {
+  res.render('dashboard/edit-item', {
+    pageTitle: 'Edit Item',
+    path: '/dashboard/edit-item',
+    editing: false,
+  });
+};
+
+exports.postEditItem = (req, res, next) => {};
 
 // router.get('/', adminController.getIndex);
 

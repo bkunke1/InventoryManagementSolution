@@ -1,3 +1,108 @@
-ul {
-    list-style: none;
+body {
+  margin: 10px 100px 10px 100px;
+}
+
+#banner {
+  width: 90%;
+  margin: auto;
+  background-image: linear-gradient( 180deg, rgb(153, 153, 153), rgb(0, 0, 0) );
+  height: 125px;
+  display: flex;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+.product-info-area {
+  display: flex;
+  margin-left: 100px;
+}
+
+.product-info-text {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-login-info-area {
+  display: flex;
+  margin-left: 100px;
+}
+
+.user-login-info-text {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.user-login-info__log-out-btn {
+  color: rgb(221, 153, 90);
+  font-size: 1rem;
+}
+
+.user-login-info__log-out-btn:hover {
+  color: rgb(216, 203, 27);
+  font-size: 1rem;
+}
+
+.show-whitespace {
+  white-space: pre;
+}
+
+#main-menu {
+  display: flex;
+}
+
+#navbar {
+  display: flex;
+  width: 95%;
+  margin: auto;
+  background-image: linear-gradient( 180deg, rgb(153, 153, 153), rgb(0, 0, 0) ); 
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  justify-content: center;
+  
+}
+
+#navbar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+div#navbar li {
+  color: white;
+  float: left;
+}
+
+div#navbar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+  border: 2px solid black;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-image: linear-gradient(
+    180deg,
+    rgb(153, 153, 153),
+    transparent,
+    rgb(0, 0, 0)
+  );
+}
+
+div#navbar li a:hover {
+  background-color: #a7a7a7;
+}
+
+td {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
 }

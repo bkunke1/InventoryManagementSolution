@@ -31,7 +31,6 @@ class Item {
       .find()
       .toArray()
       .then((items) => {
-        console.log(items);
         return items;
       })
       .catch((err) => {
@@ -39,14 +38,13 @@ class Item {
       });
   }
 
-  static findById(prodId) {
+  static findById(itemId) {
     const db = getDb();
     return db
       .collection('items')
-      .find({ _id: new mongodb.ObjectId(prodId) })
+      .find({ _id: new mongodb.ObjectId(itemId) })
       .next()
       .then((item) => {
-        console.log(item);
         return item;
       })
       .catch((err) => {

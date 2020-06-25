@@ -7,12 +7,36 @@
     <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
-    <h1>This is the item list page</h1>
-    <div>
-        <h1 class="">Item List</h1>
-        <ul><li>Item 1</li></ul>
-        <ul><li>Item 2</li></ul>
-        <ul><li>Item 3</li></ul>
+    <div id="banner">
+      <h1 class="banner-text">IMS</h1>
+    </div>
+    <div id="main-layout">
+      <div id="navbar">
+        <ul>
+          <li><a href="" class="">Items</a></li>
+          <li><a href="" class="">Inventory Adjustment</a></li>
+          <li><a href="" class="">Bill of Materials</a></li>
+        </ul>
+      </div>
+      <div class="workspace">
+        <div>
+          <h1 class="">Item List</h1>
+          <table>
+            <% for (let item of items) { %>
+            <tr>
+              <td><h1><%= item._id%></h1></td>
+              <td><h1><%= item.description%></h1></td>
+              <td><h1><%= item.category%></h1></td>
+              <td><h1><%= item.totalQtyOnHand%></h1></td>
+              <td><h1><%= item.uom%></h1></td>
+              <td><h1><%= item.avgCost%></h1></td>
+              <td><h1><%= item.retailPrice%></h1></td>
+              <td><a href="item/<%= item._id%>" class="button">view</a></td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
     </div>
   </body>
 </html>

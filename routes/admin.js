@@ -8,12 +8,16 @@ router.get('/', adminController.getIndex);
 
 router.get('/items', adminController.getItems);
 
-// router.get('/item/:itemId', adminController.getItem);/
-router.get('/item', adminController.getItem);
+router.get('/item/:itemId', adminController.getItem);
+// router.get('/item', adminController.getItem);
 
 router.get('/add-item', adminController.getAddItem);
 
 router.post('/add-item', adminController.postAddItem);
+
+router.get('/edit-item', adminController.getEditItem);
+
+router.post('/edit-item', adminController.postEditItem);
 
 // router.get('/transfer-item', adminController.getTransferItem);
 

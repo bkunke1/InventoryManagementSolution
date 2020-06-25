@@ -7,37 +7,37 @@
     <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
-    <h1>This is the edit-item.ejs page</h1>
+    <h1>This is the add item page</h1>
     <div>
       <h1 class="">Item Info</h1>
       
       <main>
-          <form action="/edit-item"method="POST">
+          <form action="/add-item"method="POST">
             <div>
                 <label for="description">Description</label>
-                <input type="text" name="description" id="description" value="<% item.description %>">
+                <input type="text" name="description" id="description" value="">
             </div>
             <div>
                 <label for="category">Category</label>
-                <input type="text" name="category" id="category" value="<% item.category %>">
+                <input type="text" name="category" id="category" value="">
             </div>
             <div>
                 <label for="totalQtyOnHand">Total Qty On Hand</label>
-                <input type="text" name="totalQtyOnHand" id="totalQtyOnHand" value="<% item.totalQtyOnHand %>">
+                <input type="text" name="totalQtyOnHand" id="totalQtyOnHand" value="">
             </div>
             <div>
                 <label for="uom">UOM</label>
-                <input type="text" name="uom" id="uom" value="<% item.uom %>">
+                <input type="text" name="uom" id="uom" value="">
             </div>
             <div>
                 <label for="avgCost">avgCost</label>
-                <input type="text" name="avgCost" id="avgCost" value="<% item.avgCost %>">
+                <input type="text" name="avgCost" id="avgCost" value="">
             </div>
             <div>
                 <label for="retailPrice">retailPrice</label>
-                <input type="text" name="retailPrice" id="retailPrice" value="<% item.retailPrice %>">
+                <input type="text" name="retailPrice" id="retailPrice" value="">
             </div>
-            <button class="btn" type="submit">Edit Item</button>
+            <button class="btn" type="submit">Add Item</button>
         </form>
       </main>
     </div>
