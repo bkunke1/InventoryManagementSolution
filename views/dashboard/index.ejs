@@ -20,20 +20,82 @@
         <ul>          
           <li><a href="" class="">Sales Orders</a></li>
           <li><a href="" class="">Purchase Orders</a></li>
-          <li><a href="" class="">Inventory</a></li>
+          <li><a href="" class="">Inventory Transactions</a></li>
           <li><a href="" class="">Reports</a></li>
           <li><a href="" class="">System Config</a></li>
-          <li><a href="" class="">Items</a></li>
+          <li><a href="" class="active">Items</a></li>
           <li><a href="" class="">Inventory Adjustment</a></li>
           <li><a href="" class="">Bill of Materials</a></li>
         </ul>
       </div>
       <div id="sub-menu">
-
+        <ul>          
+          <%- include('../includes/items-submenu.ejs') %>
+        </ul>
       </div>
     </div>
     
-    <div class="workspace">        
+    <div id="workspace">
+      <div id="toolbar">
+        <h1>Item Maintenance</h1>
+      </div>
+      <form action="">
+        <div class="item-field">
+          <label for="itemID">Item ID:</label>
+          <input type="text" name="itemID" value="">
+        </div>
+        <div class="item-field">
+          <label for="itemStatus">Item Status:</label>
+          <input type="text" name="itemStatus" value="">
+        </div>
+        <div class="item-field">
+          <label for="description">Description:</label>
+          <input type="text" name="description" value="">
+        </div>
+        <div class="item-field">
+          <label for="category">Category:</label>
+          <input type="text" name="category" value="">
+        </div>
+        <div class="item-field">
+          <label for="valuationMethod">Valuation Method:</label>
+          <form>
+            <select id="valuationMethod" name="valuationMethod">
+            <option value="avg">Average Cost</option>
+            <option value="fifo">FIFO</option>
+            <option value="lot">LOT</option>
+            </select>
+          </form>
+        </div>
+        <div class="item-field">
+          <label for="type">Type:</label>
+          <form>
+            <select id="type" name="type">
+            <option value="finishedGood">Finished Good</option>
+            <option value="rawMaterial">Raw Material</option>
+            <option value="serivce">Service</option>
+            </select>
+          </form>
+        </div>
+        <div class="item-field">
+          <label for="defaultWarehouse">Default Warehouse:</label>
+          <input type="text" name="defaultWarehouse" value="">
+        </div>
+        <hr>
+        <h6>Unit of Measure</h6>
+        <div class="item-field">
+          <label for="baseUOM">Base UOM:</label>
+          <input type="text" name="baseUOM" value="">
+        </div>
+        <div class="item-field">
+          <label for="salesUOM">Sales UOM:</label>
+          <input type="text" name="salesUOM" value="">
+        </div>
+        <div class="item-field">
+          <label for="purchaseUOM">Purchase UOM:</label>
+          <input type="text" name="purchaseUOM" value="">
+        </div>
+        
+      </form>
     </div>
   </body>
 </html>
