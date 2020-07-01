@@ -17,10 +17,10 @@
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>          
-          <li><a href="/" class="active">Dashboard</a></li>
+        <ul>    
+          <li><a href="/" class="">Dashboard</a></li>      
           <li><a href="/so" class="">Sales Orders</a></li>
-          <li><a href="/po" class="">Purchase Orders</a></li>
+          <li><a href="/po" class="active">Purchase Orders</a></li>
           <li><a href="/inventory" class="">Inventory</a></li>
           <li><a href="/reports" class="">Reports</a></li>
           <li><a href="/sysconfig" class="">System Config</a></li>
@@ -28,13 +28,13 @@
       </div>
       <div id="sub-menu">
         <ul>          
-          <%- include('../includes/blank-submenu.ejs') %>
+          <%- include('../includes/po-submenu.ejs') %>
         </ul>
       </div>
     </div>
     
     <div id="workspace">
-      <h1>index page</h1>
+      <h1>purchase orders homepage</h1>
     </div>
   </body>
 </html>

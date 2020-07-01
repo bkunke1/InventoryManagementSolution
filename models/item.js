@@ -2,13 +2,19 @@ const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
 class Item {
-  constructor(description, category, totalQty, uom, avgCost, retailPrice) {
+  constructor(itemID, itemStatus, description, category, valuationMethod, type, defaultWarehouse, baseUOM, salesUOM, purchaseUOM, defaultPrice, totalQtyOnHand) {
+    this.itemID = itemID;
+    this.itemStatus = itemStatus;
     this.description = description;
     this.category = category;
-    this.totalQtyOnHand = totalQty;
-    this.uom = uom;
-    this.avgCost = avgCost;
-    this.retailPrice = retailPrice;
+    this.valuationMethod = valuationMethod;
+    this.type = type;
+    this.defaultWarehouse = defaultWarehouse;
+    this.baseUOM = baseUOM;
+    this.salesUOM = salesUOM;
+    this.purchaseUOM = purchaseUOM;
+    this.defaultPrice = defaultPrice;
+    this.totalQtyOnHand = totalQtyOnHand;
   }
 
   save() {

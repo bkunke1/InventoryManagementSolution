@@ -19,6 +19,16 @@ router.get('/edit-item', adminController.getEditItem);
 
 router.post('/edit-item', adminController.postEditItem);
 
+router.get('/inventory', adminController.getInventory);
+
+router.get('/so', adminController.getSalesOrder);
+
+router.get('/po', adminController.getPurchaseOrder);
+
+router.get('/reports', adminController.getReports);
+
+router.get('/sysconfig', adminController.getSysconfig);
+
 // router.get('/transfer-item', adminController.getTransferItem);
 
 // router.post('/transfer-item', adminController.postTransferItem);

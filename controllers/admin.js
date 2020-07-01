@@ -43,19 +43,31 @@ exports.getAddItem = (req, res, next) => {
 };
 
 exports.postAddItem = (req, res, next) => {
+  const itemID = req.body.itemID;
+  const itemStatus = req.body.itemStatus;
   const description = req.body.description;
   const category = req.body.category;
-  const totalQtyOnHand = req.body.totalQtyOnHand;
-  const uom = req.body.uom;
-  const avgCost = req.body.avgCost;
-  const retailPrice = req.body.retailPrice;
+  const valuationMethod = req.body.valuationMethod;
+  const type = req.body.type;
+  const defaultWarehouse = req.body.defaultWarehouse;
+  const baseUOM = req.body.baseUOM;
+  const salesUOM = req.body.salesUOM;
+  const purchaseUOM = req.body.purchaseUOM;
+  const defaultPrice = req.body.defaultPrice;
+  const totalQtyOnHand = 0;
   const item = new Item(
+    itemID,
+    itemStatus,    
     description,
     category,
+    valuationMethod,
+    type,
+    defaultWarehouse,
+    baseUOM,
+    salesUOM,
+    purchaseUOM,
+    defaultPrice,    
     totalQtyOnHand,
-    uom,
-    avgCost,
-    retailPrice
   );
   item
     .save()
@@ -78,6 +90,48 @@ exports.getEditItem = (req, res, next) => {
 };
 
 exports.postEditItem = (req, res, next) => {};
+
+exports.getInventory = (req, res, next) => {
+  res.render('dashboard/inventory', {
+    pageTitle: 'Inventory',
+    path: '/dashboard/inventory',
+    editing: false,
+  });
+};
+
+exports.getSalesOrder = (req, res, next) => {
+  res.render('dashboard/sales-order', {
+    pageTitle: 'Sales Orders',
+    path: '/dashboard/sales-order',
+    editing: false,
+  });
+};
+
+exports.getPurchaseOrder = (req, res, next) => {
+  res.render('dashboard/purchase-order', {
+    pageTitle: 'Purchase Orders',
+    path: 'dashboard/purchase-order',
+    editing: false,
+  });
+};
+
+exports.getReports = (req, res, next) => {
+  res.render('dashboard/reports', {
+    pageTitle: 'Reports',
+    path: 'dashboard/reports',
+    editing: false,
+  });
+};
+
+exports.getSysconfig = (req, res, next) => {
+  res.render('dashboard/sysconfig', {
+    pageTitle: 'Sysconfig',
+    path: 'dashboard/sysconfig',
+    editing: false,
+  });
+};
+
+
 
 // router.get('/', adminController.getIndex);
 

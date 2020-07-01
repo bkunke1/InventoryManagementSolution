@@ -7,39 +7,98 @@
     <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
-    <h1>This is the add item page</h1>
-    <div>
-      <h1 class="">Item Info</h1>
-      
-      <main>
-          <form action="/add-item"method="POST">
-            <div>
-                <label for="description">Description</label>
-                <input type="text" name="description" id="description" value="">
-            </div>
-            <div>
-                <label for="category">Category</label>
-                <input type="text" name="category" id="category" value="">
-            </div>
-            <div>
-                <label for="totalQtyOnHand">Total Qty On Hand</label>
-                <input type="text" name="totalQtyOnHand" id="totalQtyOnHand" value="">
-            </div>
-            <div>
-                <label for="uom">UOM</label>
-                <input type="text" name="uom" id="uom" value="">
-            </div>
-            <div>
-                <label for="avgCost">avgCost</label>
-                <input type="text" name="avgCost" id="avgCost" value="">
-            </div>
-            <div>
-                <label for="retailPrice">retailPrice</label>
-                <input type="text" name="retailPrice" id="retailPrice" value="">
-            </div>
-            <button class="btn" type="submit">Add Item</button>
-        </form>
-      </main>
+    <div id="banner">
+      <div class="product-info-area">
+        <h1 class="product-info-text">[O] Inventory Solutions</h1>
+      </div>
+      <div class="user-login-info-area">
+        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+      </div>
     </div>
+    <div id="main-menu">
+      <div id="navbar">
+        <ul>    
+          <li><a href="/" class="">Dashboard</a></li>      
+          <li><a href="/so" class="">Sales Orders</a></li>
+          <li><a href="/po" class="">Purchase Orders</a></li>
+          <li><a href="/inventory" class="active">Inventory</a></li>
+          <li><a href="/reports" class="">Reports</a></li>
+          <li><a href="/sysconfig" class="">System Config</a></li>
+        </ul>
+      </div>
+      <div id="sub-menu">
+        <ul>          
+          <%- include('../includes/items-submenu.ejs') %>
+        </ul>
+      </div>
+    </div>
+    <div id="workspace">
+      <div id="toolbar">
+        <h1>Item Maintenance</h1>
+      </div>
+      <form action="/add-item" method="POST">
+        <div class="item-field">
+          <label for="itemID">Item ID:</label>
+          <input type="text" name="itemID" value="">
+        </div>
+        <div class="item-field">
+          <label for="itemStatus">Item Status:</label>
+          <select id="itemStatus" name="itemStatus">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="item-field">
+          <label for="description">Description:</label>
+          <input type="text" name="description" value="" size="30" maxlength="30">
+        </div>
+        <div class="item-field">
+          <label for="category">Category:</label>
+          <input type="text" name="category" value="">
+        </div>
+        <div class="item-field">
+          <label for="valuationMethod">Valuation Method:</label>          
+            <select id="valuationMethod" name="valuationMethod">
+            <option value="avg">Average Cost</option>
+            <option value="fifo">FIFO</option>
+            <option value="lot">LOT</option>
+            </select>          
+        </div>
+        <div class="item-field">
+          <label for="type">Type:</label>          
+            <select id="type" name="type">
+            <option value="finishedGood">Finished Good</option>
+            <option value="rawMaterial">Raw Material</option>
+            <option value="serivce">Service</option>
+            </select>          
+        </div>         
+        <div class="item-field">
+          <label for="defaultWarehouse">Default Warehouse:</label>
+          <input type="text" name="defaultWarehouse" value="">
+        </div>
+        <hr>
+        <h6>Unit of Measure</h6>
+        <div class="item-field">
+          <label for="baseUOM">Base UOM:</label>
+          <input type="text" name="baseUOM" value="" size="10" maxlength="10">
+        </div>
+        <div class="item-field">
+          <label for="salesUOM">Sales UOM:</label>
+          <input type="text" name="salesUOM" value="" size="10" maxlength="10">
+        </div>
+        <div class="item-field">
+          <label for="purchaseUOM">Purchase UOM:</label>
+          <input type="text" name="purchaseUOM" value="" size="10" maxlength="10">
+        </div>
+        <hr>
+        <h6>Pricing</h6>
+        <div class="item-field">
+          <label for="defaultPrice">Default Price (Base UOM): $</label>
+          <input type="number" name="defaultPrice" value="1.99" step="0.01" min="0" max="99999">
+        </div>
+        <hr>
+        <input type="submit" value="submit"/>        
+      </form>
+    </div>    
   </body>
 </html>
