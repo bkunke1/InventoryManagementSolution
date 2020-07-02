@@ -1,0 +1,135 @@
+<%- include('../../includes/head.ejs') %>
+  </head>
+  <body>
+    <div id="banner">
+      <div class="product-info-area">
+        <h1 class="product-info-text">[O] Inventory Solutions</h1>
+      </div>
+      <div class="user-login-info-area">
+        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+      </div>
+    </div>
+    <div id="main-menu">
+      <div id="navbar">
+        <ul>    
+          <li><a href="/" class="">Dashboard</a></li>      
+          <li><a href="/so" class="">Sales Orders</a></li>
+          <li><a href="/po" class="">Purchase Orders</a></li>
+          <li><a href="/inventory" class="active">Inventory</a></li>
+          <li><a href="/reports" class="">Reports</a></li>
+          <li><a href="/sysconfig" class="">System Config</a></li>
+        </ul>
+      </div>
+      <div id="sub-menu">
+        <ul>
+          <%- include('../../includes/items-submenu.ejs') %>
+        </ul>
+      </div>
+    </div>
+    <div id="workspace">
+      <div id="toolbar">
+        <h1>Item Maintenance</h1>
+        <button id="backwardsBtn" type="button">
+          <svg height="20" width="20">
+            <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+          </svg>
+        </button>
+        <button id="forwardsBtn" type="button">
+          <svg height="20" width="20">
+            <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+          </svg>
+        </button>        
+      </div>
+      <form action="/inventory/add-item" method="POST" autocomplete="off">
+        <div class="item-field">
+          <label for="itemID">Item ID:</label>
+          <input type="text" name="itemID" value="<%= item.itemID %>">
+          <button id="searchBtn" type="button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        <div class="item-field">
+          <label for="itemStatus">Item Status:</label>          
+          <select id="itemStatus" name="itemStatus">
+            <% if (item.itemStatus === "active") { %>
+              <option value="active" selected>Active</option>
+            <option value="inactive">Inactive</option> 
+            <% } else { %> 
+              <option value="active">Active</option>
+            <option value="inactive" selected>Inactive</option> 
+            <% } %>            
+            </select>
+        </div>
+        <div class="item-field">
+          <label for="description">Description:</label>
+          <input type="text" name="description" value="<%= item.description %>" size="30" maxlength="30">
+        </div>
+        <div class="item-field">
+          <label for="category">Category:</label>
+          <input type="text" name="category" value="">
+        </div>
+        <div class="item-field">
+          <label for="valuationMethod">Valuation Method:</label>          
+            <select id="valuationMethod" name="valuationMethod">
+              <% if (item.valuationMethod === "avg") { %>
+                <option value="avg" selected>Average Cost</option>
+            <option value="fifo">FIFO</option>
+            <option value="lot">LOT</option>
+              <% } else if (item.valuationMethod === "fifo") { %> 
+                <option value="avg">Average Cost</option>
+                <option value="fifo" selected>FIFO</option>
+                <option value="lot">LOT</option> 
+              <% } else { %>
+            <option value="avg">Average Cost</option>
+            <option value="fifo">FIFO</option>
+            <option value="lot" seleceted>LOT</option>
+            <% } %>   
+            </select>          
+        </div>
+        <div class="item-field">
+          <label for="type">Type:</label>          
+            <select id="type" name="type">
+              <% if (item.type === "finishedGood") { %>
+                <option value="finishedGood" selected>Finished Good</option>
+                <option value="rawMaterial">Raw Material</option>
+                <option value="serivce">Service</option>
+              <% } else if (item.type === "rawMaterial") { %> 
+                <option value="finishedGood">Finished Good</option>
+            <option value="rawMaterial" selected>Raw Material</option>
+            <option value="serivce">Service</option>
+              <% } else { %>
+                <option value="finishedGood">Finished Good</option>
+                <option value="rawMaterial">Raw Material</option>
+                <option value="serivce" selected>Service</option>
+            <% } %>            
+            </select>          
+        </div>         
+        <div class="item-field">
+          <label for="defaultWarehouse">Default Warehouse:</label>
+          <input type="text" name="defaultWarehouse" value="<%= item.defaultWarehouse %>">
+        </div>
+        <hr>
+        <h6>Unit of Measure</h6>
+        <div class="item-field">
+          <label for="baseUOM">Base UOM:</label>
+          <input type="text" name="baseUOM" value="<%= item.baseUOM %>" size="10" maxlength="10">
+        </div>
+        <div class="item-field">
+          <label for="salesUOM">Sales UOM:</label>
+          <input type="text" name="salesUOM" value="<%= item.salesUOM %>" size="10" maxlength="10">
+        </div>
+        <div class="item-field">
+          <label for="purchaseUOM">Purchase UOM:</label>
+          <input type="text" name="purchaseUOM" value="<%= item.purchaseUOM %>" size="10" maxlength="10">
+        </div>
+        <hr>
+        <h6>Pricing</h6>
+        <div class="item-field">
+          <label for="defaultPrice">Default Price (Base UOM): $</label>
+          <input type="number" name="defaultPrice" value="<%= item.defaultPrice %>" step="0.01" min="0" max="99999">
+        </div>
+        <hr>
+        <input type="submit" value="Save"/>        
+      </form>
+    </div>    
+  </body>

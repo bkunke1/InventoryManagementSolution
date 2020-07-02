@@ -6,14 +6,16 @@ const router = express.Router();
 
 router.get('/', adminController.getIndex);
 
-router.get('/items', adminController.getItems);
+router.get('/inventory/items', adminController.getItems);
 
-router.get('/item/:itemId', adminController.getItem);
+router.get('/inventory/item/:itemId', adminController.getItem);
 // router.get('/item', adminController.getItem);
 
-router.get('/add-item', adminController.getAddItem);
+router.get('/inventory/add-item', adminController.getAddItem);
 
-router.post('/add-item', adminController.postAddItem);
+router.post('/inventory/add-item', adminController.postAddItem);
+
+router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
 
 router.get('/edit-item', adminController.getEditItem);
 

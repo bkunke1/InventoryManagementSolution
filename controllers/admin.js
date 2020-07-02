@@ -9,7 +9,7 @@ exports.getIndex = (req, res, next) => {
 exports.getItems = (req, res, next) => {
   Item.fetchAll()
     .then((items) => {
-      res.render('./dashboard/items', {
+      res.render('./dashboard/inventory/items', {
         items: items,
         pageTitle: 'Item List',
         path: '/items',
@@ -24,7 +24,7 @@ exports.getItem = (req, res, next) => {
   const itemId = req.params.itemId;
   Item.findById(itemId)
     .then((item) => {
-      res.render('./dashboard/item', {
+      res.render('./dashboard/inventory/item', {
         item: item,
         pageTitle: 'Item Profile',
       });
@@ -34,10 +34,18 @@ exports.getItem = (req, res, next) => {
     });
 };
 
+exports.getItemMaintenance = (req, res, next) => {
+  res.render('dashboard/inventory/item-maintenance', {
+    pageTitle: 'Item Maintenance',
+    path: 'dashboard/inventory/item-maintenance',
+    editing: false,
+  });
+};
+
 exports.getAddItem = (req, res, next) => {
-  res.render('dashboard/add-item', {
+  res.render('dashboard/inventory/add-item', {
     pageTitle: 'Add Item',
-    path: '/dashboard/add-item',
+    path: '/dashboard/add-item/',
     editing: false,
   });
 };
@@ -55,34 +63,40 @@ exports.postAddItem = (req, res, next) => {
   const purchaseUOM = req.body.purchaseUOM;
   const defaultPrice = req.body.defaultPrice;
   const totalQtyOnHand = 0;
-  const item = new Item(
-    itemID,
-    itemStatus,    
-    description,
-    category,
-    valuationMethod,
-    type,
-    defaultWarehouse,
-    baseUOM,
-    salesUOM,
-    purchaseUOM,
-    defaultPrice,    
-    totalQtyOnHand,
-  );
-  item
-    .save()
-    .then((result) => {
-      // console.log(result);
-      console.log('Created Item');
-      res.redirect('/items');
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  // if (itemID && itemStatus && description && category && valuationMethod && type && defaultWarehouse && baseUOM && salesUOM && purchaseUOM && defaultPrice)
+  if (!itemID) {
+    console.log('Missing item info!');
+    res.redirect('/inventory/add-item');
+  } else {
+    const item = new Item(
+      itemID,
+      itemStatus,
+      description,
+      category,
+      valuationMethod,
+      type,
+      defaultWarehouse,
+      baseUOM,
+      salesUOM,
+      purchaseUOM,
+      defaultPrice,
+      totalQtyOnHand
+    );
+    item
+      .save()
+      .then((result) => {
+        // console.log(result);
+        console.log('Created Item');
+        res.redirect('/inventory/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 exports.getEditItem = (req, res, next) => {
-  res.render('dashboard/edit-item', {
+  res.render('dashboard/inventory/edit-item', {
     pageTitle: 'Edit Item',
     path: '/dashboard/edit-item',
     editing: false,
@@ -130,8 +144,6 @@ exports.getSysconfig = (req, res, next) => {
     editing: false,
   });
 };
-
-
 
 // router.get('/', adminController.getIndex);
 
