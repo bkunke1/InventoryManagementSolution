@@ -30,15 +30,34 @@
         <div>
           <h1 class="">Item List</h1>
           <table>
+            <tr>
+              <th>MongoDB_ID</th>
+              <th>Item ID</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Default Warehouse</th>
+              <th>Base UOM</th>
+              <th>Sales UOM</th>
+              <th>Purchase UOM</th>
+              <th>Default Price</th>
+              <th>Qty on Hand</th>
+            </tr>
             <% for (let item of items) { %>
             <tr>
-              <td><h1><%= item._id%></h1></td>
-              <td><h1><%= item.description%></h1></td>
-              <td><h1><%= item.category%></h1></td>
-              <td><h1><%= item.totalQtyOnHand%></h1></td>
-              <td><h1><%= item.uom%></h1></td>
-              <td><h1><%= item.avgCost%></h1></td>
-              <td><h1><%= item.retailPrice%></h1></td>
+              <td><h5><%= item._id%></h5></td>
+              <td><h5><%= item.itemID%></h5></td>
+              <td><h5><%= item.itemStatus%></h5></td>
+              <td><h5><%= item.description%></h5></td>
+              <td><h5><%= item.category%></h5></td>
+              <td><h5><%= item.type%></h5></td>
+              <td><h5><%= item.defaultWarehouse%></h5></td>
+              <td><h5><%= item.baseUOM%></h5></td>
+              <td><h5><%= item.salesUOM%></h5></td>
+              <td><h5><%= item.purchaseUOM%></h5></td>
+              <td><h5><%= item.defaultPrice%></h5></td>
+              <td><h5><%= item.totalQtyOnHand%></h5></td>
               <td><a href="item/<%= item._id%>" class="button">view</a></td>
             </tr>
             <% } %>

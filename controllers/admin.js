@@ -34,6 +34,21 @@ exports.getItem = (req, res, next) => {
     });
 };
 
+exports.getItemByNewID = (req, res, next) => {
+  const itemID = req.params.itemID;
+  console.log(itemID);
+  Item.findByIdSecondID(itemID)
+    .then((item) => {
+      res.render('./dashboard/inventory/item', {
+        item: item,
+        pageTitle: 'Item Profile',
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.getItemMaintenance = (req, res, next) => {
   res.render('dashboard/inventory/item-maintenance', {
     pageTitle: 'Item Maintenance',
@@ -66,6 +81,9 @@ exports.postAddItem = (req, res, next) => {
   // if (itemID && itemStatus && description && category && valuationMethod && type && defaultWarehouse && baseUOM && salesUOM && purchaseUOM && defaultPrice)
   if (!itemID) {
     console.log('Missing item info!');
+    res.redirect('/inventory/add-item');
+  } else if (Item.findDuplicateID(itemID)) {
+    console.log('duplicate itemID!');
     res.redirect('/inventory/add-item');
   } else {
     const item = new Item(
@@ -103,7 +121,102 @@ exports.getEditItem = (req, res, next) => {
   });
 };
 
-exports.postEditItem = (req, res, next) => {};
+exports.postUpdateItem = (req, res, next) => {
+  const itemID = req.body.itemID;
+  const itemStatus = req.body.itemStatus;
+  const description = req.body.description;
+  const category = req.body.category;
+  const valuationMethod = req.body.valuationMethod;
+  const type = req.body.type;
+  const defaultWarehouse = req.body.defaultWarehouse;
+  const baseUOM = req.body.baseUOM;
+  const salesUOM = req.body.salesUOM;
+  const purchaseUOM = req.body.purchaseUOM;
+  const defaultPrice = req.body.defaultPrice;
+  const totalQtyOnHand = req.body.totalQtyOnHand;
+
+  const item = new Item(
+    itemID,
+    itemStatus,
+    description,
+    category,
+    valuationMethod,
+    type,
+    defaultWarehouse,
+    baseUOM,
+    salesUOM,
+    purchaseUOM,
+    defaultPrice,
+    totalQtyOnHand
+  );
+  item
+    .save()
+    .then((result) => {
+      console.log(result);
+      console.log('Updated Item');
+      res.redirect(`/inventory/item/${item._id}`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.getPreviousItem = (req, res, next) => {
+  let itemId;
+  itemId = req.params.itemId;
+  // if (req.params.itemId == undefined) {
+  //   itemId = Item.fetchAll().then((items) => {
+  //     items[0]._id;
+  //     console.log(itemId);
+  //   });
+  // } else {
+  //   itemId = req.params.itemId;
+  // }
+  let idList = [];
+  Item.fetchAll().then((items) => {
+    for (itemId of items) {
+      idList.push(itemId.itemID);      
+    }
+    itemId = req.params.itemId;
+    const currentItemIndex = idList.indexOf(itemId);
+    const previousItemIndex = currentItemIndex - 1;
+    return items[previousItemIndex]._id;
+  }).then(result => {
+    console.log(result, "result");
+    res.redirect(`/inventory/item/${result}`);
+  }).catch(err => {
+    console.log(err);
+  })
+};
+
+
+exports.getNextItem = (req, res, next) => {
+  let itemId;
+  itemId = req.params.itemId;
+  // if (req.params.itemId == undefined) {
+  //   itemId = Item.fetchAll().then((items) => {
+  //     items[0]._id;
+  //     console.log(itemId);
+  //   });
+  // } else {
+  //   itemId = req.params.itemId;
+  // }
+  let idList = [];
+  Item.fetchAll().then((items) => {
+    for (itemId of items) {
+      idList.push(itemId.itemID);      
+    }
+    itemId = req.params.itemId;
+    const currentItemIndex = idList.indexOf(itemId);
+    const nextItemIndex = currentItemIndex + 1;
+    return items[nextItemIndex]._id;
+  }).then(result => {
+    console.log(result, "result");
+    res.redirect(`/inventory/item/${result}`);
+  }).catch(err => {
+    console.log(err);
+  })
+};
 
 exports.getInventory = (req, res, next) => {
   res.render('dashboard/inventory', {

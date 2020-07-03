@@ -167,6 +167,10 @@ div#sub-menu li a:hover {
   margin-bottom: 5px;
 }
 
+.hide-button {
+  visibility: hidden;
+}
+
 td {
   border: 1px solid black;
 }

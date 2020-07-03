@@ -29,24 +29,30 @@
     <div id="workspace">
       <div id="toolbar">
         <h1>Item Maintenance</h1>
-        <button id="backwardsBtn" type="button">
+        <form action="/inventory/previousItem/<%= item.itemID%>" method="GET">
+          <button id="backwardsBtn" type="submit">
           <svg height="20" width="20">
-            <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
-          </svg>
-        </button>
-        <button id="forwardsBtn" type="button">
-          <svg height="20" width="20">
-            <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
-          </svg>
-        </button>        
+              <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            </svg>
+          </button>
+      </form>
+      <form action="/inventory/nextItem/<%= item.itemID%>" method="GET">
+          <button id="forwardsBtn" type="submit">
+            <svg height="20" width="20">
+              <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            </svg>
+          </button>        
+      </form>        
       </div>
-      <form action="/inventory/add-item" method="POST" autocomplete="off">
+      <form action="/inventory/update-item" method="POST" autocomplete="off">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
           <input type="text" name="itemID" value="<%= item.itemID %>">
-          <button id="searchBtn" type="button">
-            <i class="fas fa-search"></i>
-          </button>
+          <a href="/inventory/items">
+            <button id="searchBtn" type="button">
+              <i class="fas fa-search"></i>
+            </button>
+          </a>
         </div>
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>          
@@ -66,11 +72,11 @@
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="">
+          <input type="text" name="category" value="<%=item.category %>">
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>          
-            <select id="valuationMethod" name="valuationMethod">
+            <select id="valuationMethod" name="valuationMethod" <% if (item.totalQtyOnHand != 0) { %> disabled <% } %>>
               <% if (item.valuationMethod === "avg") { %>
                 <option value="avg" selected>Average Cost</option>
             <option value="fifo">FIFO</option>
@@ -129,7 +135,8 @@
           <input type="number" name="defaultPrice" value="<%= item.defaultPrice %>" step="0.01" min="0" max="99999">
         </div>
         <hr>
-        <input type="submit" value="Save"/>        
+        <input type="submit" value="Update"/>        
       </form>
+      <a href="../item/<%= item._id%>"><button>Cancel</button></a>
     </div>    
   </body>

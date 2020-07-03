@@ -57,6 +57,34 @@ class Item {
         console.log(err);
       });
   }
+
+  static findDuplicateID(itemID) {
+    const db = getDb();
+    return db
+      .collection('items')
+      .find({ itemID: itemID })
+      .next()
+      .then((item) => {
+        console.log(item);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static findByIdSecondID(itemID) {
+    const db = getDb();
+    return db
+      .collection('items')
+      .find({ itemID: itemID })
+      .next()
+      .then((item) => {
+        return item;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 }
 
 module.exports = Item;

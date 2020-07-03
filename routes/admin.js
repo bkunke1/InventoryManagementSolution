@@ -9,7 +9,8 @@ router.get('/', adminController.getIndex);
 router.get('/inventory/items', adminController.getItems);
 
 router.get('/inventory/item/:itemId', adminController.getItem);
-// router.get('/item', adminController.getItem);
+// router.get('/inventory/item/:itemId', adminController.getItemByNewID);
+// router.get('/item', adminController.getItemByNewID);
 
 router.get('/inventory/add-item', adminController.getAddItem);
 
@@ -19,9 +20,13 @@ router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
 
 router.get('/edit-item', adminController.getEditItem);
 
-router.post('/edit-item', adminController.postEditItem);
+router.post('/inventory/update-item', adminController.postUpdateItem);
 
 router.get('/inventory', adminController.getInventory);
+
+router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);
+
+router.get('/inventory/nextItem/:itemId', adminController.getNextItem);
 
 router.get('/so', adminController.getSalesOrder);
 
