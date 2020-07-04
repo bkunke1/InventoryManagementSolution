@@ -27,16 +27,16 @@
       </div>
     </div>
     <div id="workspace">
-      <div id="toolbar">
-        <h1>Item Maintenance</h1>
-        <form action="/inventory/previousItem/" method="GET">
+      <div id="toolbar" class="inventory-toolbar">
+        <h1 class="inventory-toolbar-items">Item Maintenance</h1>
+        <form action="/inventory/previousItem/empty" method="GET" class="inventory-toolbar-items">
         <button id="backwardsBtn" type="submit">
         <svg height="20" width="20">
             <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
           </svg>
         </button>
     </form>
-    <form action="/inventory/nextItem" method="GET">
+    <form action="/inventory/nextItem/empty" method="GET" class="inventory-toolbar-items">
         <button id="forwardsBtn" type="submit">
           <svg height="20" width="20">
             <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
@@ -44,7 +44,7 @@
         </button>        
     </form>
       </div>
-      <form action="" method="POST" autocomplete="off">
+      <form action="/inventory/item/byID/search" method="POST" autocomplete="off">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
           <input type="text" name="itemID" value="" id="itemID-lookup">
@@ -110,7 +110,7 @@
           <input type="number" name="defaultPrice" value="" step="0.01" min="0" max="99999">
         </div>
         <hr>
-        <input type="submit" value="" class="hide-button" formaction=""/>        
+        <input type="submit" value="send" class="hide-button"/>
       </form>
     </div>    
   </body>

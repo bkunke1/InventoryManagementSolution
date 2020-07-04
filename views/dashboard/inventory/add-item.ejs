@@ -27,18 +27,22 @@
       </div>
     </div>
     <div id="workspace">
-      <div id="toolbar">
-        <h1>Item Maintenance</h1>
-        <button id="backwardsBtn" type="button">
+      <div id="toolbar" class="inventory-toolbar">
+        <h1 class="inventory-toolbar-items">Item Maintenance</h1>
+        <form action="/inventory/previousItem/empty" method="GET" class="inventory-toolbar-items">
+          <button id="backwardsBtn" type="submit">
           <svg height="20" width="20">
-            <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
-          </svg>
-        </button>
-        <button id="forwardsBtn" type="button">
-          <svg height="20" width="20">
-            <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
-          </svg>
-        </button>        
+              <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            </svg>
+          </button>
+      </form>
+      <form action="/inventory/nextItem/empty" method="GET" class="inventory-toolbar-items">
+          <button id="forwardsBtn" type="submit">
+            <svg height="20" width="20">
+              <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            </svg>
+          </button>        
+      </form>
       </div>
       <form action="/inventory/add-item" method="POST" autocomplete="off">
         <div class="item-field">
@@ -51,8 +55,8 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
             </select>
         </div>
         <div class="item-field">
@@ -66,17 +70,17 @@
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>          
             <select id="valuationMethod" name="valuationMethod">
-            <option value="avg">Average Cost</option>
-            <option value="fifo">FIFO</option>
-            <option value="lot">LOT</option>
+            <option value="Average Cost">Average Cost</option>
+            <option value="FIFO">FIFO</option>
+            <option value="Lot">LOT</option>
             </select>          
         </div>
         <div class="item-field">
           <label for="type">Type:</label>          
             <select id="type" name="type">
-            <option value="finishedGood">Finished Good</option>
-            <option value="rawMaterial">Raw Material</option>
-            <option value="serivce">Service</option>
+            <option value="Finished Good">Finished Good</option>
+            <option value="Raw Material">Raw Material</option>
+            <option value="Service">Service</option>
             </select>          
         </div>         
         <div class="item-field">

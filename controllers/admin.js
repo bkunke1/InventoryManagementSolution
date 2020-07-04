@@ -34,19 +34,12 @@ exports.getItem = (req, res, next) => {
     });
 };
 
-exports.getItemByNewID = (req, res, next) => {
-  const itemID = req.params.itemID;
-  console.log(itemID);
-  Item.findByIdSecondID(itemID)
-    .then((item) => {
-      res.render('./dashboard/inventory/item', {
-        item: item,
-        pageTitle: 'Item Profile',
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+exports.postItemByNewID = (req, res, next) => {
+  Item.fetchAll().then((items) => {
+    const itemID2 = req.body.itemID;
+    const result = items.find(({ itemID }) => itemID === itemID2);
+    res.redirect(`/inventory/item/${result._id}`);
+  });
 };
 
 exports.getItemMaintenance = (req, res, next) => {
@@ -66,6 +59,7 @@ exports.getAddItem = (req, res, next) => {
 };
 
 exports.postAddItem = (req, res, next) => {
+  console.log(req.params);
   const itemID = req.body.itemID;
   const itemStatus = req.body.itemStatus;
   const description = req.body.description;
@@ -82,9 +76,9 @@ exports.postAddItem = (req, res, next) => {
   if (!itemID) {
     console.log('Missing item info!');
     res.redirect('/inventory/add-item');
-  } else if (Item.findDuplicateID(itemID)) {
-    console.log('duplicate itemID!');
-    res.redirect('/inventory/add-item');
+    // } else if (Item.findDuplicateID(itemID)) {
+    //   console.log('duplicate itemID!');
+    //   res.redirect('/inventory/add-item');
   } else {
     const item = new Item(
       itemID,
@@ -162,60 +156,66 @@ exports.postUpdateItem = (req, res, next) => {
 };
 
 exports.getPreviousItem = (req, res, next) => {
-  let itemId;
-  itemId = req.params.itemId;
-  // if (req.params.itemId == undefined) {
-  //   itemId = Item.fetchAll().then((items) => {
-  //     items[0]._id;
-  //     console.log(itemId);
-  //   });
-  // } else {
-  //   itemId = req.params.itemId;
-  // }
-  let idList = [];
-  Item.fetchAll().then((items) => {
-    for (itemId of items) {
-      idList.push(itemId.itemID);      
-    }
-    itemId = req.params.itemId;
-    const currentItemIndex = idList.indexOf(itemId);
-    const previousItemIndex = currentItemIndex - 1;
-    return items[previousItemIndex]._id;
-  }).then(result => {
-    console.log(result, "result");
-    res.redirect(`/inventory/item/${result}`);
-  }).catch(err => {
-    console.log(err);
-  })
+  if (req.params.itemId === 'empty') {
+    Item.fetchAll().then((items) => {
+      const lastItemIndex = items.length - 1;
+      res.redirect(`/inventory/item/${items[lastItemIndex]._id}`);
+    });
+  } else {
+    let idList = [];
+    Item.fetchAll()
+      .then((items) => {
+        for (itemId of items) {
+          idList.push(itemId.itemID);
+        }
+        itemId = req.params.itemId;
+        const currentItemIndex = idList.indexOf(itemId);
+        const previousItemIndex = currentItemIndex - 1;
+        const lastItemIndex = items.length - 1;
+        if (currentItemIndex === 0) {
+          return items[lastItemIndex]._id;
+        } else {
+          return items[previousItemIndex]._id;
+        }
+      })
+      .then((result) => {
+        res.redirect(`/inventory/item/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
-
 exports.getNextItem = (req, res, next) => {
-  let itemId;
-  itemId = req.params.itemId;
-  // if (req.params.itemId == undefined) {
-  //   itemId = Item.fetchAll().then((items) => {
-  //     items[0]._id;
-  //     console.log(itemId);
-  //   });
-  // } else {
-  //   itemId = req.params.itemId;
-  // }
-  let idList = [];
-  Item.fetchAll().then((items) => {
-    for (itemId of items) {
-      idList.push(itemId.itemID);      
-    }
-    itemId = req.params.itemId;
-    const currentItemIndex = idList.indexOf(itemId);
-    const nextItemIndex = currentItemIndex + 1;
-    return items[nextItemIndex]._id;
-  }).then(result => {
-    console.log(result, "result");
-    res.redirect(`/inventory/item/${result}`);
-  }).catch(err => {
-    console.log(err);
-  })
+  if (req.params.itemId === 'empty') {
+    Item.fetchAll().then((items) => {
+      res.redirect(`/inventory/item/${items[0]._id}`);
+    });
+  } else {
+    let idList = [];
+    Item.fetchAll()
+      .then((items) => {
+        for (itemId of items) {
+          idList.push(itemId.itemID);
+        }
+        itemId = req.params.itemId;
+        const currentItemIndex = idList.indexOf(itemId);
+        const nextItemIndex = currentItemIndex + 1;
+        const lastItemIndex = items.length - 1;
+        if (currentItemIndex === lastItemIndex) {
+          return items[0]._id;
+        } else {
+          return items[nextItemIndex]._id;
+        }
+      })
+      .then((result) => {
+        res.redirect(`/inventory/item/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 exports.getInventory = (req, res, next) => {

@@ -8,8 +8,8 @@ router.get('/', adminController.getIndex);
 
 router.get('/inventory/items', adminController.getItems);
 
+router.post('/inventory/item/byID/search', adminController.postItemByNewID);
 router.get('/inventory/item/:itemId', adminController.getItem);
-// router.get('/inventory/item/:itemId', adminController.getItemByNewID);
 // router.get('/item', adminController.getItemByNewID);
 
 router.get('/inventory/add-item', adminController.getAddItem);

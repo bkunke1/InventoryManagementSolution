@@ -171,6 +171,17 @@ div#sub-menu li a:hover {
   visibility: hidden;
 }
 
+.inventory-toolbar {
+  display: flex;
+  margin: 30px 0 30px 0;
+}
+
+.inventory-toolbar-items {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
 td {
   border: 1px solid black;
 }
