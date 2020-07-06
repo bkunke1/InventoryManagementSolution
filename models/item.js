@@ -2,7 +2,20 @@ const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
 class Item {
-  constructor(itemID, itemStatus, description, category, valuationMethod, type, defaultWarehouse, baseUOM, salesUOM, purchaseUOM, defaultPrice, totalQtyOnHand) {
+  constructor(
+    itemID,
+    itemStatus,
+    description,
+    category,
+    valuationMethod,
+    type,
+    defaultWarehouse,
+    baseUOM,
+    salesUOM,
+    purchaseUOM,
+    defaultPrice,
+    totalQtyOnHand
+  ) {
     this.itemID = itemID;
     this.itemStatus = itemStatus;
     this.description = description;
@@ -52,20 +65,6 @@ class Item {
       .next()
       .then((item) => {
         return item;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  static findDuplicateID(itemID) {
-    const db = getDb();
-    return db
-      .collection('items')
-      .find({ itemID: itemID })
-      .next()
-      .then((item) => {
-        console.log(item);
       })
       .catch((err) => {
         console.log(err);

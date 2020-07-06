@@ -34,12 +34,23 @@ exports.getItem = (req, res, next) => {
     });
 };
 
-exports.postItemByNewID = (req, res, next) => {
-  Item.fetchAll().then((items) => {
-    const itemID2 = req.body.itemID;
-    const result = items.find(({ itemID }) => itemID === itemID2);
-    res.redirect(`/inventory/item/${result._id}`);
-  });
+exports.searchItemByNewID = (req, res, next) => {
+  if (req.body.itemID === '') {
+    res.redirect('../../item-maintenance');
+  } else {
+    Item.findByIdSecondID(req.body.itemID).then((result) => {
+      if (result === null) {
+        const string = encodeURIComponent(req.body.itemID);
+        res.redirect('../../add-item/?newItemID=' + string);
+      } else {
+        Item.fetchAll().then((items) => {
+          const itemID2 = req.body.itemID;
+          const result = items.find(({ itemID }) => itemID === itemID2);
+          res.redirect(`/inventory/item/${result._id}`);
+        });
+      }
+    });
+  }
 };
 
 exports.getItemMaintenance = (req, res, next) => {
@@ -55,7 +66,8 @@ exports.getAddItem = (req, res, next) => {
     pageTitle: 'Add Item',
     path: '/dashboard/add-item/',
     editing: false,
-  });
+    newItemID: req.query.newItemID
+  });  
 };
 
 exports.postAddItem = (req, res, next) => {
