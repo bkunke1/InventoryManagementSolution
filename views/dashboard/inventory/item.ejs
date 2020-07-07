@@ -1,4 +1,4 @@
-<%- include('../../includes/head.ejs') %>
+<%- include('../../includes/head.ejs') %>  
   </head>
   <body>
     <div id="banner">
@@ -126,17 +126,18 @@
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input type="text" name="purchaseUOM" value="<%= item.purchaseUOM %>" size="10" maxlength="10">
+          <input type="text" name="purchaseUOM" value="<%= item.purchaseUOM %>" size="10" maxlength="10" onclick="updateEditedFields">
         </div>
-        <hr>
+        <hr>        
         <h6>Pricing</h6>
         <div class="item-field">
           <label for="defaultPrice">Default Price (Base UOM): $</label>
-          <input type="number" name="defaultPrice" value="<%= item.defaultPrice %>" step="0.01" min="0" max="99999">
+          <input type="number" name="defaultPrice" value="<%= item.defaultPrice %>" step="0.01" min="0" max="99999" onchange="updateEditedFields">
         </div>
         <hr>
-        <input type="submit" value="Update"/>        
+        <input type="submit" value="Update" id="updateBtn"/>        
       </form>
       <a href="../item/<%= item._id%>"><button>Cancel</button></a>
-    </div>    
+    </div>
+    <script src="/js/actionAlerts.js"></script>
   </body>

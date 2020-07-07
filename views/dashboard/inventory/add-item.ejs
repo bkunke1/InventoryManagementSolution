@@ -47,29 +47,29 @@
       <form action="/inventory/add-item" method="POST" autocomplete="off">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="<%=newItemID%>">
+          <input type="text" name="itemID" value="<%=newItemID%>" class="green-background">
           <button id="searchBtn" type="button">
             <i class="fas fa-search"></i>
           </button>
         </div>
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
-          <select id="itemStatus" name="itemStatus">
+          <select id="itemStatus" name="itemStatus" class="green-background">
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
             </select>
         </div>
         <div class="item-field">
           <label for="description">Description:</label>
-          <input type="text" name="description" value="" size="30" maxlength="30">
+          <input type="text" name="description" value="" size="30" maxlength="30" class="green-background">
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="">
+          <input type="text" name="category" value="" class="green-background">
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>          
-            <select id="valuationMethod" name="valuationMethod">
+            <select id="valuationMethod" name="valuationMethod" class="green-background">
             <option value="Average Cost">Average Cost</option>
             <option value="FIFO">FIFO</option>
             <option value="Lot">LOT</option>
@@ -77,7 +77,7 @@
         </div>
         <div class="item-field">
           <label for="type">Type:</label>          
-            <select id="type" name="type">
+            <select id="type" name="type" class="green-background">
             <option value="Finished Good">Finished Good</option>
             <option value="Raw Material">Raw Material</option>
             <option value="Service">Service</option>
@@ -85,31 +85,31 @@
         </div>         
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input type="text" name="defaultWarehouse" value="">
+          <input type="text" name="defaultWarehouse" value="" class="green-background">
         </div>
         <hr>
         <h6>Unit of Measure</h6>
         <div class="item-field">
           <label for="baseUOM">Base UOM:</label>
-          <input type="text" name="baseUOM" value="" size="10" maxlength="10">
+          <input type="text" name="baseUOM" value="" size="10" maxlength="10" class="green-background">
         </div>
         <div class="item-field">
           <label for="salesUOM">Sales UOM:</label>
-          <input type="text" name="salesUOM" value="" size="10" maxlength="10">
+          <input type="text" name="salesUOM" value="" size="10" maxlength="10" class="green-background">
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input type="text" name="purchaseUOM" value="" size="10" maxlength="10">
+          <input type="text" name="purchaseUOM" value="" size="10" maxlength="10" class="green-background">
         </div>
         <hr>
         <h6>Pricing</h6>
         <div class="item-field">
           <label for="defaultPrice">Default Price (Base UOM): $</label>
-          <input type="number" name="defaultPrice" value="" step="0.01" min="0" max="99999">
+          <input type="number" name="defaultPrice" value="" step="0.01" min="0" max="99999" class="green-background">
         </div>
         <hr>
         <input type="submit" value="Save"/>        
       </form>
-    </div>    
+    </div>
   </body>
 </html>

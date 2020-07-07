@@ -44,10 +44,10 @@
         </button>        
     </form>
       </div>
-      <form action="/inventory/item/byID/search" method="POST" autocomplete="off">
+      <form action="/inventory/item/byID/search" method="POST" autocomplete="off" id="itemID-lookup">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="" id="itemID-lookup">
+          <input type="text" name="itemID" value="" >
           <a href="/inventory/items">
           <button id="searchBtn" type="button">
             <i class="fas fa-search"></i>
@@ -112,6 +112,7 @@
         <hr>
         <input type="submit" value="send" class="hide-button"/>
       </form>
-    </div>    
+    </div>        
+    <script src="/js/actionAlerts.js"></script>
   </body>
 </html>

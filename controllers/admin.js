@@ -111,7 +111,7 @@ exports.postAddItem = (req, res, next) => {
       .then((result) => {
         // console.log(result);
         console.log('Created Item');
-        res.redirect('/inventory/');
+        res.redirect(`/inventory/item/${item._id}`);
       })
       .catch((err) => {
         console.log(err);

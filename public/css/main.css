@@ -182,6 +182,14 @@ div#sub-menu li a:hover {
   margin: 5px;
 }
 
+.green-background {
+  background-color: rgb(91, 247, 19);
+}
+
+.yellow-background {
+  background-color: yellow;
+}
+
 td {
   border: 1px solid black;
 }
