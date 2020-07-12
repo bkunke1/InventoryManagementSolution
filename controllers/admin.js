@@ -28,6 +28,7 @@ exports.getItem = (req, res, next) => {
         item: item,
         pageTitle: 'Item Profile',
       });
+      console.log(item);
     })
     .catch((err) => {
       console.log(err);
@@ -71,7 +72,6 @@ exports.getAddItem = (req, res, next) => {
 };
 
 exports.postAddItem = (req, res, next) => {
-  console.log(req.params);
   const itemID = req.body.itemID;
   const itemStatus = req.body.itemStatus;
   const description = req.body.description;
@@ -104,7 +104,8 @@ exports.postAddItem = (req, res, next) => {
       salesUOM,
       purchaseUOM,
       defaultPrice,
-      totalQtyOnHand
+      totalQtyOnHand,
+      req.user._id
     );
     item
       .save()
@@ -128,6 +129,7 @@ exports.getEditItem = (req, res, next) => {
 };
 
 exports.postUpdateItem = (req, res, next) => {
+  console.log(req.body);
   const itemID = req.body.itemID;
   const itemStatus = req.body.itemStatus;
   const description = req.body.description;
@@ -140,6 +142,8 @@ exports.postUpdateItem = (req, res, next) => {
   const purchaseUOM = req.body.purchaseUOM;
   const defaultPrice = req.body.defaultPrice;
   const totalQtyOnHand = req.body.totalQtyOnHand;
+  const userId = req.body.userId;
+  const id = req.body._id;
 
   const item = new Item(
     itemID,
@@ -153,12 +157,13 @@ exports.postUpdateItem = (req, res, next) => {
     salesUOM,
     purchaseUOM,
     defaultPrice,
-    totalQtyOnHand
+    totalQtyOnHand,
+    id
   );
+  console.log(item);
   item
     .save()
     .then((result) => {
-      console.log(result);
       console.log('Updated Item');
       res.redirect(`/inventory/item/${item._id}`);
     })

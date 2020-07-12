@@ -46,8 +46,14 @@
       </div>
       <form action="/inventory/update-item" method="POST" autocomplete="off">
         <div class="item-field">
+          <input type="hidden" name="_id" value="<%= item._id %>">
+        </div>
+        <div class="item-field">
+          <input type="hidden" name="userId" value="<%= item.userId %>">
+        </div>
+        <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="<%= item.itemID %>">
+          <input readonly type="text" name="itemID" value="<%= item.itemID %>">
           <a href="/inventory/items">
             <button id="searchBtn" type="button">
               <i class="fas fa-search"></i>
@@ -76,20 +82,36 @@
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>          
-            <select id="valuationMethod" name="valuationMethod" <% if (item.totalQtyOnHand != 0) { %> disabled <% } %>>
-              <% if (item.valuationMethod === "avg") { %>
-                <option value="avg" selected>Average Cost</option>
-            <option value="fifo">FIFO</option>
-            <option value="lot">LOT</option>
-              <% } else if (item.valuationMethod === "fifo") { %> 
-                <option value="avg">Average Cost</option>
-                <option value="fifo" selected>FIFO</option>
-                <option value="lot">LOT</option> 
+            <select id="valuationMethod" name="valuationMethod">
+              <% if (item.totalQtyOnHand === 0) { %>
+                <% if (item.valuationMethod === "avg") { %>
+                  <option value="avg" selected>Average Cost</option>
+                  <option value="fifo">FIFO</option>
+                  <option value="lot">LOT</option>
+                    <% } else if (item.valuationMethod === "fifo") { %> 
+                      <option value="avg">Average Cost</option>
+                      <option value="fifo" selected>FIFO</option>
+                      <option value="lot">LOT</option> 
+                    <% } else { %>
+                  <option value="avg">Average Cost</option>
+                  <option value="fifo">FIFO</option>
+                  <option value="lot" seleceted>LOT</option>
+                  <% } %>
               <% } else { %>
-            <option value="avg">Average Cost</option>
-            <option value="fifo">FIFO</option>
-            <option value="lot" seleceted>LOT</option>
-            <% } %>   
+                <% if (item.valuationMethod === "avg") { %>
+                  <option value="avg" selected>Average Cost</option>
+                  <option value="fifo" disabled>FIFO</option>
+                  <option value="lot" disabled>LOT</option>
+                    <% } else if (item.valuationMethod === "fifo") { %> 
+                      <option value="avg" disabled>Average Cost</option>
+                      <option value="fifo" selected>FIFO</option>
+                      <option value="lot" disabled>LOT</option> 
+                    <% } else { %>
+                  <option value="avg" disabled>Average Cost</option>
+                  <option value="fifo" disabled>FIFO</option>
+                  <option value="lot" seleceted>LOT</option>
+                  <% } %>
+              <% } %>                
             </select>          
         </div>
         <div class="item-field">
@@ -116,6 +138,10 @@
         </div>
         <hr>
         <h6>Unit of Measure</h6>
+        <div class="item-field">
+          <label for="totalQtyOnHand">Total Qty On Hand:</label>
+          <input readonly type="text" name="totalQtyOnHand" value="<%= item.totalQtyOnHand %>" size="10" maxlength="10">
+        </div>
         <div class="item-field">
           <label for="baseUOM">Base UOM:</label>
           <input type="text" name="baseUOM" value="<%= item.baseUOM %>" size="10" maxlength="10">

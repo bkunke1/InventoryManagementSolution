@@ -14,7 +14,9 @@ class Item {
     salesUOM,
     purchaseUOM,
     defaultPrice,
-    totalQtyOnHand
+    totalQtyOnHand,
+    userId,
+    id
   ) {
     this.itemID = itemID;
     this.itemStatus = itemStatus;
@@ -28,15 +30,27 @@ class Item {
     this.purchaseUOM = purchaseUOM;
     this.defaultPrice = defaultPrice;
     this.totalQtyOnHand = totalQtyOnHand;
+    this.userId = userId;
+    this._id = id ? new mongodb.ObjectId(id) : null;
   }
 
   save() {
     const db = getDb();
-    return db
+    let dbOp;
+    if (this._id) {
+      //update the product
+      dbOp = db
       .collection('items')
-      .insertOne(this)
+      .updateOne({ _id: this._id}, { $set: this });
+    } else {
+      dbOp = db
+      .collection('items')
+      .insertOne(this);
+    }
+    return dbOp
       .then((result) => {
         console.log(result);
+        // console.log(this);
       })
       .catch((err) => {
         console.log(err);
