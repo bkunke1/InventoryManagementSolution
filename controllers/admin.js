@@ -28,7 +28,6 @@ exports.getItem = (req, res, next) => {
         item: item,
         pageTitle: 'Item Profile',
       });
-      console.log(item);
     })
     .catch((err) => {
       console.log(err);
@@ -128,8 +127,8 @@ exports.getEditItem = (req, res, next) => {
   });
 };
 
+// saves changes made to existing item on item page
 exports.postUpdateItem = (req, res, next) => {
-  console.log(req.body);
   const itemID = req.body.itemID;
   const itemStatus = req.body.itemStatus;
   const description = req.body.description;
@@ -158,13 +157,12 @@ exports.postUpdateItem = (req, res, next) => {
     purchaseUOM,
     defaultPrice,
     totalQtyOnHand,
+    userId,
     id
   );
-  console.log(item);
   item
     .save()
     .then((result) => {
-      console.log('Updated Item');
       res.redirect(`/inventory/item/${item._id}`);
     })
     .catch((err) => {

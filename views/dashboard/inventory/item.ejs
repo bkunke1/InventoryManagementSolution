@@ -63,12 +63,12 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>          
           <select id="itemStatus" name="itemStatus">
-            <% if (item.itemStatus === "active") { %>
-              <option value="active" selected>Active</option>
-            <option value="inactive">Inactive</option> 
+            <% if (item.itemStatus === "ACTIVE") { %>
+              <option value="ACTIVE" selected>ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option> 
             <% } else { %> 
-              <option value="active">Active</option>
-            <option value="inactive" selected>Inactive</option> 
+              <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE" selected>INACTIVE</option> 
             <% } %>            
             </select>
         </div>
@@ -83,33 +83,33 @@
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>          
             <select id="valuationMethod" name="valuationMethod">
-              <% if (item.totalQtyOnHand === 0) { %>
-                <% if (item.valuationMethod === "avg") { %>
-                  <option value="avg" selected>Average Cost</option>
-                  <option value="fifo">FIFO</option>
-                  <option value="lot">LOT</option>
-                    <% } else if (item.valuationMethod === "fifo") { %> 
-                      <option value="avg">Average Cost</option>
-                      <option value="fifo" selected>FIFO</option>
-                      <option value="lot">LOT</option> 
+              <% if (item.totalQtyOnHand == 0) { %>
+                <% if (item.valuationMethod === "AVG") { %>
+                  <option value="AVG" selected>Average Cost</option>
+                  <option value="FIFO">FIFO</option>
+                  <option value="LOT">LOT</option>
+                    <% } else if (item.valuationMethod === "FIFO") { %> 
+                      <option value="AVG">Average Cost</option>
+                      <option value="FIFO" selected>FIFO</option>
+                      <option value="LOT">LOT</option> 
                     <% } else { %>
-                  <option value="avg">Average Cost</option>
-                  <option value="fifo">FIFO</option>
-                  <option value="lot" seleceted>LOT</option>
+                  <option value="AVG">Average Cost</option>
+                  <option value="FIFO">FIFO</option>
+                  <option value="LOT" seleceted>LOT</option>
                   <% } %>
               <% } else { %>
-                <% if (item.valuationMethod === "avg") { %>
-                  <option value="avg" selected>Average Cost</option>
-                  <option value="fifo" disabled>FIFO</option>
-                  <option value="lot" disabled>LOT</option>
-                    <% } else if (item.valuationMethod === "fifo") { %> 
-                      <option value="avg" disabled>Average Cost</option>
-                      <option value="fifo" selected>FIFO</option>
-                      <option value="lot" disabled>LOT</option> 
+                <% if (item.valuationMethod === "AVG") { %>
+                  <option value="AVG" selected>Average Cost</option>
+                  <option value="FIFO" disabled>FIFO</option>
+                  <option value="LOT" disabled>LOT</option>
+                    <% } else if (item.valuationMethod === "FIFO") { %> 
+                      <option value="AVG" disabled>Average Cost</option>
+                      <option value="FIFO" selected>FIFO</option>
+                      <option value="LOT" disabled>LOT</option> 
                     <% } else { %>
-                  <option value="avg" disabled>Average Cost</option>
-                  <option value="fifo" disabled>FIFO</option>
-                  <option value="lot" seleceted>LOT</option>
+                  <option value="AVG" disabled>Average Cost</option>
+                  <option value="FIFO" disabled>FIFO</option>
+                  <option value="LOT" seleceted>LOT</option>
                   <% } %>
               <% } %>                
             </select>          

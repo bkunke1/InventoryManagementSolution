@@ -42,14 +42,17 @@ class Item {
       dbOp = db
       .collection('items')
       .updateOne({ _id: this._id}, { $set: this });
+      console.log('updated item');
     } else {
+      //create the product
       dbOp = db
       .collection('items')
       .insertOne(this);
+      console.log('created item');
     }
     return dbOp
       .then((result) => {
-        console.log(result);
+        // console.log('return res', result);
         // console.log(this);
       })
       .catch((err) => {
