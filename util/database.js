@@ -20,10 +20,10 @@ const mongoConnect = (callback) => {
 };
 
 const getDb = () => {
-    if (_db) {
-        return _db;
-    }
-    throw 'No database found!';
+  if (_db) {
+    return _db;
+  }
+  throw 'No database found!';
 };
 
 exports.mongoConnect = mongoConnect;

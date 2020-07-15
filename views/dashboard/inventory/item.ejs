@@ -1,4 +1,7 @@
-<%- include('../../includes/head.ejs') %>  
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../includes/head.ejs') %>
   </head>
   <body>
     <div id="banner">
@@ -6,13 +9,16 @@
         <h1 class="product-info-text">[O] Inventory Solutions</h1>
       </div>
       <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as DUMMY USER, DUMMY COMPANY NAME,
+          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
+        </h3>
       </div>
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>    
-          <li><a href="/" class="">Dashboard</a></li>      
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
           <li><a href="/so" class="">Sales Orders</a></li>
           <li><a href="/po" class="">Purchase Orders</a></li>
           <li><a href="/inventory" class="active">Inventory</a></li>
@@ -29,31 +35,58 @@
     <div id="workspace">
       <div id="toolbar" class="inventory-toolbar">
         <h1 class="inventory-toolbar-items">Item Maintenance</h1>
-        <form action="/inventory/previousItem/<%= item.itemID%>" method="GET" class="inventory-toolbar-items">
+        <form
+          action="/inventory/previousItem/<%= item.itemID%>"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
           <button id="backwardsBtn" type="submit">
-          <svg height="20" width="20">
-              <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            <svg height="20" width="20">
+              <polygon
+                points="20,20 0,10 20,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
             </svg>
           </button>
-      </form>
-      <form action="/inventory/nextItem/<%= item.itemID%>" method="GET" class="inventory-toolbar-items">
+        </form>
+        <form
+          action="/inventory/nextItem/<%= item.itemID%>"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
           <button id="forwardsBtn" type="submit">
             <svg height="20" width="20">
-              <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
             </svg>
-          </button>        
-      </form>        
+          </button>
+        </form>
       </div>
       <form action="/inventory/update-item" method="POST" autocomplete="off">
         <div class="item-field">
-          <input type="hidden" name="_id" value="<%= item._id %>">
+          <input type="hidden" name="_id" value="<%= item._id %>" />
         </div>
         <div class="item-field">
-          <input type="hidden" name="userId" value="<%= item.userId %>">
+          <input type="hidden" name="userId" value="<%= item.userId %>" />
         </div>
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input readonly type="text" name="itemID" value="<%= item.itemID %>">
+          <input
+            readonly
+            type="text"
+            name="itemID"
+            value="<%= item.itemID %>"
+          />
           <a href="/inventory/items">
             <button id="searchBtn" type="button">
               <i class="fas fa-search"></i>
@@ -61,109 +94,151 @@
           </a>
         </div>
         <div class="item-field">
-          <label for="itemStatus">Item Status:</label>          
+          <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus">
             <% if (item.itemStatus === "ACTIVE") { %>
-              <option value="ACTIVE" selected>ACTIVE</option>
-            <option value="INACTIVE">INACTIVE</option> 
-            <% } else { %> 
-              <option value="ACTIVE">ACTIVE</option>
-            <option value="INACTIVE" selected>INACTIVE</option> 
-            <% } %>            
-            </select>
+            <option value="ACTIVE" selected>ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
+            <% } else { %>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE" selected>INACTIVE</option>
+            <% } %>
+          </select>
         </div>
         <div class="item-field">
           <label for="description">Description:</label>
-          <input type="text" name="description" value="<%= item.description %>" size="30" maxlength="30">
+          <input
+            type="text"
+            name="description"
+            value="<%= item.description %>"
+            size="30"
+            maxlength="30"
+          />
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="<%=item.category %>">
+          <input type="text" name="category" value="<%=item.category %>" />
         </div>
         <div class="item-field">
-          <label for="valuationMethod">Valuation Method:</label>          
-            <select id="valuationMethod" name="valuationMethod">
-              <% if (item.totalQtyOnHand == 0) { %>
-                <% if (item.valuationMethod === "AVG") { %>
-                  <option value="AVG" selected>Average Cost</option>
-                  <option value="FIFO">FIFO</option>
-                  <option value="LOT">LOT</option>
-                    <% } else if (item.valuationMethod === "FIFO") { %> 
-                      <option value="AVG">Average Cost</option>
-                      <option value="FIFO" selected>FIFO</option>
-                      <option value="LOT">LOT</option> 
-                    <% } else { %>
-                  <option value="AVG">Average Cost</option>
-                  <option value="FIFO">FIFO</option>
-                  <option value="LOT" seleceted>LOT</option>
-                  <% } %>
-              <% } else { %>
-                <% if (item.valuationMethod === "AVG") { %>
-                  <option value="AVG" selected>Average Cost</option>
-                  <option value="FIFO" disabled>FIFO</option>
-                  <option value="LOT" disabled>LOT</option>
-                    <% } else if (item.valuationMethod === "FIFO") { %> 
-                      <option value="AVG" disabled>Average Cost</option>
-                      <option value="FIFO" selected>FIFO</option>
-                      <option value="LOT" disabled>LOT</option> 
-                    <% } else { %>
-                  <option value="AVG" disabled>Average Cost</option>
-                  <option value="FIFO" disabled>FIFO</option>
-                  <option value="LOT" seleceted>LOT</option>
-                  <% } %>
-              <% } %>                
-            </select>          
+          <label for="valuationMethod">Valuation Method:</label>
+          <select id="valuationMethod" name="valuationMethod">
+            <% if (item.totalQtyOnHand == 0) { %> <% if (item.valuationMethod
+            === "AVG") { %>
+            <option value="AVG" selected>Average Cost</option>
+            <option value="FIFO">FIFO</option>
+            <option value="LOT">LOT</option>
+            <% } else if (item.valuationMethod === "FIFO") { %>
+            <option value="AVG">Average Cost</option>
+            <option value="FIFO" selected>FIFO</option>
+            <option value="LOT">LOT</option>
+            <% } else { %>
+            <option value="AVG">Average Cost</option>
+            <option value="FIFO">FIFO</option>
+            <option value="LOT" seleceted>LOT</option>
+            <% } %> <% } else { %> <% if (item.valuationMethod === "AVG") { %>
+            <option value="AVG" selected>Average Cost</option>
+            <option value="FIFO" disabled>FIFO</option>
+            <option value="LOT" disabled>LOT</option>
+            <% } else if (item.valuationMethod === "FIFO") { %>
+            <option value="AVG" disabled>Average Cost</option>
+            <option value="FIFO" selected>FIFO</option>
+            <option value="LOT" disabled>LOT</option>
+            <% } else { %>
+            <option value="AVG" disabled>Average Cost</option>
+            <option value="FIFO" disabled>FIFO</option>
+            <option value="LOT" seleceted>LOT</option>
+            <% } %> <% } %>
+          </select>
         </div>
         <div class="item-field">
-          <label for="type">Type:</label>          
-            <select id="type" name="type">
-              <% if (item.type === "finishedGood") { %>
-                <option value="finishedGood" selected>Finished Good</option>
-                <option value="rawMaterial">Raw Material</option>
-                <option value="serivce">Service</option>
-              <% } else if (item.type === "rawMaterial") { %> 
-                <option value="finishedGood">Finished Good</option>
+          <label for="type">Type:</label>
+          <select id="type" name="type">
+            <% if (item.type === "finishedGood") { %>
+            <option value="finishedGood" selected>Finished Good</option>
+            <option value="rawMaterial">Raw Material</option>
+            <option value="serivce">Service</option>
+            <% } else if (item.type === "rawMaterial") { %>
+            <option value="finishedGood">Finished Good</option>
             <option value="rawMaterial" selected>Raw Material</option>
             <option value="serivce">Service</option>
-              <% } else { %>
-                <option value="finishedGood">Finished Good</option>
-                <option value="rawMaterial">Raw Material</option>
-                <option value="serivce" selected>Service</option>
-            <% } %>            
-            </select>          
-        </div>         
+            <% } else { %>
+            <option value="finishedGood">Finished Good</option>
+            <option value="rawMaterial">Raw Material</option>
+            <option value="serivce" selected>Service</option>
+            <% } %>
+          </select>
+        </div>
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input type="text" name="defaultWarehouse" value="<%= item.defaultWarehouse %>">
+          <input
+            type="text"
+            name="defaultWarehouse"
+            value="<%= item.defaultWarehouse %>"
+          />
         </div>
-        <hr>
+        <hr />
         <h6>Unit of Measure</h6>
         <div class="item-field">
           <label for="totalQtyOnHand">Total Qty On Hand:</label>
-          <input readonly type="text" name="totalQtyOnHand" value="<%= item.totalQtyOnHand %>" size="10" maxlength="10">
+          <input
+            readonly
+            type="text"
+            name="totalQtyOnHand"
+            value="<%= item.totalQtyOnHand %>"
+            size="10"
+            maxlength="10"
+          />
         </div>
         <div class="item-field">
           <label for="baseUOM">Base UOM:</label>
-          <input type="text" name="baseUOM" value="<%= item.baseUOM %>" size="10" maxlength="10">
+          <input
+            type="text"
+            name="baseUOM"
+            value="<%= item.baseUOM %>"
+            size="10"
+            maxlength="10"
+          />
         </div>
         <div class="item-field">
           <label for="salesUOM">Sales UOM:</label>
-          <input type="text" name="salesUOM" value="<%= item.salesUOM %>" size="10" maxlength="10">
+          <input
+            type="text"
+            name="salesUOM"
+            value="<%= item.salesUOM %>"
+            size="10"
+            maxlength="10"
+          />
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input type="text" name="purchaseUOM" value="<%= item.purchaseUOM %>" size="10" maxlength="10" onclick="updateEditedFields">
+          <input
+            type="text"
+            name="purchaseUOM"
+            value="<%= item.purchaseUOM %>"
+            size="10"
+            maxlength="10"
+            onclick="updateEditedFields"
+          />
         </div>
-        <hr>        
+        <hr />
         <h6>Pricing</h6>
         <div class="item-field">
           <label for="defaultPrice">Default Price (Base UOM): $</label>
-          <input type="number" name="defaultPrice" value="<%= item.defaultPrice %>" step="0.01" min="0" max="99999" onchange="updateEditedFields">
+          <input
+            type="number"
+            name="defaultPrice"
+            value="<%= item.defaultPrice %>"
+            step="0.01"
+            min="0"
+            max="99999"
+            onchange="updateEditedFields"
+          />
         </div>
-        <hr>
-        <input type="submit" value="Update" id="updateBtn"/>        
+        <hr />
+        <input type="submit" value="Update" id="updateBtn" />
       </form>
       <a href="../item/<%= item._id%>"><button>Cancel</button></a>
     </div>
     <script src="/js/actionAlerts.js"></script>
   </body>
+</html>

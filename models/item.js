@@ -40,14 +40,12 @@ class Item {
     if (this._id) {
       //update the product
       dbOp = db
-      .collection('items')
-      .updateOne({ _id: this._id}, { $set: this });
+        .collection('items')
+        .updateOne({ _id: this._id }, { $set: this });
       console.log('updated item');
     } else {
       //create the product
-      dbOp = db
-      .collection('items')
-      .insertOne(this);
+      dbOp = db.collection('items').insertOne(this);
       console.log('created item');
     }
     return dbOp

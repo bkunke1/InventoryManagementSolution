@@ -18,6 +18,8 @@ router.post('/inventory/add-item', adminController.postAddItem);
 
 router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
 
+router.get('/inventory/warehouse-setup', adminController.getWarehouseSetup);
+
 router.get('/edit-item', adminController.getEditItem);
 
 router.post('/inventory/update-item', adminController.postUpdateItem);

@@ -1,4 +1,7 @@
-<%- include('../../includes/head.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../includes/head.ejs') %>
   </head>
   <body>
     <div id="banner">
@@ -6,13 +9,16 @@
         <h1 class="product-info-text">[O] Inventory Solutions</h1>
       </div>
       <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as DUMMY USER, DUMMY COMPANY NAME,
+          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
+        </h3>
       </div>
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>    
-          <li><a href="/" class="">Dashboard</a></li>      
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
           <li><a href="/so" class="">Sales Orders</a></li>
           <li><a href="/po" class="">Purchase Orders</a></li>
           <li><a href="/inventory" class="active">Inventory</a></li>
@@ -21,48 +27,47 @@
         </ul>
       </div>
       <div id="sub-menu">
-        <ul>          
+        <ul>
           <%- include('../../includes/items-submenu.ejs') %>
         </ul>
       </div>
     </div>
-      <div class="workspace">
-        <div>
-          <h1 class="">Item List</h1>
-          <table>
-            <tr>
-              <th>MongoDB_ID</th>
-              <th>Item ID</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Category</th>
-              <th>Type</th>
-              <th>Default Warehouse</th>
-              <th>Base UOM</th>
-              <th>Sales UOM</th>
-              <th>Purchase UOM</th>
-              <th>Default Price</th>
-              <th>Qty on Hand</th>
-            </tr>
-            <% for (let item of items) { %>
-            <tr>
-              <td><h5><%= item._id%></h5></td>
-              <td><h5><%= item.itemID%></h5></td>
-              <td><h5><%= item.itemStatus%></h5></td>
-              <td><h5><%= item.description%></h5></td>
-              <td><h5><%= item.category%></h5></td>
-              <td><h5><%= item.type%></h5></td>
-              <td><h5><%= item.defaultWarehouse%></h5></td>
-              <td><h5><%= item.baseUOM%></h5></td>
-              <td><h5><%= item.salesUOM%></h5></td>
-              <td><h5><%= item.purchaseUOM%></h5></td>
-              <td><h5><%= item.defaultPrice%></h5></td>
-              <td><h5><%= item.totalQtyOnHand%></h5></td>
-              <td><a href="item/<%= item._id%>" class="button">view</a></td>
-            </tr>
-            <% } %>
-          </table>
-        </div>
+    <div class="workspace">
+      <div>
+        <h1 class="">Item List</h1>
+        <table>
+          <tr>
+            <th>MongoDB_ID</th>
+            <th>Item ID</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Default Warehouse</th>
+            <th>Base UOM</th>
+            <th>Sales UOM</th>
+            <th>Purchase UOM</th>
+            <th>Default Price</th>
+            <th>Qty on Hand</th>
+          </tr>
+          <% for (let item of items) { %>
+          <tr>
+            <td><h5><%= item._id%></h5></td>
+            <td><h5><%= item.itemID%></h5></td>
+            <td><h5><%= item.itemStatus%></h5></td>
+            <td><h5><%= item.description%></h5></td>
+            <td><h5><%= item.category%></h5></td>
+            <td><h5><%= item.type%></h5></td>
+            <td><h5><%= item.defaultWarehouse%></h5></td>
+            <td><h5><%= item.baseUOM%></h5></td>
+            <td><h5><%= item.salesUOM%></h5></td>
+            <td><h5><%= item.purchaseUOM%></h5></td>
+            <td><h5><%= item.defaultPrice%></h5></td>
+            <td><h5><%= item.totalQtyOnHand%></h5></td>
+            <td><a href="item/<%= item._id%>" class="button">view</a></td>
+          </tr>
+          <% } %>
+        </table>
       </div>
     </div>
   </body>

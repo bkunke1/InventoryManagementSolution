@@ -66,8 +66,8 @@ exports.getAddItem = (req, res, next) => {
     pageTitle: 'Add Item',
     path: '/dashboard/add-item/',
     editing: false,
-    newItemID: req.query.newItemID
-  });  
+    newItemID: req.query.newItemID,
+  });
 };
 
 exports.postAddItem = (req, res, next) => {
@@ -270,6 +270,13 @@ exports.getSysconfig = (req, res, next) => {
     pageTitle: 'Sysconfig',
     path: 'dashboard/sysconfig',
     editing: false,
+  });
+};
+
+exports.getWarehouseSetup = (req, res, next) => {
+  res.render('dashboard/inventory/warehouse-setup', {
+    pageTitle: 'Warehouse Setup',
+    path: 'dashboard/inventory/warehouse-setup',
   });
 };
 
