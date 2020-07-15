@@ -17,8 +17,7 @@ if (createNewItem !== null) {
   createNewItem.addEventListener('submit', confirmCreateNewItem);
 }
 
-
 //doesnt work
 const updateEditedFields = () => {
-  console.log('test changes')
+  console.log('test changes');
 };

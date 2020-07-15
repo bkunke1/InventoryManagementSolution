@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= pageTitle %></title>
-    <link rel="stylesheet" href="/css/main.css" />
+    <%- include('../../includes/head.ejs') %>
   </head>
   <body>
     <div id="banner">
@@ -12,13 +9,16 @@
         <h1 class="product-info-text">[O] Inventory Solutions</h1>
       </div>
       <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as DUMMY USER, DUMMY COMPANY NAME,
+          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
+        </h3>
       </div>
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>    
-          <li><a href="/" class="">Dashboard</a></li>      
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
           <li><a href="/so" class="">Sales Orders</a></li>
           <li><a href="/po" class="">Purchase Orders</a></li>
           <li><a href="/inventory" class="">Inventory</a></li>
@@ -27,12 +27,12 @@
         </ul>
       </div>
       <div id="sub-menu">
-        <ul>          
+        <ul>
           <%- include('../includes/reports-submenu.ejs') %>
         </ul>
       </div>
     </div>
-    
+
     <div id="workspace">
       <h1>reports homepage</h1>
     </div>

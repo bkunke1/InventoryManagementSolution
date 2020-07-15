@@ -1,4 +1,7 @@
-<%- include('../../includes/head.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../includes/head.ejs') %>
   </head>
   <body>
     <div id="banner">
@@ -6,13 +9,16 @@
         <h1 class="product-info-text">[O] Inventory Solutions</h1>
       </div>
       <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as DUMMY USER, DUMMY COMPANY NAME,
+          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
+        </h3>
       </div>
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>    
-          <li><a href="/" class="">Dashboard</a></li>      
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
           <li><a href="/so" class="">Sales Orders</a></li>
           <li><a href="/po" class="">Purchase Orders</a></li>
           <li><a href="/inventory" class="active">Inventory</a></li>
@@ -29,25 +35,52 @@
     <div id="workspace">
       <div id="toolbar" class="inventory-toolbar">
         <h1 class="inventory-toolbar-items">Item Maintenance</h1>
-        <form action="/inventory/previousItem/empty" method="GET" class="inventory-toolbar-items">
+        <form
+          action="/inventory/previousItem/empty"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
           <button id="backwardsBtn" type="submit">
-          <svg height="20" width="20">
-              <polygon points="20,20 0,10 20,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+            <svg height="20" width="20">
+              <polygon
+                points="20,20 0,10 20,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
             </svg>
           </button>
-      </form>
-      <form action="/inventory/nextItem/empty" method="GET" class="inventory-toolbar-items">
+        </form>
+        <form
+          action="/inventory/nextItem/empty"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
           <button id="forwardsBtn" type="submit">
             <svg height="20" width="20">
-              <polygon points="0,20 20,10 0,0" style="fill:rgb(87, 87, 87);stroke:rgb(3, 3, 3);stroke-width:1" />
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
             </svg>
-          </button>        
-      </form>
+          </button>
+        </form>
       </div>
       <form action="/inventory/add-item" method="POST" autocomplete="off">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="<%=newItemID%>" class="green-background">
+          <input
+            type="text"
+            name="itemID"
+            value="<%=newItemID%>"
+            class="green-background"
+          />
           <button id="searchBtn" type="button">
             <i class="fas fa-search"></i>
           </button>
@@ -57,58 +90,108 @@
           <select id="itemStatus" name="itemStatus" class="green-background">
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
-            </select>
+          </select>
         </div>
         <div class="item-field">
           <label for="description">Description:</label>
-          <input type="text" name="description" value="" size="30" maxlength="30" class="green-background">
+          <input
+            type="text"
+            name="description"
+            value=""
+            size="30"
+            maxlength="30"
+            class="green-background"
+          />
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="" class="green-background">
+          <input
+            type="text"
+            name="category"
+            value=""
+            class="green-background"
+          />
         </div>
         <div class="item-field">
-          <label for="valuationMethod">Valuation Method:</label>          
-            <select id="valuationMethod" name="valuationMethod" class="green-background">
+          <label for="valuationMethod">Valuation Method:</label>
+          <select
+            id="valuationMethod"
+            name="valuationMethod"
+            class="green-background"
+          >
             <option value="Average Cost">Average Cost</option>
             <option value="FIFO">FIFO</option>
             <option value="Lot">LOT</option>
-            </select>          
+          </select>
         </div>
         <div class="item-field">
-          <label for="type">Type:</label>          
-            <select id="type" name="type" class="green-background">
+          <label for="type">Type:</label>
+          <select id="type" name="type" class="green-background">
             <option value="Finished Good">Finished Good</option>
             <option value="Raw Material">Raw Material</option>
             <option value="Service">Service</option>
-            </select>          
-        </div>         
+          </select>
+        </div>
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input type="text" name="defaultWarehouse" value="" class="green-background">
+          <input
+            type="text"
+            name="defaultWarehouse"
+            value=""
+            class="green-background"
+          />
         </div>
-        <hr>
+        <hr />
         <h6>Unit of Measure</h6>
         <div class="item-field">
           <label for="baseUOM">Base UOM:</label>
-          <input type="text" name="baseUOM" value="" size="10" maxlength="10" class="green-background">
+          <input
+            type="text"
+            name="baseUOM"
+            value=""
+            size="10"
+            maxlength="10"
+            class="green-background"
+          />
         </div>
         <div class="item-field">
           <label for="salesUOM">Sales UOM:</label>
-          <input type="text" name="salesUOM" value="" size="10" maxlength="10" class="green-background">
+          <input
+            type="text"
+            name="salesUOM"
+            value=""
+            size="10"
+            maxlength="10"
+            class="green-background"
+          />
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input type="text" name="purchaseUOM" value="" size="10" maxlength="10" class="green-background">
+          <input
+            type="text"
+            name="purchaseUOM"
+            value=""
+            size="10"
+            maxlength="10"
+            class="green-background"
+          />
         </div>
-        <hr>
+        <hr />
         <h6>Pricing</h6>
         <div class="item-field">
           <label for="defaultPrice">Default Price (Base UOM): $</label>
-          <input type="number" name="defaultPrice" value="" step="0.01" min="0" max="99999" class="green-background">
+          <input
+            type="number"
+            name="defaultPrice"
+            value=""
+            step="0.01"
+            min="0"
+            max="99999"
+            class="green-background"
+          />
         </div>
-        <hr>
-        <input type="submit" value="Save"/>        
+        <hr />
+        <input type="submit" value="Save" />
       </form>
     </div>
   </body>

@@ -18,12 +18,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findById("5f0909cc14b85563e84abb0a")
-    .then(user => {
-        req.user = user;
-        next();
+  User.findById('5f0909cc14b85563e84abb0a')
+    .then((user) => {
+      req.user = user;
+      next();
     })
-    .catch(err => {console.log(err)});
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.use(adminRoutes);
@@ -31,6 +33,5 @@ app.use(adminRoutes);
 app.use(errorController.get404);
 
 mongoConnect(() => {
-
-    app.listen(3000);
+  app.listen(3000);
 });

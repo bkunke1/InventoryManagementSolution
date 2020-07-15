@@ -1,4 +1,7 @@
-<%- include('../../includes/head.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../../includes/head.ejs') %>
   </head>
   <body>
     <div id="banner">
@@ -6,13 +9,16 @@
         <h1 class="product-info-text">[O] Inventory Solutions</h1>
       </div>
       <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">Logged in as DUMMY USER, DUMMY COMPANY NAME,  <a href="#" class="user-login-info__log-out-btn">Log Out</a></h6>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as DUMMY USER, DUMMY COMPANY NAME,
+          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
+        </h3>
       </div>
     </div>
     <div id="main-menu">
       <div id="navbar">
-        <ul>    
-          <li><a href="/" class="">Dashboard</a></li>      
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
           <li><a href="/so" class="">Sales Orders</a></li>
           <li><a href="/po" class="">Purchase Orders</a></li>
           <li><a href="/inventory" class="active">Inventory</a></li>
@@ -21,7 +27,7 @@
         </ul>
       </div>
       <div id="sub-menu">
-        <ul>          
+        <ul>
           <%- include('../../includes/items-submenu.ejs') %>
         </ul>
       </div>
@@ -29,34 +35,59 @@
     <h1>This is the edit-item.ejs page</h1>
     <div>
       <h1 class="">Item Info</h1>
-      
+
       <main>
-          <form action="/edit-item"method="POST">
-            <div>
-                <label for="description">Description</label>
-                <input type="text" name="description" id="description" value="<% item.description %>">
-            </div>
-            <div>
-                <label for="category">Category</label>
-                <input type="text" name="category" id="category" value="<% item.category %>">
-            </div>
-            <div>
-                <label for="totalQtyOnHand">Total Qty On Hand</label>
-                <input type="text" name="totalQtyOnHand" id="totalQtyOnHand" value="<% item.totalQtyOnHand %>">
-            </div>
-            <div>
-                <label for="uom">UOM</label>
-                <input type="text" name="uom" id="uom" value="<% item.uom %>">
-            </div>
-            <div>
-                <label for="avgCost">avgCost</label>
-                <input type="text" name="avgCost" id="avgCost" value="<% item.avgCost %>">
-            </div>
-            <div>
-                <label for="retailPrice">retailPrice</label>
-                <input type="text" name="retailPrice" id="retailPrice" value="<% item.retailPrice %>">
-            </div>
-            <button class="btn" type="submit">Edit Item</button>
+        <form action="/edit-item" method="POST">
+          <div>
+            <label for="description">Description</label>
+            <input
+              type="text"
+              name="description"
+              id="description"
+              value="<% item.description %>"
+            />
+          </div>
+          <div>
+            <label for="category">Category</label>
+            <input
+              type="text"
+              name="category"
+              id="category"
+              value="<% item.category %>"
+            />
+          </div>
+          <div>
+            <label for="totalQtyOnHand">Total Qty On Hand</label>
+            <input
+              type="text"
+              name="totalQtyOnHand"
+              id="totalQtyOnHand"
+              value="<% item.totalQtyOnHand %>"
+            />
+          </div>
+          <div>
+            <label for="uom">UOM</label>
+            <input type="text" name="uom" id="uom" value="<% item.uom %>" />
+          </div>
+          <div>
+            <label for="avgCost">avgCost</label>
+            <input
+              type="text"
+              name="avgCost"
+              id="avgCost"
+              value="<% item.avgCost %>"
+            />
+          </div>
+          <div>
+            <label for="retailPrice">retailPrice</label>
+            <input
+              type="text"
+              name="retailPrice"
+              id="retailPrice"
+              value="<% item.retailPrice %>"
+            />
+          </div>
+          <button class="btn" type="submit">Edit Item</button>
         </form>
       </main>
     </div>
