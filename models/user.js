@@ -2,9 +2,9 @@ const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
 class User {
-  constructor(username, email) {
-    this.name = username;
+  constructor(email, password) {
     this.email = email;
+    this.password = password;
   }
 
   save() {
@@ -13,7 +13,7 @@ class User {
       .collection('users')
       .insertOne(this)
       .then((result) => {
-        console.log(result);
+        console.log('user created');
       })
       .catch((err) => {
         console.log(err);

@@ -1,0 +1,25 @@
+<div id="banner">
+    <div class="product-info-area">
+      <h1 class="product-info-text">[O] Arcanite Inventory Solutions</h1>
+    </div>
+    <div class="user-login-info-area">
+      <% if (!loggedIn) { %>
+      <% } else { %>
+        <h3 class="user-login-info-text show-whitespace">
+          Logged in as <%= userEmail %>     
+        </h3>
+      <% } %>
+    </div>
+    <div>
+      <% if (!loggedIn) { %>
+        <a class="loginLogoutLink"  href="/login">Login</a>
+      <% } else { %>
+        <form action="/logout" method="POST">
+            <button type="submit" class="btn btn-primary">Logout</button>
+            </form>
+      <% } %>    
+    </div>
+    <div class="signupLink">
+      <a href="/signup">Sign up</a>
+    </div>
+  </div>

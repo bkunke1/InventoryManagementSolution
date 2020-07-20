@@ -4,28 +4,9 @@
     <%- include('../../includes/head.ejs') %>
   </head>
   <body>
-    <div id="banner">
-      <div class="product-info-area">
-        <h1 class="product-info-text">[O] Inventory Solutions</h1>
-      </div>
-      <div class="user-login-info-area">
-        <h3 class="user-login-info-text show-whitespace">
-          Logged in as DUMMY USER, DUMMY COMPANY NAME,
-          <a href="#" class="user-login-info__log-out-btn">Log Out</a>
-        </h3>
-      </div>
-    </div>
+    <%- include('../../includes/banner.ejs') %>
     <div id="main-menu">
-      <div id="navbar">
-        <ul>
-          <li><a href="/" class="">Dashboard</a></li>
-          <li><a href="/so" class="">Sales Orders</a></li>
-          <li><a href="/po" class="">Purchase Orders</a></li>
-          <li><a href="/inventory" class="active">Inventory</a></li>
-          <li><a href="/reports" class="">Reports</a></li>
-          <li><a href="/sysconfig" class="">System Config</a></li>
-        </ul>
-      </div>
+      <%- include('../../includes/navbar.ejs') %>
       <div id="sub-menu">
         <ul>
           <%- include('../../includes/items-submenu.ejs') %>

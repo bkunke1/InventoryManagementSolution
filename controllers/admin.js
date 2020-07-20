@@ -2,7 +2,10 @@ const Item = require('../models/item');
 
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'IMS Dashboard',
+    mainMenuPath: 'dashboard',
   });
 };
 
@@ -10,9 +13,12 @@ exports.getItems = (req, res, next) => {
   Item.fetchAll()
     .then((items) => {
       res.render('./dashboard/inventory/items', {
+        loggedIn: req.session.loggedIn,
+        userEmail: req.session.user.email,
         items: items,
         pageTitle: 'Item List',
-        path: '/items',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'item-maintenance',
       });
     })
     .catch((err) => {
@@ -25,8 +31,12 @@ exports.getItem = (req, res, next) => {
   Item.findById(itemId)
     .then((item) => {
       res.render('./dashboard/inventory/item', {
+        loggedIn: req.session.loggedIn,
+        userEmail: req.session.user.email,
         item: item,
         pageTitle: 'Item Profile',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'item-maintenance',
       });
     })
     .catch((err) => {
@@ -55,17 +65,21 @@ exports.searchItemByNewID = (req, res, next) => {
 
 exports.getItemMaintenance = (req, res, next) => {
   res.render('dashboard/inventory/item-maintenance', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Item Maintenance',
-    path: 'dashboard/inventory/item-maintenance',
-    editing: false,
+    mainMenuPath: 'inventory',
+    subMenuPath: 'item-maintenance',
   });
 };
 
 exports.getAddItem = (req, res, next) => {
   res.render('dashboard/inventory/add-item', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Add Item',
-    path: '/dashboard/add-item/',
-    editing: false,
+    mainMenuPath: 'inventory',
+    subMenuPath: 'add-item',
     newItemID: req.query.newItemID,
   });
 };
@@ -121,9 +135,11 @@ exports.postAddItem = (req, res, next) => {
 
 exports.getEditItem = (req, res, next) => {
   res.render('dashboard/inventory/edit-item', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Edit Item',
-    path: '/dashboard/edit-item',
-    editing: false,
+    mainMenuPath: 'inventory',
+    subMenuPath: 'item-maintenance',
   });
 };
 
@@ -235,48 +251,61 @@ exports.getNextItem = (req, res, next) => {
 
 exports.getInventory = (req, res, next) => {
   res.render('dashboard/inventory', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Inventory',
-    path: '/dashboard/inventory',
-    editing: false,
+    mainMenuPath: 'inventory',
+    subMenuPath: '',
   });
 };
 
 exports.getSalesOrder = (req, res, next) => {
   res.render('dashboard/sales-order', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Sales Orders',
-    path: '/dashboard/sales-order',
-    editing: false,
+    mainMenuPath: 'salesOrders',
+    subMenuPath: '',
   });
 };
 
 exports.getPurchaseOrder = (req, res, next) => {
   res.render('dashboard/purchase-order', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Purchase Orders',
-    path: 'dashboard/purchase-order',
-    editing: false,
+    mainMenuPath: 'purchaseOrders',
+    subMenuPath: '',
   });
 };
 
 exports.getReports = (req, res, next) => {
   res.render('dashboard/reports', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Reports',
-    path: 'dashboard/reports',
-    editing: false,
+    mainMenuPath: 'reports',
+    subMenuPath: '',
   });
 };
 
 exports.getSysconfig = (req, res, next) => {
   res.render('dashboard/sysconfig', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Sysconfig',
-    path: 'dashboard/sysconfig',
-    editing: false,
+    mainMenuPath: 'sysConfig',
+    subMenuPath: '',
   });
 };
 
 exports.getWarehouseSetup = (req, res, next) => {
   res.render('dashboard/inventory/warehouse-setup', {
+    loggedIn: req.session.loggedIn,
+    userEmail: req.session.user.email,
     pageTitle: 'Warehouse Setup',
-    path: 'dashboard/inventory/warehouse-setup',
+    mainMenuPath: 'inventory',
+    subMenuPath: 'warehouseSetup',
   });
 };
 
