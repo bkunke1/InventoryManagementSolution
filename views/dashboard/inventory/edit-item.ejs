@@ -28,6 +28,7 @@
 
       <main>
         <form action="/edit-item" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <div>
             <label for="description">Description</label>
             <input

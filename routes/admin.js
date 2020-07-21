@@ -1,12 +1,13 @@
 const express = require('express');
 
 const adminController = require('../controllers/admin');
+const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
 
 router.get('/', adminController.getIndex);
 
-router.get('/inventory/items', adminController.getItems);
+router.get('/inventory/items', isAuth, adminController.getItems);
 
 router.post('/inventory/item/byID/search', adminController.searchItemByNewID);
 router.get('/inventory/item/:itemId', adminController.getItem);
@@ -24,7 +25,7 @@ router.get('/edit-item', adminController.getEditItem);
 
 router.post('/inventory/update-item', adminController.postUpdateItem);
 
-router.get('/inventory', adminController.getInventory);
+router.get('/inventory', isAuth, adminController.getInventory);
 
 router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);
 

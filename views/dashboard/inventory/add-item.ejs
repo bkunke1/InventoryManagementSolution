@@ -63,6 +63,7 @@
         </form>
       </div>
       <form action="/inventory/add-item" method="POST" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
           <input

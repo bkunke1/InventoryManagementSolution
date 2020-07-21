@@ -186,3 +186,21 @@ table {
 .loginLogoutLink {
   margin: 1rem;
 }
+
+.user-message {
+  margin: auto;
+  width: 90%;
+  border: 1px solid darkblue;
+  padding: 0.5rem;
+  border-radius: 3px;
+  background-color: lightseagreen;
+  text-align: center;
+}
+
+
+.user-message--error {
+  border: 1px solid red;
+  background-color: rgb(255, 143, 143);
+  color: red;
+}
+

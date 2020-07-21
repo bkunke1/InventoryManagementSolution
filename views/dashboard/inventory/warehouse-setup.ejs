@@ -68,6 +68,7 @@
         autocomplete="off"
         id="itemID-lookup"
       >
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
           <input type="text" name="itemID" value="" />

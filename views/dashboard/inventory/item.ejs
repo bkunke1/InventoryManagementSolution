@@ -62,7 +62,13 @@
           </button>
         </form>
       </div>
+      <% if (message) { %>
+      <div class="user-message">
+        <%= message %>
+      </div>
+      <% } %>
       <form action="/inventory/update-item" method="POST" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="item-field">
           <input type="hidden" name="_id" value="<%= item._id %>" />
         </div>

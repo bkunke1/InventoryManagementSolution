@@ -6,7 +6,7 @@
       <% if (!loggedIn) { %>
       <% } else { %>
         <h3 class="user-login-info-text show-whitespace">
-          Logged in as <%= userEmail %>     
+          Logged in as <%= userEmail %>    
         </h3>
       <% } %>
     </div>
@@ -15,6 +15,7 @@
         <a class="loginLogoutLink"  href="/login">Login</a>
       <% } else { %>
         <form action="/logout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="btn btn-primary">Logout</button>
             </form>
       <% } %>    

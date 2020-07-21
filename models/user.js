@@ -32,6 +32,19 @@ class User {
         console.log(err);
       });
   }
+
+  static findByEmail(email) {
+    const db = getDb();
+    return db
+      .collection('users')
+      .findOne({ email: email })
+      .then((user) => {
+        return user;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 }
 
 module.exports = User;

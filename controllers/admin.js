@@ -2,8 +2,6 @@ const Item = require('../models/item');
 
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'IMS Dashboard',
     mainMenuPath: 'dashboard',
   });
@@ -13,8 +11,6 @@ exports.getItems = (req, res, next) => {
   Item.fetchAll()
     .then((items) => {
       res.render('./dashboard/inventory/items', {
-        loggedIn: req.session.loggedIn,
-        userEmail: req.session.user.email,
         items: items,
         pageTitle: 'Item List',
         mainMenuPath: 'inventory',
@@ -27,16 +23,21 @@ exports.getItems = (req, res, next) => {
 };
 
 exports.getItem = (req, res, next) => {
+  let message = req.flash('createdMessage');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   const itemId = req.params.itemId;
   Item.findById(itemId)
     .then((item) => {
       res.render('./dashboard/inventory/item', {
-        loggedIn: req.session.loggedIn,
-        userEmail: req.session.user.email,
         item: item,
         pageTitle: 'Item Profile',
         mainMenuPath: 'inventory',
         subMenuPath: 'item-maintenance',
+        message: message
       });
     })
     .catch((err) => {
@@ -65,8 +66,6 @@ exports.searchItemByNewID = (req, res, next) => {
 
 exports.getItemMaintenance = (req, res, next) => {
   res.render('dashboard/inventory/item-maintenance', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Item Maintenance',
     mainMenuPath: 'inventory',
     subMenuPath: 'item-maintenance',
@@ -75,8 +74,6 @@ exports.getItemMaintenance = (req, res, next) => {
 
 exports.getAddItem = (req, res, next) => {
   res.render('dashboard/inventory/add-item', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Add Item',
     mainMenuPath: 'inventory',
     subMenuPath: 'add-item',
@@ -105,6 +102,7 @@ exports.postAddItem = (req, res, next) => {
     //   console.log('duplicate itemID!');
     //   res.redirect('/inventory/add-item');
   } else {
+    console.log(req.userEmail);
     const item = new Item(
       itemID,
       itemStatus,
@@ -118,13 +116,14 @@ exports.postAddItem = (req, res, next) => {
       purchaseUOM,
       defaultPrice,
       totalQtyOnHand,
-      req.user._id
+      req.userEmail
     );
     item
       .save()
       .then((result) => {
         // console.log(result);
         console.log('Created Item');
+        req.flash('createdMessage', 'Item was created!');
         res.redirect(`/inventory/item/${item._id}`);
       })
       .catch((err) => {
@@ -135,8 +134,6 @@ exports.postAddItem = (req, res, next) => {
 
 exports.getEditItem = (req, res, next) => {
   res.render('dashboard/inventory/edit-item', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Edit Item',
     mainMenuPath: 'inventory',
     subMenuPath: 'item-maintenance',
@@ -251,8 +248,6 @@ exports.getNextItem = (req, res, next) => {
 
 exports.getInventory = (req, res, next) => {
   res.render('dashboard/inventory', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Inventory',
     mainMenuPath: 'inventory',
     subMenuPath: '',
@@ -261,8 +256,6 @@ exports.getInventory = (req, res, next) => {
 
 exports.getSalesOrder = (req, res, next) => {
   res.render('dashboard/sales-order', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Sales Orders',
     mainMenuPath: 'salesOrders',
     subMenuPath: '',
@@ -271,8 +264,6 @@ exports.getSalesOrder = (req, res, next) => {
 
 exports.getPurchaseOrder = (req, res, next) => {
   res.render('dashboard/purchase-order', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Purchase Orders',
     mainMenuPath: 'purchaseOrders',
     subMenuPath: '',
@@ -281,8 +272,6 @@ exports.getPurchaseOrder = (req, res, next) => {
 
 exports.getReports = (req, res, next) => {
   res.render('dashboard/reports', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Reports',
     mainMenuPath: 'reports',
     subMenuPath: '',
@@ -291,8 +280,6 @@ exports.getReports = (req, res, next) => {
 
 exports.getSysconfig = (req, res, next) => {
   res.render('dashboard/sysconfig', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Sysconfig',
     mainMenuPath: 'sysConfig',
     subMenuPath: '',
@@ -301,8 +288,6 @@ exports.getSysconfig = (req, res, next) => {
 
 exports.getWarehouseSetup = (req, res, next) => {
   res.render('dashboard/inventory/warehouse-setup', {
-    loggedIn: req.session.loggedIn,
-    userEmail: req.session.user.email,
     pageTitle: 'Warehouse Setup',
     mainMenuPath: 'inventory',
     subMenuPath: 'warehouseSetup',
