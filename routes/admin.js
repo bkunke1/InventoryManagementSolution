@@ -7,37 +7,43 @@ const router = express.Router();
 
 router.get('/', adminController.getIndex);
 
-router.get('/inventory/items', isAuth, adminController.getItems);
+// Inventory routes
 
-router.post('/inventory/item/byID/search', adminController.searchItemByNewID);
-router.get('/inventory/item/:itemId', adminController.getItem);
-// router.get('/item', adminController.getItemByNewID);
+router.get('/inventory', adminController.getInventory);
+// router.get('/inventory', isAuth, adminController.getInventory); (temp removed to cancel isAuth access)
+
+router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
 
 router.get('/inventory/add-item', adminController.getAddItem);
 
 router.post('/inventory/add-item', adminController.postAddItem);
 
-router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
+router.get('/inventory/items', adminController.getItems);
+
+router.post('/inventory/item/byID/search', adminController.searchItemByNewID);
+
+router.get('/inventory/item/:itemId', adminController.getItem);
 
 router.get('/inventory/warehouse-setup', adminController.getWarehouseSetup);
 
-router.get('/edit-item', adminController.getEditItem);
+// router.get('/edit-item', adminController.getEditItem);
 
 router.post('/inventory/update-item', adminController.postUpdateItem);
-
-router.get('/inventory', isAuth, adminController.getInventory);
 
 router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);
 
 router.get('/inventory/nextItem/:itemId', adminController.getNextItem);
 
-router.get('/so', adminController.getSalesOrder);
+// router.get('/so', adminController.getSalesOrder);
 
-router.get('/po', adminController.getPurchaseOrder);
+// router.get('/po', adminController.getPurchaseOrder);
 
-router.get('/reports', adminController.getReports);
+// router.get('/reports', adminController.getReports);
 
-router.get('/sysconfig', adminController.getSysconfig);
+// router.get('/sysconfig', adminController.getSysconfig);
+
+
+
 
 // router.get('/transfer-item', adminController.getTransferItem);
 

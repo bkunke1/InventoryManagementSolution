@@ -8,7 +8,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getItems = (req, res, next) => {
-  Item.fetchAll()
+  Item.find()
     .then((items) => {
       res.render('./dashboard/inventory/items', {
         items: items,
@@ -37,7 +37,7 @@ exports.getItem = (req, res, next) => {
         pageTitle: 'Item Profile',
         mainMenuPath: 'inventory',
         subMenuPath: 'item-maintenance',
-        message: message
+        message: message,
       });
     })
     .catch((err) => {
@@ -49,16 +49,12 @@ exports.searchItemByNewID = (req, res, next) => {
   if (req.body.itemID === '') {
     res.redirect('../../item-maintenance');
   } else {
-    Item.findByIdSecondID(req.body.itemID).then((result) => {
-      if (result === null) {
+    Item.findOne({ itemID: req.body.itemID }).then((item) => {
+      if (item === null) {
         const string = encodeURIComponent(req.body.itemID);
         res.redirect('../../add-item/?newItemID=' + string);
       } else {
-        Item.fetchAll().then((items) => {
-          const itemID2 = req.body.itemID;
-          const result = items.find(({ itemID }) => itemID === itemID2);
-          res.redirect(`/inventory/item/${result._id}`);
-        });
+        res.redirect(`/inventory/item/${item._id}`);
       }
     });
   }
@@ -103,25 +99,24 @@ exports.postAddItem = (req, res, next) => {
     //   res.redirect('/inventory/add-item');
   } else {
     console.log(req.userEmail);
-    const item = new Item(
-      itemID,
-      itemStatus,
-      description,
-      category,
-      valuationMethod,
-      type,
-      defaultWarehouse,
-      baseUOM,
-      salesUOM,
-      purchaseUOM,
-      defaultPrice,
-      totalQtyOnHand,
-      req.userEmail
-    );
+    const item = new Item({
+      itemID: itemID,
+      itemStatus: itemStatus,
+      description: description,
+      category: category,
+      valuationMethod: valuationMethod,
+      type: type,
+      defaultWarehouse: defaultWarehouse,
+      baseUOM: baseUOM,
+      salesUOM: salesUOM,
+      purchaseUOM: purchaseUOM,
+      defaultPrice: defaultPrice,
+      totalQtyOnHand: totalQtyOnHand,
+      userId: req.userEmail,
+    });
     item
       .save()
       .then((result) => {
-        // console.log(result);
         console.log('Created Item');
         req.flash('createdMessage', 'Item was created!');
         res.redirect(`/inventory/item/${item._id}`);
@@ -132,13 +127,14 @@ exports.postAddItem = (req, res, next) => {
   }
 };
 
-exports.getEditItem = (req, res, next) => {
-  res.render('dashboard/inventory/edit-item', {
-    pageTitle: 'Edit Item',
-    mainMenuPath: 'inventory',
-    subMenuPath: 'item-maintenance',
-  });
-};
+// dont this we need to add this since we update directly on item page.
+// exports.getEditItem = (req, res, next) => {
+//   res.render('dashboard/inventory/edit-item', {
+//     pageTitle: 'Edit Item',
+//     mainMenuPath: 'inventory',
+//     subMenuPath: 'item-maintenance',
+//   });
+// };
 
 // saves changes made to existing item on item page
 exports.postUpdateItem = (req, res, next) => {
@@ -157,41 +153,43 @@ exports.postUpdateItem = (req, res, next) => {
   const userId = req.body.userId;
   const id = req.body._id;
 
-  const item = new Item(
-    itemID,
-    itemStatus,
-    description,
-    category,
-    valuationMethod,
-    type,
-    defaultWarehouse,
-    baseUOM,
-    salesUOM,
-    purchaseUOM,
-    defaultPrice,
-    totalQtyOnHand,
-    userId,
-    id
-  );
-  item
-    .save()
+  Item.findById(id)
+    .then((item) => {
+      item.itemID = itemID;
+      item.itemStatus = itemStatus;
+      item.description = description;
+      item.category = category;
+      item.valuationMethod = valuationMethod;
+      item.type = type;
+      item.defaultWarehouse = defaultWarehouse;
+      item.baseUOM = baseUOM;
+      item.salesUOM = salesUOM;
+      item.purchaseUOM = purchaseUOM;
+      item.defaultPrice = defaultPrice;
+      item.totalQtyOnHand = totalQtyOnHand;
+      item.userId = userId;
+      return item.save();
+      console.log('item');
+    })
     .then((result) => {
-      res.redirect(`/inventory/item/${item._id}`);
+      console.log('item updated');
+      res.redirect(`/inventory/item/${id}`);
     })
     .catch((err) => {
       console.log(err);
     });
 };
 
+// displays previous item in the item list via arrow buttons on item profile page
 exports.getPreviousItem = (req, res, next) => {
   if (req.params.itemId === 'empty') {
-    Item.fetchAll().then((items) => {
+    Item.find().then((items) => {
       const lastItemIndex = items.length - 1;
       res.redirect(`/inventory/item/${items[lastItemIndex]._id}`);
     });
   } else {
     let idList = [];
-    Item.fetchAll()
+    Item.find()
       .then((items) => {
         for (itemId of items) {
           idList.push(itemId.itemID);
@@ -215,14 +213,15 @@ exports.getPreviousItem = (req, res, next) => {
   }
 };
 
+// displays next item in the item list via arrow buttons on item profile page
 exports.getNextItem = (req, res, next) => {
   if (req.params.itemId === 'empty') {
-    Item.fetchAll().then((items) => {
+    Item.find().then((items) => {
       res.redirect(`/inventory/item/${items[0]._id}`);
     });
   } else {
     let idList = [];
-    Item.fetchAll()
+    Item.find()
       .then((items) => {
         for (itemId of items) {
           idList.push(itemId.itemID);
@@ -293,16 +292,6 @@ exports.getWarehouseSetup = (req, res, next) => {
     subMenuPath: 'warehouseSetup',
   });
 };
-
-// router.get('/', adminController.getIndex);
-
-// router.get('/items', adminController.getItems);
-
-// router.get('/item/:itemId', adminController.getItem);
-
-// router.get('/add-item', adminController.getAddItem);
-
-// router.post('/add-item', adminController.postAddItem);
 
 // router.get('/transfer-item', adminController.getTransferItem);
 

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head.ejs') %>
+  </head>
+  <body>
+    <% if (errorMessage) { %>
+    <div class="user-message user-message--error"><%= errorMessage %></div>
+    <% } %>
+    <form action="/reset" method="POST">
+      <div class="item-field">
+        <label for="email">Email:</label>
+        <input type="email" name="email" size="64" maxlength="64" />
+      </div>
+      <button type="submit" class="btn btn-primary">Reset Password</button>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    </form>
+  </body>
+</html>
