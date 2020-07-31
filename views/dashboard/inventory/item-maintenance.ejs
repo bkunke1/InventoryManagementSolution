@@ -53,6 +53,9 @@
           </button>
         </form>
       </div>
+      <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+        <% } %>
       <form
         action="/inventory/item/byID/search"
         method="POST"
@@ -62,7 +65,7 @@
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="" />
+          <input type="text" name="itemID" value="(enter item ID)" />
           <a href="/inventory/items">
             <button id="searchBtn" type="button">
               <i class="fas fa-search"></i>

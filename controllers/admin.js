@@ -1,3 +1,6 @@
+// node library used to help validate fields
+const { validationResult } = require('express-validator/check');
+
 const Item = require('../models/item');
 
 exports.getIndex = (req, res, next) => {
@@ -46,6 +49,19 @@ exports.getItem = (req, res, next) => {
 };
 
 exports.searchItemByNewID = (req, res, next) => {
+  const errors = validationResult(req);
+  console.log(errors);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('dashboard/inventory/item-maintenance', {
+      pageTitle: 'Item Maintenance',
+      mainMenuPath: 'inventory',
+      subMenuPath: 'item-maintenance',
+      errorMessage: errors.array()[0].msg,
+      oldInput: { itemID: req.body.itemID },
+      validationErrors: errors.array(),
+    });
+  }
+
   if (req.body.itemID === '') {
     res.redirect('../../item-maintenance');
   } else {
@@ -65,6 +81,7 @@ exports.getItemMaintenance = (req, res, next) => {
     pageTitle: 'Item Maintenance',
     mainMenuPath: 'inventory',
     subMenuPath: 'item-maintenance',
+    errorMessage: null,
   });
 };
 
@@ -74,6 +91,9 @@ exports.getAddItem = (req, res, next) => {
     mainMenuPath: 'inventory',
     subMenuPath: 'add-item',
     newItemID: req.query.newItemID,
+    errorMessage: null,
+    oldInput: { itemID: '' },
+    validationErrors: [],
   });
 };
 
@@ -90,6 +110,34 @@ exports.postAddItem = (req, res, next) => {
   const purchaseUOM = req.body.purchaseUOM;
   const defaultPrice = req.body.defaultPrice;
   const totalQtyOnHand = 0;
+
+  const errors = validationResult(req);
+  console.log(errors);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('dashboard/inventory/add-item', {
+      pageTitle: 'Add Item',
+      mainMenuPath: 'inventory',
+      subMenuPath: 'add-item',
+      newItemID: itemID,
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        itemID: itemID,
+        itemStatus: itemStatus,
+        description: description,
+        category: category,
+        valuationMethod: valuationMethod,
+        type: type,
+        defaultWarehouse: defaultWarehouse,
+        baseUOM: baseUOM,
+        salesUOM: salesUOM,
+        purchaseUOM: purchaseUOM,
+        defaultPrice: defaultPrice,
+      },
+      validationErrors: errors.array(),
+    });
+    console.log(oldInput)
+  }
+  
   // if (itemID && itemStatus && description && category && valuationMethod && type && defaultWarehouse && baseUOM && salesUOM && purchaseUOM && defaultPrice)
   if (!itemID) {
     console.log('Missing item info!');
@@ -98,7 +146,6 @@ exports.postAddItem = (req, res, next) => {
     //   console.log('duplicate itemID!');
     //   res.redirect('/inventory/add-item');
   } else {
-    console.log(req.userEmail);
     const item = new Item({
       itemID: itemID,
       itemStatus: itemStatus,
@@ -112,7 +159,7 @@ exports.postAddItem = (req, res, next) => {
       purchaseUOM: purchaseUOM,
       defaultPrice: defaultPrice,
       totalQtyOnHand: totalQtyOnHand,
-      userId: req.userEmail,
+      userId: req.session.user.email,
     });
     item
       .save()

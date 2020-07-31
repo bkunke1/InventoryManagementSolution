@@ -24,7 +24,7 @@
     </div>
     <div id="workspace">
       <div id="toolbar" class="inventory-toolbar">
-        <h1 class="inventory-toolbar-items">Item Maintenance</h1>
+        <h1 class="inventory-toolbar-items">Add New Item</h1>
         <form
           action="/inventory/previousItem/empty"
           method="GET"
@@ -62,14 +62,17 @@
           </button>
         </form>
       </div>
+      <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+        <% } %>
       <form action="/inventory/add-item" method="POST" autocomplete="off">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="item-field">
           <label for="itemID">Item ID:</label>
           <input
             type="text"
             name="itemID"
-            value="<%=newItemID%>"
+            value="<%= newItemID %>"
             class="green-background"
           />
           <button id="searchBtn" type="button">
@@ -88,10 +91,10 @@
           <input
             type="text"
             name="description"
-            value=""
             size="30"
             maxlength="30"
             class="green-background"
+            value="<%= oldInput.description %>"
           />
         </div>
         <div class="item-field">
@@ -99,8 +102,8 @@
           <input
             type="text"
             name="category"
-            value=""
             class="green-background"
+            value="<%= oldInput.category %>"
           />
         </div>
         <div class="item-field">
@@ -128,8 +131,8 @@
           <input
             type="text"
             name="defaultWarehouse"
-            value=""
             class="green-background"
+            value="<%= oldInput.defaultWarehouse %>"
           />
         </div>
         <hr />
@@ -139,10 +142,10 @@
           <input
             type="text"
             name="baseUOM"
-            value=""
             size="10"
             maxlength="10"
             class="green-background"
+            value="<%= oldInput.baseUOM %>"
           />
         </div>
         <div class="item-field">
@@ -150,10 +153,10 @@
           <input
             type="text"
             name="salesUOM"
-            value=""
             size="10"
             maxlength="10"
             class="green-background"
+            value="<%= oldInput.salesUOM %>"
           />
         </div>
         <div class="item-field">
@@ -161,10 +164,10 @@
           <input
             type="text"
             name="purchaseUOM"
-            value=""
             size="10"
             maxlength="10"
             class="green-background"
+            value="<%= oldInput.purchaseUOM %>"
           />
         </div>
         <hr />
@@ -174,11 +177,11 @@
           <input
             type="number"
             name="defaultPrice"
-            value=""
             step="0.01"
             min="0"
             max="99999"
             class="green-background"
+            value="<%= oldInput.defaultPrice %>"
           />
         </div>
         <hr />

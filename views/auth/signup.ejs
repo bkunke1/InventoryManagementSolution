@@ -1,32 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-</head>
-<body>
+  <head>
+    <%- include('../includes/head.ejs') %>
+  </head>
+  <body>
+    <h1>Signup page</h1>
+    <% if (errorMessage) { %>
+    <div class="user-message user-message--error"><%= errorMessage %></div>
+    <% } %>
     <form action="/signup" method="POST">
+      <div class="item-field">
+          <label for="email">Email:</label>
+          <input
+            class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
+            type="text"
+            name="email"
+            size="64"
+            maxlength="64"
+            value="<%= oldInput.email %>"
+          />
+        </div>
         <div class="item-field">
-            <label for="email">Email:</label>
-            <input
-              type="text"
-              name="email"
-              size="64"
-              maxlength="64"
-            />
-          </div>
-          <div class="item-field">
-            <label for="password">Password:</label>
-            <input
-              type="password"
-              name="password"
-              size="16"
-              maxlength="16"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">Sign Up</button>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    </form>
-</body>
+          <label for="password">Password:</label>
+          <input
+          class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
+            type="password"
+            name="password"
+            size="16"
+            maxlength="16"
+            value="<%= oldInput.password %>"
+          />
+        </div>
+        <div class="item-field">
+          <label for="confirmPassword">Confirm password:</label>
+          <input
+          class="<%= validationErrors.find(e => e.param === 'confirmPassword') ? 'invalid' : '' %>"
+            type="password"
+            name="confirmPassword"
+            size="16"
+            maxlength="16"
+            value="<%= oldInput.confirmPassword %>"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  </form>
+  </body>
 </html>

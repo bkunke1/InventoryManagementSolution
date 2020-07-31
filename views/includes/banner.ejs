@@ -10,9 +10,9 @@
         </h3>
       <% } %>
     </div>
-    <div>
+    <div class="loginLogoutLink">
       <% if (!loggedIn) { %>
-        <a class="loginLogoutLink"  href="/login">Login</a>
+        <a href="/login">Login</a>
       <% } else { %>
         <form action="/logout" method="POST">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">

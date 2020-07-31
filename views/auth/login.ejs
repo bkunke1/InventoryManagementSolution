@@ -4,17 +4,32 @@
     <%- include('../includes/head.ejs') %>
   </head>
   <body>
+    <h1>Login page</h1>
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
     <form action="/login" method="POST">
       <div class="item-field">
         <label for="email">Email:</label>
-        <input type="email" name="email" size="64" maxlength="64" />
+        <input
+          class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
+          type="email"
+          name="email"
+          size="64"
+          maxlength="64"
+          value="<%= oldInput.email %>"
+        />
       </div>
       <div class="item-field">
         <label for="password">Password:</label>
-        <input type="password" name="password" size="16" maxlength="16" />
+        <input
+          class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
+          type="password"
+          name="password"
+          size="16"
+          maxlength="16"
+          value="<%= oldInput.password %>"
+        />
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

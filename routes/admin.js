@@ -1,4 +1,5 @@
 const express = require('express');
+const { check, body } = require('express-validator/check');
 
 const adminController = require('../controllers/admin');
 const isAuth = require('../middleware/is-auth');
@@ -14,13 +15,65 @@ router.get('/inventory', adminController.getInventory);
 
 router.get('/inventory/item-maintenance', adminController.getItemMaintenance);
 
-router.get('/inventory/add-item', adminController.getAddItem);
+router.get('/inventory/add-item', isAuth, adminController.getAddItem);
 
-router.post('/inventory/add-item', adminController.postAddItem);
+router.post(
+  '/inventory/add-item',
+  [
+    body('itemID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid Item ID'),
+    body('description')
+    .isLength({ min: 1 })
+      .isString()
+      .trim()
+      .withMessage('Please enter an alphanumeric description'),
+    body('category')
+    .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter an alphanumeric category'),
+    body('defaultWarehouse')
+    .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter an alphanumeric warehouse'),
+    body('baseUOM')
+    .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter a valid base uom'),
+    body('salesUOM')
+    .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter a valid sales uom'),
+    body('purchaseUOM')
+    .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter a valid purchase uom'),
+    body('defaultPrice').isLength({ min: 1 }).isFloat().trim(),
+  ],
+  adminController.postAddItem
+);
 
 router.get('/inventory/items', adminController.getItems);
 
-router.post('/inventory/item/byID/search', adminController.searchItemByNewID);
+// lets users enter an item ID into the field to find it or create that item if it doesnt already exist
+router.post(
+  '/inventory/item/byID/search',
+  [
+    body('itemID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid Item ID')
+  ],
+  adminController.searchItemByNewID
+);
 
 router.get('/inventory/item/:itemId', adminController.getItem);
 
@@ -41,9 +94,6 @@ router.get('/inventory/nextItem/:itemId', adminController.getNextItem);
 // router.get('/reports', adminController.getReports);
 
 // router.get('/sysconfig', adminController.getSysconfig);
-
-
-
 
 // router.get('/transfer-item', adminController.getTransferItem);
 

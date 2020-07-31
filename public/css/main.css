@@ -187,6 +187,10 @@ table {
   margin: 1rem;
 }
 
+.signupLink {
+  margin-top: 1rem;
+}
+
 .user-message {
   margin: auto;
   width: 90%;
@@ -204,3 +208,6 @@ table {
   color: red;
 }
 
+.invalid {
+  border-color: red;
+}
