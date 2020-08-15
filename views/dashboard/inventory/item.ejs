@@ -92,7 +92,7 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus">
-            <% if (item.itemStatus === "ACTIVE") { %>
+            <% if (item.itemStatus === "Active") { %>
             <option value="ACTIVE" selected>ACTIVE</option>
             <option value="INACTIVE">INACTIVE</option>
             <% } else { %>
@@ -166,11 +166,13 @@
         </div>
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input
-            type="text"
-            name="defaultWarehouse"
-            value="<%= item.defaultWarehouse %>"
-          />
+          <select id="defaultWarehouse" name="defaultWarehouse">
+            <% for (warehouse of warehouseList) { %>
+            <option value="<%" ="warehouse.name" %
+              >><%= warehouse.name %></option
+            >
+            <% } %>
+          </select>
         </div>
         <hr />
         <h6>Unit of Measure</h6>

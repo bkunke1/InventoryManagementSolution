@@ -65,7 +65,7 @@
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="(enter item ID)" />
+          <input type="text" name="itemID" value="(enter ItemID or use button)" />
           <a href="/inventory/items">
             <button id="searchBtn" type="button">
               <i class="fas fa-search"></i>
@@ -111,7 +111,11 @@
         </div>
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input type="text" name="defaultWarehouse" value="" />
+          <select id="defaultWarehouse" name="defaultWarehouse">
+            <% for (warehouse of warehouseList) { %>
+              <option value=<%= warehouse.name %>><%= warehouse.name %></option>
+            <% } %>
+          </select>
         </div>
         <hr />
         <h6>Unit of Measure</h6>

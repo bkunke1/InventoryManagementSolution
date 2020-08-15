@@ -23,144 +23,100 @@
       </div>
     </div>
     <div id="workspace">
-      <div id="toolbar" class="inventory-toolbar">
-        <h1 class="inventory-toolbar-items">Warehouse Setup</h1>
-        <form
-          action="/inventory/previousItem/empty"
-          method="GET"
-          class="inventory-toolbar-items"
-        >
-          <button id="backwardsBtn" type="submit">
-            <svg height="20" width="20">
-              <polygon
-                points="20,20 0,10 20,0"
-                style="
-                  fill: rgb(87, 87, 87);
-                  stroke: rgb(3, 3, 3);
-                  stroke-width: 1;
-                "
+      <div id="toolbar" class="inventory-toolbar centered">
+        <h1>Warehouse Setup</h1>
+      </div>
+      <div class="flex">
+        <div class="warehouse-setup--leftCol">
+          <h1>Add New Warehouse</h1>
+          <form
+            action="/inventory/warehouse/addWarehouse"
+            method="POST"
+            autocomplete="off"
+            id="warehouseID-lookup"
+          >
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <div class="item-field">
+              <label for="warehouseID">Warehouse ID:</label>
+              <input type="text" name="warehouseID" value="" />
+            </div>
+            <div class="item-field">
+              <label for="warehouseName">Warehouse Name:</label>
+              <input id="warehouseName" name="warehouseName" />
+            </div>
+            <div class="item-field">
+              <label for="address">Address:</label>
+              <input
+                type="text"
+                name="address"
+                value=""
+                size="60"
+                maxlength="60"
               />
-            </svg>
-          </button>
-        </form>
+            </div>
+            <input type="submit" value="Save" />
+          </form>
+        </div>
+
+        <div class="warehouse-setup--rightCol">
+          <h1>Warehouse List</h1>
+          <table>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Address</th>
+            </tr>
+            <% for (warehouse of warehouseList) { %>
+            <tr>
+              <td><%= warehouse.ID %></td>
+              <td><%= warehouse.name %></td>
+              <td><%= warehouse.address %></td>
+              <td>
+                <form action="/inventory/warehouse-delete" method="POST">
+                  <input
+                    type="hidden"
+                    value="<%= warehouse.ID %>"
+                    name="warehouseID"
+                  />
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="btn" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
+      <div class="warehouse-setup--leftCol">
+        <h1>Edit Warehouse</h1>
         <form
-          action="/inventory/nextItem/empty"
-          method="GET"
-          class="inventory-toolbar-items"
+          action="/inventory/warehouse/editWarehouse"
+          method="POST"
+          autocomplete="off"
+          id="editWarehouse"
         >
-          <button id="forwardsBtn" type="submit">
-            <svg height="20" width="20">
-              <polygon
-                points="0,20 20,10 0,0"
-                style="
-                  fill: rgb(87, 87, 87);
-                  stroke: rgb(3, 3, 3);
-                  stroke-width: 1;
-                "
-              />
-            </svg>
-          </button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <div class="item-field">
+            <label for="editWarehouseID">Warehouse ID:</label>
+            <input type="text" name="editWarehouseID" value="" />
+          </div>
+          <div class="item-field">
+            <label for="editWarehouseName">Warehouse Name:</label>
+            <input id="editWarehouseName" name="editWarehouseName" />
+          </div>
+          <div class="item-field">
+            <label for="editAddress">Address:</label>
+            <input
+              type="text"
+              name="editAddress"
+              value=""
+              size="60"
+              maxlength="60"
+            />
+          </div>
+          <input type="submit" value="Update Changes" />
         </form>
       </div>
-      <form
-        action="/inventory/item/byID/search"
-        method="POST"
-        autocomplete="off"
-        id="itemID-lookup"
-      >
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <div class="item-field">
-          <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="" />
-          <a href="/inventory/items">
-            <button id="searchBtn" type="button">
-              <i class="fas fa-search"></i>
-            </button>
-          </a>
-        </div>
-        <div class="item-field">
-          <label for="itemStatus">Item Status:</label>
-          <select id="itemStatus" name="itemStatus">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-        <div class="item-field">
-          <label for="description">Description:</label>
-          <input
-            type="text"
-            name="description"
-            value=""
-            size="30"
-            maxlength="30"
-          />
-        </div>
-        <div class="item-field">
-          <label for="category">Category:</label>
-          <input type="text" name="category" value="" />
-        </div>
-        <div class="item-field">
-          <label for="valuationMethod">Valuation Method:</label>
-          <select id="valuationMethod" name="valuationMethod">
-            <option value="avg">Average Cost</option>
-            <option value="fifo">FIFO</option>
-            <option value="lot">LOT</option>
-          </select>
-        </div>
-        <div class="item-field">
-          <label for="type">Type:</label>
-          <select id="type" name="type">
-            <option value="finishedGood">Finished Good</option>
-            <option value="rawMaterial">Raw Material</option>
-            <option value="serivce">Service</option>
-          </select>
-        </div>
-        <div class="item-field">
-          <label for="defaultWarehouse">Default Warehouse:</label>
-          <input type="text" name="defaultWarehouse" value="" />
-        </div>
-        <hr />
-        <h6>Unit of Measure</h6>
-        <div class="item-field">
-          <label for="baseUOM">Base UOM:</label>
-          <input type="text" name="baseUOM" value="" size="10" maxlength="10" />
-        </div>
-        <div class="item-field">
-          <label for="salesUOM">Sales UOM:</label>
-          <input
-            type="text"
-            name="salesUOM"
-            value=""
-            size="10"
-            maxlength="10"
-          />
-        </div>
-        <div class="item-field">
-          <label for="purchaseUOM">Purchase UOM:</label>
-          <input
-            type="text"
-            name="purchaseUOM"
-            value=""
-            size="10"
-            maxlength="10"
-          />
-        </div>
-        <hr />
-        <h6>Pricing</h6>
-        <div class="item-field">
-          <label for="defaultPrice">Default Price (Base UOM): $</label>
-          <input
-            type="number"
-            name="defaultPrice"
-            value=""
-            step="0.01"
-            min="0"
-            max="99999"
-          />
-        </div>
-        <hr />
-        <input type="submit" value="send" class="hide-button" />
-      </form>
     </div>
     <script src="/js/actionAlerts.js"></script>
   </body>

@@ -128,12 +128,11 @@
         </div>
         <div class="item-field">
           <label for="defaultWarehouse">Default Warehouse:</label>
-          <input
-            type="text"
-            name="defaultWarehouse"
-            class="green-background"
-            value="<%= oldInput.defaultWarehouse %>"
-          />
+          <select id="defaultWarehouse" name="defaultWarehouse" class="green-background">
+            <% for (warehouse of warehouseList) { %>
+              <option value=<%= warehouse.name %>><%= warehouse.name %></option>
+            <% } %>
+          </select>
         </div>
         <hr />
         <h6>Unit of Measure</h6>

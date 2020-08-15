@@ -2,6 +2,7 @@
 const { validationResult } = require('express-validator/check');
 
 const Item = require('../models/item');
+const Warehouse = require('../models/warehouse');
 
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
@@ -33,15 +34,22 @@ exports.getItem = (req, res, next) => {
     message = null;
   }
   const itemId = req.params.itemId;
-  Item.findById(itemId)
-    .then((item) => {
-      res.render('./dashboard/inventory/item', {
-        item: item,
-        pageTitle: 'Item Profile',
-        mainMenuPath: 'inventory',
-        subMenuPath: 'item-maintenance',
-        message: message,
-      });
+  Warehouse.find()
+    .then((warehouseList) => {
+      Item.findById(itemId)
+        .then((item) => {
+          res.render('./dashboard/inventory/item', {
+            item: item,
+            pageTitle: 'Item Profile',
+            mainMenuPath: 'inventory',
+            subMenuPath: 'item-maintenance',
+            message: message,
+            warehouseList: warehouseList,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -77,24 +85,38 @@ exports.searchItemByNewID = (req, res, next) => {
 };
 
 exports.getItemMaintenance = (req, res, next) => {
-  res.render('dashboard/inventory/item-maintenance', {
-    pageTitle: 'Item Maintenance',
-    mainMenuPath: 'inventory',
-    subMenuPath: 'item-maintenance',
-    errorMessage: null,
-  });
+  Warehouse.find()
+    .then((warehouseList) => {
+      res.render('dashboard/inventory/item-maintenance', {
+        pageTitle: 'Item Maintenance',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'item-maintenance',
+        errorMessage: null,
+        warehouseList: warehouseList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getAddItem = (req, res, next) => {
-  res.render('dashboard/inventory/add-item', {
-    pageTitle: 'Add Item',
-    mainMenuPath: 'inventory',
-    subMenuPath: 'add-item',
-    newItemID: req.query.newItemID,
-    errorMessage: null,
-    oldInput: { itemID: '' },
-    validationErrors: [],
-  });
+  Warehouse.find()
+    .then((warehouseList) => {
+      res.render('dashboard/inventory/add-item', {
+        pageTitle: 'Add Item',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'add-item',
+        newItemID: req.query.newItemID,
+        errorMessage: null,
+        oldInput: { itemID: '' },
+        validationErrors: [],
+        warehouseList: warehouseList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postAddItem = (req, res, next) => {
@@ -135,9 +157,9 @@ exports.postAddItem = (req, res, next) => {
       },
       validationErrors: errors.array(),
     });
-    console.log(oldInput)
+    console.log(oldInput);
   }
-  
+
   // if (itemID && itemStatus && description && category && valuationMethod && type && defaultWarehouse && baseUOM && salesUOM && purchaseUOM && defaultPrice)
   if (!itemID) {
     console.log('Missing item info!');
@@ -170,6 +192,7 @@ exports.postAddItem = (req, res, next) => {
       })
       .catch((err) => {
         console.log(err);
+        res.redirect('/500');
       });
   }
 };
@@ -333,11 +356,145 @@ exports.getSysconfig = (req, res, next) => {
 };
 
 exports.getWarehouseSetup = (req, res, next) => {
-  res.render('dashboard/inventory/warehouse-setup', {
-    pageTitle: 'Warehouse Setup',
-    mainMenuPath: 'inventory',
-    subMenuPath: 'warehouseSetup',
-  });
+  Warehouse.find()
+    .then((warehouseList) => {
+      res.render('dashboard/inventory/warehouse-setup', {
+        pageTitle: 'Warehouse Setup',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'warehouseSetup',
+        warehouseList: warehouseList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.searchWarehouseByNewID = (req, res, next) => {
+  const errors = validationResult(req);
+  console.log(errors);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('dashboard/inventory/warehouse-setup', {
+      pageTitle: 'Warehouse Setup',
+      mainMenuPath: 'inventory',
+      subMenuPath: 'warehouseSetup',
+      errorMessage: errors.array()[0].msg,
+      oldInput: { itemID: req.body.warehouseID },
+      validationErrors: errors.array(),
+    });
+  }
+
+  if (req.body.warehouseID === '') {
+    res.redirect('../../warehouse-setup');
+  } else {
+    Warehouse.findOne({ warehouseID: req.body.warehouseID }).then(
+      (warehouse) => {
+        if (warehouse === null) {
+          const string = encodeURIComponent(req.body.warehouseID);
+          res.redirect('../../add-warehouse/?newwarehouseID=' + string);
+        } else {
+          res.redirect(`/inventory/warehouse/${warehouse._id}`);
+        }
+      }
+    );
+  }
+};
+
+exports.postAddWarehouse = (req, res, next) => {
+  const ID = req.body.warehouseID;
+  const name = req.body.warehouseName;
+  const address = req.body.address;
+
+  const errors = validationResult(req);
+  console.log('postAddWarehouse Errors', errors);
+  Warehouse.find()
+    .then((warehouseList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/warehouse-setup', {
+          pageTitle: 'Warehouse Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'warehouseSetup',
+          warehouseList: warehouseList,
+        });
+      } else if (!ID) {
+        console.log('Missing warehouse ID!');
+        return res.redirect('/inventory/warehouse-setup');
+      } else {
+        const warehouse = new Warehouse({
+          ID: ID,
+          name: name,
+          address: address,
+        });
+        warehouse
+          .save()
+          .then((result) => {
+            console.log('Warehouse Item was created!');
+            req.flash('createdMessage', 'Warehouse was created!');
+            return res.redirect('/inventory/warehouse-setup');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postEditWarehouse = (req, res, next) => {
+  const ID = req.body.editWarehouseID;
+  const name = req.body.editWarehouseName;
+  const address = req.body.editAddress;
+
+  const errors = validationResult(req);
+  console.log('postEditWarehouse Errors', errors);
+  Warehouse.find()
+    .then((warehouseList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/warehouse-setup', {
+          pageTitle: 'Warehouse Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'warehouseSetup',
+          warehouseList: warehouseList,
+        });
+      } else if (!ID) {
+        console.log('Missing warehouse ID!');
+        return res.redirect('/inventory/warehouse-setup');
+      } else {
+        Warehouse.findOne({ ID: ID })
+          .then((warehouse) => {
+            warehouse.ID = ID;
+            warehouse.name = name;
+            warehouse.address = address;
+            console.log(warehouse);
+            return warehouse.save().then((result) => {
+              console.log('Warehouse Item was Updated!');
+              req.flash('createdMessage', 'Warehouse was created!');
+              return res.redirect('/inventory/warehouse-setup');
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postDeleteWarehouse = (req, res, next) => {
+  const ID = req.body.warehouseID;
+  console.log(ID);
+  Warehouse.deleteOne({ ID: ID })
+    .then(() => {
+      console.log('DESTROYED Warehouse');
+      return res.redirect('/inventory/warehouse-setup');
+    })
+    .catch((err) => console.log(err));
 };
 
 // router.get('/transfer-item', adminController.getTransferItem);

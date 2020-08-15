@@ -87,6 +87,46 @@ router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);
 
 router.get('/inventory/nextItem/:itemId', adminController.getNextItem);
 
+// lets users enter an warehouse ID into the field to find it or create that item if it doesnt already exist
+router.post(
+  '/inventory/warehouse/byID/search',
+  [
+    body('warehouseID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid warehouse ID')
+  ],
+  adminController.searchWarehouseByNewID
+);
+
+
+router.post(
+  '/inventory/warehouse/addWarehouse',
+  [
+    body('warehouseID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid warehouse ID')
+  ],
+  adminController.postAddWarehouse
+);
+
+router.post(
+  '/inventory/warehouse/editWarehouse',
+  [
+    body('editWarehouseID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid warehouse ID')
+  ],
+  adminController.postEditWarehouse
+);
+
+router.post('/inventory/warehouse-delete', adminController.postDeleteWarehouse);
+
 // router.get('/so', adminController.getSalesOrder);
 
 // router.get('/po', adminController.getPurchaseOrder);
