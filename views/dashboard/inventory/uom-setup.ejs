@@ -24,34 +24,34 @@
     </div>
     <div id="workspace">
       <div id="toolbar" class="inventory-toolbar centered">
-        <h1>Warehouse Setup</h1>
+        <h1>Unit of Measture Setup</h1>
       </div>
       <div class="flex">
         <div class="inventory-setup--leftCol">
-          <h1>Add New Warehouse</h1>
+          <h1>Add New Unit of Measure</h1>
           <form
-            action="/inventory/warehouse/addWarehouse"
+            action="/inventory/uom/addUOM"
             method="POST"
             autocomplete="off"
-            id="warehouseID-lookup"
+            id="uomID-lookup"
           >
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="item-field">
-              <label for="warehouseID">Warehouse ID:</label>
-              <input type="text" name="warehouseID" value="" />
+              <label for="uomID">UOM ID:</label>
+              <input type="text" name="uomID" value="" />
             </div>
             <div class="item-field">
-              <label for="warehouseName">Warehouse Name:</label>
-              <input id="warehouseName" name="warehouseName" />
+              <label for="uomName">UOM Name:</label>
+              <input id="uomName" name="uomName" />
             </div>
             <div class="item-field">
-              <label for="address">Address:</label>
+              <label for="conversionQty">Conversion Qty:</label>
               <input
-                type="text"
-                name="address"
+                type="number"
+                name="conversionQty"
                 value=""
-                size="60"
-                maxlength="60"
+                size="10"
+                maxlength="10"
               />
             </div>
             <input type="submit" value="Save" />
@@ -59,24 +59,24 @@
         </div>
 
         <div class="inventory-setup--rightCol">
-          <h1>Warehouse List</h1>
+          <h1>UOM List</h1>
           <table>
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Address</th>
+              <th>Conversion Qty</th>
             </tr>
-            <% for (warehouse of warehouseList) { %>
+            <% for (uom of UOMList) { %>
             <tr>
-              <td><%= warehouse.ID %></td>
-              <td><%= warehouse.name %></td>
-              <td><%= warehouse.address %></td>
+              <td><%= uom.ID %></td>
+              <td><%= uom.name %></td>
+              <td><%= uom.conversionQty %></td>
               <td>
-                <form action="/inventory/warehouse-delete" method="POST">
+                <form action="/inventory/uom-delete" method="POST">
                   <input
                     type="hidden"
-                    value="<%= warehouse.ID %>"
-                    name="warehouseID"
+                    value="<%= uom.ID %>"
+                    name="uomID"
                   />
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                   <button class="btn" type="submit">Delete</button>
@@ -88,36 +88,35 @@
         </div>
       </div>
       <div class="inventory-setup--leftCol">
-        <h1>Edit Warehouse</h1>
+        <h1>Edit UOM</h1>
         <form
-          action="/inventory/warehouse/editWarehouse"
+          action="/inventory/uom/editUOM"
           method="POST"
           autocomplete="off"
-          id="editWarehouse"
+          id="editUOM"
         >
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="item-field">
-            <label for="editWarehouseID">Warehouse ID:</label>
-            <input type="text" name="editWarehouseID" value="" />
+            <label for="editUOMID">UOM ID:</label>
+            <input type="text" name="editUOMID" value="" />
           </div>
           <div class="item-field">
-            <label for="editWarehouseName">Warehouse Name:</label>
-            <input id="editWarehouseName" name="editWarehouseName" />
+            <label for="editUOMName">UOM Name:</label>
+            <input id="editUOMName" name="editUOMName" />
           </div>
           <div class="item-field">
-            <label for="editAddress">Address:</label>
+            <label for="editConversionQty">Conversion Qty:</label>
             <input
-              type="text"
-              name="editAddress"
-              value=""
-              size="60"
-              maxlength="60"
-            />
+                type="number"
+                name="editConversionQty"
+                value=""
+                size="10"
+                maxlength="10"
+              />
           </div>
           <input type="submit" value="Update Changes" />
         </form>
       </div>
     </div>
-    <script src="/js/actionAlerts.js"></script>
   </body>
 </html>

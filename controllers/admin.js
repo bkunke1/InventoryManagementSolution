@@ -3,6 +3,8 @@ const { validationResult } = require('express-validator/check');
 
 const Item = require('../models/item');
 const Warehouse = require('../models/warehouse');
+const UOM = require('../models/uom');
+const Category = require('../models/category');
 
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
@@ -38,14 +40,21 @@ exports.getItem = (req, res, next) => {
     .then((warehouseList) => {
       Item.findById(itemId)
         .then((item) => {
-          res.render('./dashboard/inventory/item', {
-            item: item,
-            pageTitle: 'Item Profile',
-            mainMenuPath: 'inventory',
-            subMenuPath: 'item-maintenance',
-            message: message,
-            warehouseList: warehouseList,
-          });
+          UOM.find()
+            .then((uomList) => {
+              res.render('./dashboard/inventory/item', {
+                item: item,
+                pageTitle: 'Item Profile',
+                mainMenuPath: 'inventory',
+                subMenuPath: 'item-maintenance',
+                message: message,
+                warehouseList: warehouseList,
+                uomList: uomList,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -87,13 +96,20 @@ exports.searchItemByNewID = (req, res, next) => {
 exports.getItemMaintenance = (req, res, next) => {
   Warehouse.find()
     .then((warehouseList) => {
-      res.render('dashboard/inventory/item-maintenance', {
-        pageTitle: 'Item Maintenance',
-        mainMenuPath: 'inventory',
-        subMenuPath: 'item-maintenance',
-        errorMessage: null,
-        warehouseList: warehouseList,
-      });
+      UOM.find()
+        .then((uomList) => {
+          res.render('dashboard/inventory/item-maintenance', {
+            pageTitle: 'Item Maintenance',
+            mainMenuPath: 'inventory',
+            subMenuPath: 'item-maintenance',
+            errorMessage: null,
+            warehouseList: warehouseList,
+            uomList: uomList,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -103,16 +119,23 @@ exports.getItemMaintenance = (req, res, next) => {
 exports.getAddItem = (req, res, next) => {
   Warehouse.find()
     .then((warehouseList) => {
-      res.render('dashboard/inventory/add-item', {
-        pageTitle: 'Add Item',
-        mainMenuPath: 'inventory',
-        subMenuPath: 'add-item',
-        newItemID: req.query.newItemID,
-        errorMessage: null,
-        oldInput: { itemID: '' },
-        validationErrors: [],
-        warehouseList: warehouseList,
-      });
+      UOM.find()
+        .then((uomList) => {
+          res.render('dashboard/inventory/add-item', {
+            pageTitle: 'Add Item',
+            mainMenuPath: 'inventory',
+            subMenuPath: 'add-item',
+            newItemID: req.query.newItemID,
+            errorMessage: null,
+            oldInput: { itemID: '' },
+            validationErrors: [],
+            warehouseList: warehouseList,
+            uomList: uomList,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -144,8 +167,8 @@ exports.postAddItem = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       oldInput: {
         itemID: itemID,
-        itemStatus: itemStatus,
-        description: description,
+        itemStatus: itemStatus.toUpperCase(),
+        description: description.toUpperCase(),
         category: category,
         valuationMethod: valuationMethod,
         type: type,
@@ -170,8 +193,8 @@ exports.postAddItem = (req, res, next) => {
   } else {
     const item = new Item({
       itemID: itemID,
-      itemStatus: itemStatus,
-      description: description,
+      itemStatus: itemStatus.toUpperCase(),
+      description: description.toUpperCase(),
       category: category,
       valuationMethod: valuationMethod,
       type: type,
@@ -226,8 +249,8 @@ exports.postUpdateItem = (req, res, next) => {
   Item.findById(id)
     .then((item) => {
       item.itemID = itemID;
-      item.itemStatus = itemStatus;
-      item.description = description;
+      item.itemStatus = itemStatus.toUpperCase();
+      item.description = description.toUpperCase();
       item.category = category;
       item.valuationMethod = valuationMethod;
       item.type = type;
@@ -239,7 +262,6 @@ exports.postUpdateItem = (req, res, next) => {
       item.totalQtyOnHand = totalQtyOnHand;
       item.userId = userId;
       return item.save();
-      console.log('item');
     })
     .then((result) => {
       console.log('item updated');
@@ -370,36 +392,6 @@ exports.getWarehouseSetup = (req, res, next) => {
     });
 };
 
-exports.searchWarehouseByNewID = (req, res, next) => {
-  const errors = validationResult(req);
-  console.log(errors);
-  if (!errors.isEmpty()) {
-    return res.status(422).render('dashboard/inventory/warehouse-setup', {
-      pageTitle: 'Warehouse Setup',
-      mainMenuPath: 'inventory',
-      subMenuPath: 'warehouseSetup',
-      errorMessage: errors.array()[0].msg,
-      oldInput: { itemID: req.body.warehouseID },
-      validationErrors: errors.array(),
-    });
-  }
-
-  if (req.body.warehouseID === '') {
-    res.redirect('../../warehouse-setup');
-  } else {
-    Warehouse.findOne({ warehouseID: req.body.warehouseID }).then(
-      (warehouse) => {
-        if (warehouse === null) {
-          const string = encodeURIComponent(req.body.warehouseID);
-          res.redirect('../../add-warehouse/?newwarehouseID=' + string);
-        } else {
-          res.redirect(`/inventory/warehouse/${warehouse._id}`);
-        }
-      }
-    );
-  }
-};
-
 exports.postAddWarehouse = (req, res, next) => {
   const ID = req.body.warehouseID;
   const name = req.body.warehouseName;
@@ -422,8 +414,8 @@ exports.postAddWarehouse = (req, res, next) => {
       } else {
         const warehouse = new Warehouse({
           ID: ID,
-          name: name,
-          address: address,
+          name: name.toUpperCase(),
+          address: address.toUpperCase(),
         });
         warehouse
           .save()
@@ -466,8 +458,8 @@ exports.postEditWarehouse = (req, res, next) => {
         Warehouse.findOne({ ID: ID })
           .then((warehouse) => {
             warehouse.ID = ID;
-            warehouse.name = name;
-            warehouse.address = address;
+            warehouse.name = name.toUpperCase();
+            warehouse.address = address.toUpperCase();
             console.log(warehouse);
             return warehouse.save().then((result) => {
               console.log('Warehouse Item was Updated!');
@@ -493,6 +485,225 @@ exports.postDeleteWarehouse = (req, res, next) => {
     .then(() => {
       console.log('DESTROYED Warehouse');
       return res.redirect('/inventory/warehouse-setup');
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getUomSetup = (req, res, next) => {
+  UOM.find()
+    .then((UOMList) => {
+      res.render('dashboard/inventory/uom-setup', {
+        pageTitle: 'Unit of Measure Setup',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'uomSetup',
+        UOMList: UOMList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postAddUOM = (req, res, next) => {
+  const ID = req.body.uomID;
+  const name = req.body.uomName;
+  const conversionQty = req.body.conversionQty;
+
+  const errors = validationResult(req);
+  console.log('postAddUOM Errors', errors);
+  UOM.find()
+    .then((UOMList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/uom-setup', {
+          pageTitle: 'Unit of Measure Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'uomSetup',
+          UOMList: UOMList,
+        });
+      } else if (!ID) {
+        console.log('Missing uom ID!');
+        return res.redirect('/inventory/uom-setup');
+      } else {
+        const uom = new UOM({
+          ID: ID,
+          name: name.toUpperCase(),
+          conversionQty: conversionQty,
+        });
+        uom
+          .save()
+          .then((result) => {
+            console.log('Warehouse Item was created!');
+            req.flash('createdMessage', 'Warehouse was created!');
+            return res.redirect('/inventory/uom-setup');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postEditUOM = (req, res, next) => {
+  const ID = req.body.editUOMID;
+  const name = req.body.editUOMName;
+  const conversionQty = req.body.editConversionQty;
+
+  const errors = validationResult(req);
+  console.log('postEditUOM Errors', errors);
+  UOM.find()
+    .then((UOMList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/uom-setup', {
+          pageTitle: 'Unit of Measure Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'uomSetup',
+          UOMList: UOMList,
+        });
+      } else if (!ID) {
+        console.log('Missing uom ID!');
+        return res.redirect('/inventory/uom-setup');
+      } else {
+        UOM.findOne({ ID: ID })
+          .then((uom) => {
+            uom.ID = ID;
+            uom.name = name.toUpperCase();
+            uom.conversionQty = conversionQty;
+            console.log(uom);
+            return uom.save().then((result) => {
+              console.log('UOM Item was Updated!');
+              req.flash('createdMessage', 'UOM was created!');
+              return res.redirect('/inventory/uom-setup');
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postDeleteUOM = (req, res, next) => {
+  const ID = req.body.uomID;
+  console.log(ID);
+  UOM.deleteOne({ ID: ID })
+    .then(() => {
+      console.log('DESTROYED UOM');
+      return res.redirect('/inventory/uom-setup');
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getCategorySetup = (req, res, next) => {
+  Category.find()
+    .then((categoryList) => {
+      res.render('dashboard/inventory/category-setup', {
+        pageTitle: 'Category Setup',
+        mainMenuPath: 'inventory',
+        subMenuPath: 'categorySetup',
+        categoryList: categoryList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postAddCategory = (req, res, next) => {
+  const ID = req.body.categoryID;
+  const name = req.body.categoryName;
+
+  const errors = validationResult(req);
+  console.log('postAddCategory Errors', errors);
+  Category.find()
+    .then((categoryList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/category-setup', {
+          pageTitle: 'Category Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'categorySetup',
+          categoryList: categoryList,
+        });
+      } else if (!ID) {
+        console.log('Missing Category ID!');
+        return res.redirect('/inventory/category-setup');
+      } else {
+        const category = new Category({
+          ID: ID,
+          name: name.toUpperCase()
+        });
+        category
+          .save()
+          .then((result) => {
+            console.log('Category Item was created!');
+            req.flash('createdMessage', 'Category was created!');
+            return res.redirect('/inventory/category-setup');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postEditCategory = (req, res, next) => {
+  const ID = req.body.editCategoryID;
+  const name = req.body.editCategoryName;
+
+  const errors = validationResult(req);
+  console.log('postEditCategory Errors', errors);
+  Category.find()
+    .then((categoryList) => {
+      if (!errors.isEmpty()) {
+        return res.render('dashboard/inventory/category-setup', {
+          pageTitle: 'Category Setup',
+          mainMenuPath: 'inventory',
+          subMenuPath: 'categorySetup',
+          categoryList: categoryList,
+        });
+      } else if (!ID) {
+        console.log('Missing Category ID!');
+        return res.redirect('/inventory/category-setup');
+      } else {
+        Category.findOne({ ID: ID })
+          .then((category) => {
+            category.ID = ID;
+            category.name = name.toUpperCase();
+            return category.save().then((result) => {
+              console.log('Category was Updated!');
+              req.flash('createdMessage', 'Category was created!');
+              return res.redirect('/inventory/category-setup');
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.redirect('/500');
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postDeleteCategory = (req, res, next) => {
+  const ID = req.body.categoryID;
+  console.log(ID);
+  Category.deleteOne({ ID: ID })
+    .then(() => {
+      console.log('DESTROYED Category');
+      return res.redirect('/inventory/category-setup');
     })
     .catch((err) => console.log(err));
 };

@@ -92,7 +92,7 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus">
-            <% if (item.itemStatus === "Active") { %>
+            <% if (item.itemStatus === "ACTIVE") { %>
             <option value="ACTIVE" selected>ACTIVE</option>
             <option value="INACTIVE">INACTIVE</option>
             <% } else { %>
@@ -120,27 +120,27 @@
           <select id="valuationMethod" name="valuationMethod">
             <% if (item.totalQtyOnHand == 0) { %> <% if (item.valuationMethod
             === "AVG") { %>
-            <option value="AVG" selected>Average Cost</option>
+            <option value="AVG" selected>AVERAGE</option>
             <option value="FIFO">FIFO</option>
             <option value="LOT">LOT</option>
             <% } else if (item.valuationMethod === "FIFO") { %>
-            <option value="AVG">Average Cost</option>
+            <option value="AVG">AVERAGE</option>
             <option value="FIFO" selected>FIFO</option>
             <option value="LOT">LOT</option>
             <% } else { %>
-            <option value="AVG">Average Cost</option>
+            <option value="AVG">AVERAGE</option>
             <option value="FIFO">FIFO</option>
             <option value="LOT" seleceted>LOT</option>
             <% } %> <% } else { %> <% if (item.valuationMethod === "AVG") { %>
-            <option value="AVG" selected>Average Cost</option>
+            <option value="AVG" selected>AVERAGE</option>
             <option value="FIFO" disabled>FIFO</option>
             <option value="LOT" disabled>LOT</option>
             <% } else if (item.valuationMethod === "FIFO") { %>
-            <option value="AVG" disabled>Average Cost</option>
+            <option value="AVG" disabled>AVERAGE</option>
             <option value="FIFO" selected>FIFO</option>
             <option value="LOT" disabled>LOT</option>
             <% } else { %>
-            <option value="AVG" disabled>Average Cost</option>
+            <option value="AVG" disabled>AVERAGE</option>
             <option value="FIFO" disabled>FIFO</option>
             <option value="LOT" seleceted>LOT</option>
             <% } %> <% } %>
@@ -149,18 +149,18 @@
         <div class="item-field">
           <label for="type">Type:</label>
           <select id="type" name="type">
-            <% if (item.type === "finishedGood") { %>
-            <option value="finishedGood" selected>Finished Good</option>
-            <option value="rawMaterial">Raw Material</option>
-            <option value="serivce">Service</option>
-            <% } else if (item.type === "rawMaterial") { %>
-            <option value="finishedGood">Finished Good</option>
-            <option value="rawMaterial" selected>Raw Material</option>
-            <option value="serivce">Service</option>
+            <% if (item.type === "FINISHED GOOD") { %>
+            <option value="FINISHED GOOD" selected>FINISHED GOOD</option>
+            <option value="RAW MATERIAL">RAW MATERIAL</option>
+            <option value="SERVICE">SERVICE</option>
+            <% } else if (item.type === "RAW MATERIAL") { %>
+            <option value="FINISHED GOOD">FINISHED GOOD</option>
+            <option value="RAW MATERIAL" selected>RAW MATERIAL</option>
+            <option value="SERVICE">SERVICE</option>
             <% } else { %>
-            <option value="finishedGood">Finished Good</option>
-            <option value="rawMaterial">Raw Material</option>
-            <option value="serivce" selected>Service</option>
+            <option value="FINISHED GOOD">FINISHED GOOD</option>
+            <option value="RAW MATERIAL">RAW MATERIAL</option>
+            <option value="SERVICE" selected>SERVICE</option>
             <% } %>
           </select>
         </div>
@@ -168,9 +168,8 @@
           <label for="defaultWarehouse">Default Warehouse:</label>
           <select id="defaultWarehouse" name="defaultWarehouse">
             <% for (warehouse of warehouseList) { %>
-            <option value="<%" ="warehouse.name" %
-              >><%= warehouse.name %></option
-            >
+            <option value=<%= warehouse.name %>><%= warehouse.name %>
+            </option>
             <% } %>
           </select>
         </div>
@@ -188,35 +187,43 @@
           />
         </div>
         <div class="item-field">
-          <label for="baseUOM">Base UOM:</label>
-          <input
-            type="text"
-            name="baseUOM"
-            value="<%= item.baseUOM %>"
-            size="10"
-            maxlength="10"
-          />
+          <label for="baseUOM">Base UOM:</label>          
+          <select name="baseUOM" id="baseUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>
+              <% if (uom.name == item.baseUOM) { %>
+                SELECTED
+                <% } %>
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
         </div>
         <div class="item-field">
-          <label for="salesUOM">Sales UOM:</label>
-          <input
-            type="text"
-            name="salesUOM"
-            value="<%= item.salesUOM %>"
-            size="10"
-            maxlength="10"
-          />
+          <label for="salesUOM">Sales UOM:</label>          
+          <select name="salesUOM" id="salesUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>
+              <% if (uom.name == item.salesUOM) { %>
+                SELECTED
+                <% } %>
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input
-            type="text"
-            name="purchaseUOM"
-            value="<%= item.purchaseUOM %>"
-            size="10"
-            maxlength="10"
-            onclick="updateEditedFields"
-          />
+          <select name="purchaseUOM" id="purchaseUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>
+              <% if (uom.name == item.purchaseUOM) { %>
+                SELECTED
+                <% } %>
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
         </div>
         <hr />
         <h6>Pricing</h6>

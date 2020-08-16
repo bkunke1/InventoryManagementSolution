@@ -82,8 +82,8 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus" class="green-background">
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
           </select>
         </div>
         <div class="item-field">
@@ -113,7 +113,7 @@
             name="valuationMethod"
             class="green-background"
           >
-            <option value="Average Cost">Average Cost</option>
+            <option value="Average Cost">AVERAGE</option>
             <option value="FIFO">FIFO</option>
             <option value="Lot">LOT</option>
           </select>
@@ -121,9 +121,9 @@
         <div class="item-field">
           <label for="type">Type:</label>
           <select id="type" name="type" class="green-background">
-            <option value="Finished Good">Finished Good</option>
-            <option value="Raw Material">Raw Material</option>
-            <option value="Service">Service</option>
+            <option value="Finished Good">FINISHED GOOD</option>
+            <option value="Raw Material">RAW MATERIAL</option>
+            <option value="Service">SERVICE</option>
           </select>
         </div>
         <div class="item-field">
@@ -137,37 +137,28 @@
         <hr />
         <h6>Unit of Measure</h6>
         <div class="item-field">
-          <label for="baseUOM">Base UOM:</label>
-          <input
-            type="text"
-            name="baseUOM"
-            size="10"
-            maxlength="10"
-            class="green-background"
-            value="<%= oldInput.baseUOM %>"
-          />
+          <label for="baseUOM">Base UOM:</label>          
+          <select name="baseUOM" id="baseUOM" class="green-background">
+            <% for (uom of uomList) { %>
+              <option value=<%= uom.name %>><%= uom.name %></option>
+            <% } %>
+          </select>
         </div>
         <div class="item-field">
           <label for="salesUOM">Sales UOM:</label>
-          <input
-            type="text"
-            name="salesUOM"
-            size="10"
-            maxlength="10"
-            class="green-background"
-            value="<%= oldInput.salesUOM %>"
-          />
+          <select name="salesUOM" id="salesUOM" class="green-background">
+            <% for (uom of uomList) { %>
+              <option value=<%= uom.name %>><%= uom.name %></option>
+            <% } %>
+          </select>
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input
-            type="text"
-            name="purchaseUOM"
-            size="10"
-            maxlength="10"
-            class="green-background"
-            value="<%= oldInput.purchaseUOM %>"
-          />
+          <select name="purchaseUOM" id="purchaseUOM" class="green-background">
+            <% for (uom of uomList) { %>
+              <option value=<%= uom.name %>><%= uom.name %></option>
+            <% } %>
+          </select>
         </div>
         <hr />
         <h6>Pricing</h6>

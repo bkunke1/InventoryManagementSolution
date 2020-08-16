@@ -77,7 +77,7 @@ router.post(
 
 router.get('/inventory/item/:itemId', adminController.getItem);
 
-router.get('/inventory/warehouse-setup', adminController.getWarehouseSetup);
+
 
 // router.get('/edit-item', adminController.getEditItem);
 
@@ -87,19 +87,7 @@ router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);
 
 router.get('/inventory/nextItem/:itemId', adminController.getNextItem);
 
-// lets users enter an warehouse ID into the field to find it or create that item if it doesnt already exist
-router.post(
-  '/inventory/warehouse/byID/search',
-  [
-    body('warehouseID')
-      .isLength({ min: 1 })
-      .isAlphanumeric()
-      .trim()
-      .withMessage('Please enter valid warehouse ID')
-  ],
-  adminController.searchWarehouseByNewID
-);
-
+router.get('/inventory/warehouse-setup', adminController.getWarehouseSetup);
 
 router.post(
   '/inventory/warehouse/addWarehouse',
@@ -126,6 +114,66 @@ router.post(
 );
 
 router.post('/inventory/warehouse-delete', adminController.postDeleteWarehouse);
+
+router.get('/inventory/uom-setup', adminController.getUomSetup);
+
+router.post(
+  '/inventory/uom/addUOM',
+  [
+    body('uomID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid UOM ID')
+  ],
+  adminController.postAddUOM
+);
+
+router.post(
+  '/inventory/uom/editUOM',
+  [
+    body('editUOMID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid uom ID')
+  ],
+  adminController.postEditUOM
+);
+
+router.post('/inventory/uom-delete', adminController.postDeleteUOM);
+
+router.get('/inventory/category-setup', adminController.getCategorySetup);
+
+router.post(
+  '/inventory/category/addCategory',
+  [
+    body('categoryID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid Category ID')
+  ],
+  adminController.postAddCategory
+);
+
+router.post(
+  '/inventory/category/editCategory',
+  [
+    body('editCategoryID')
+      .isLength({ min: 1 })
+      .isAlphanumeric()
+      .trim()
+      .withMessage('Please enter valid Category ID')
+  ],
+  adminController.postEditCategory
+);
+
+router.post('/inventory/category-delete', adminController.postDeleteCategory);
+
+
+
+
 
 // router.get('/so', adminController.getSalesOrder);
 

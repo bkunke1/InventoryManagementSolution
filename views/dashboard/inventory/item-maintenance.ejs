@@ -75,8 +75,8 @@
         <div class="item-field">
           <label for="itemStatus">Item Status:</label>
           <select id="itemStatus" name="itemStatus">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
           </select>
         </div>
         <div class="item-field">
@@ -96,17 +96,17 @@
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>
           <select id="valuationMethod" name="valuationMethod">
-            <option value="avg">Average Cost</option>
-            <option value="fifo">FIFO</option>
-            <option value="lot">LOT</option>
+            <option value="AVG">AVERAGE</option>
+            <option value="FIFO">FIFO</option>
+            <option value="LOT">LOT</option>
           </select>
         </div>
         <div class="item-field">
           <label for="type">Type:</label>
           <select id="type" name="type">
-            <option value="finishedGood">Finished Good</option>
-            <option value="rawMaterial">Raw Material</option>
-            <option value="serivce">Service</option>
+            <option value="FINISHED GOOD">FINISHED GOOD</option>
+            <option value="RAW MATERIAL">RAW MATERIAL</option>
+            <option value="SERVICE">SERVICE</option>
           </select>
         </div>
         <div class="item-field">
@@ -120,28 +120,45 @@
         <hr />
         <h6>Unit of Measure</h6>
         <div class="item-field">
-          <label for="baseUOM">Base UOM:</label>
-          <input type="text" name="baseUOM" value="" size="10" maxlength="10" />
-        </div>
-        <div class="item-field">
-          <label for="salesUOM">Sales UOM:</label>
+          <label for="totalQtyOnHand">Total Qty On Hand:</label>
           <input
+            readonly
             type="text"
-            name="salesUOM"
+            name="totalQtyOnHand"
             value=""
             size="10"
             maxlength="10"
           />
+        </div>
+        <div class="item-field">
+          <label for="baseUOM">Base UOM:</label>          
+          <select name="baseUOM" id="baseUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
+        </div>
+        <div class="item-field">
+          <label for="salesUOM">Sales UOM:</label>          
+          <select name="salesUOM" id="salesUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
         </div>
         <div class="item-field">
           <label for="purchaseUOM">Purchase UOM:</label>
-          <input
-            type="text"
-            name="purchaseUOM"
-            value=""
-            size="10"
-            maxlength="10"
-          />
+          <select name="purchaseUOM" id="purchaseUOM">            
+            <% uomList.forEach(function(uom) { %>
+              <option 
+              value=<%= uom.name %>              
+              ><%= uom.name %></option>
+          <% }); %>
+          </select>
         </div>
         <hr />
         <h6>Pricing</h6>

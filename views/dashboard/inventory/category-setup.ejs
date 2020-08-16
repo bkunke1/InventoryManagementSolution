@@ -24,59 +24,47 @@
     </div>
     <div id="workspace">
       <div id="toolbar" class="inventory-toolbar centered">
-        <h1>Warehouse Setup</h1>
+        <h1>Category Setup</h1>
       </div>
       <div class="flex">
         <div class="inventory-setup--leftCol">
-          <h1>Add New Warehouse</h1>
+          <h1>Add New Category</h1>
           <form
-            action="/inventory/warehouse/addWarehouse"
+            action="/inventory/category/addCategory"
             method="POST"
             autocomplete="off"
-            id="warehouseID-lookup"
+            id="categoryID-lookup"
           >
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="item-field">
-              <label for="warehouseID">Warehouse ID:</label>
-              <input type="text" name="warehouseID" value="" />
+              <label for="categoryID">Category ID:</label>
+              <input type="text" name="categoryID" value="" />
             </div>
             <div class="item-field">
-              <label for="warehouseName">Warehouse Name:</label>
-              <input id="warehouseName" name="warehouseName" />
-            </div>
-            <div class="item-field">
-              <label for="address">Address:</label>
-              <input
-                type="text"
-                name="address"
-                value=""
-                size="60"
-                maxlength="60"
-              />
+              <label for="categoryName">Category Name:</label>
+              <input id="categoryName" name="categoryName" />
             </div>
             <input type="submit" value="Save" />
           </form>
         </div>
 
         <div class="inventory-setup--rightCol">
-          <h1>Warehouse List</h1>
+          <h1>Category List</h1>
           <table>
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Address</th>
             </tr>
-            <% for (warehouse of warehouseList) { %>
+            <% for (category of categoryList) { %>
             <tr>
-              <td><%= warehouse.ID %></td>
-              <td><%= warehouse.name %></td>
-              <td><%= warehouse.address %></td>
+              <td><%= category.ID %></td>
+              <td><%= category.name %></td>
               <td>
-                <form action="/inventory/warehouse-delete" method="POST">
+                <form action="/inventory/category-delete" method="POST">
                   <input
                     type="hidden"
-                    value="<%= warehouse.ID %>"
-                    name="warehouseID"
+                    value="<%= category.ID %>"
+                    name="categoryID"
                   />
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                   <button class="btn" type="submit">Delete</button>
@@ -88,36 +76,25 @@
         </div>
       </div>
       <div class="inventory-setup--leftCol">
-        <h1>Edit Warehouse</h1>
+        <h1>Edit Category</h1>
         <form
-          action="/inventory/warehouse/editWarehouse"
+          action="/inventory/category/editCategory"
           method="POST"
           autocomplete="off"
-          id="editWarehouse"
+          id="editCategory"
         >
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="item-field">
-            <label for="editWarehouseID">Warehouse ID:</label>
-            <input type="text" name="editWarehouseID" value="" />
+            <label for="editCategoryID">Category ID:</label>
+            <input type="text" name="editCategoryID" value="" />
           </div>
           <div class="item-field">
-            <label for="editWarehouseName">Warehouse Name:</label>
-            <input id="editWarehouseName" name="editWarehouseName" />
-          </div>
-          <div class="item-field">
-            <label for="editAddress">Address:</label>
-            <input
-              type="text"
-              name="editAddress"
-              value=""
-              size="60"
-              maxlength="60"
-            />
+            <label for="editCategoryName">Category Name:</label>
+            <input id="editCategoryName" name="editCategoryName" />
           </div>
           <input type="submit" value="Update Changes" />
         </form>
       </div>
     </div>
-    <script src="/js/actionAlerts.js"></script>
   </body>
 </html>

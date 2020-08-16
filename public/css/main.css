@@ -220,11 +220,11 @@ table {
   display: flex;
 }
 
-.warehouse-setup--leftCol {
+.inventory-setup--leftCol {
   width: 50%;
   margin-left: 250px;
 }
 
-.warehouse-setup--rightCol {
+.inventory-setup--rightCol {
   width: 50%;
 }
