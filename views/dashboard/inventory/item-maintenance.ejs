@@ -65,7 +65,7 @@
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="item-field">
           <label for="itemID">Item ID:</label>
-          <input type="text" name="itemID" value="(enter ItemID or use button)" />
+          <input type="text" name="itemID" value="" />
           <a href="/inventory/items">
             <button id="searchBtn" type="button">
               <i class="fas fa-search"></i>
@@ -91,7 +91,11 @@
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="" />
+          <select id="category" name="category">
+            <% for (category of categoryList) { %>
+              <option value=<%= category.name %>><%= category.name %></option>
+            <% } %>
+          </select>
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>
@@ -128,6 +132,28 @@
             value=""
             size="10"
             maxlength="10"
+          />
+        </div>
+        <div class="item-field">
+          <label for="qtyOnOrder">Qty On Order:</label>
+          <input
+            readonly
+            type="text"
+            name="qtyOnOrder"
+            value="<%= item.qtyOnOrder %>"
+            size="6"
+            maxlength="6"
+          />
+        </div>
+        <div class="item-field">
+          <label for="qtyAllocated">Qty Allocated:</label>
+          <input
+            readonly
+            type="text"
+            name="qtyAllocated"
+            value="<%= item.qtyAllocated %>"
+            size="6"
+            maxlength="6"
           />
         </div>
         <div class="item-field">

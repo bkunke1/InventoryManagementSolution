@@ -99,12 +99,11 @@
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input
-            type="text"
-            name="category"
-            class="green-background"
-            value="<%= oldInput.category %>"
-          />
+          <select id="category" name="category" class="green-background">
+            <% for (category of categoryList) { %>
+              <option value=<%= category.name %>><%= category.name %></option>
+            <% } %>
+          </select>
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>

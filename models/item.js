@@ -50,6 +50,14 @@ const itemSchema = new Schema({
   totalQtyOnHand: {
     type: Number,
     required: true
+  },  
+  qtyOnOrder: {
+    type: Number,
+    required: false
+  },
+  qtyAllocated: {
+    type: Number,
+    required: false
   },
   userId: {
     type: String,

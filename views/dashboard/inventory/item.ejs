@@ -113,7 +113,16 @@
         </div>
         <div class="item-field">
           <label for="category">Category:</label>
-          <input type="text" name="category" value="<%=item.category %>" />
+          <select name="category" id="category">            
+            <% categoryList.forEach(function(category) { %>
+              <option 
+              value=<%= category.name %>
+              <% if (category.name == item.category) { %>
+                SELECTED
+                <% } %>
+              ><%= category.name %></option>
+          <% }); %>
+          </select>
         </div>
         <div class="item-field">
           <label for="valuationMethod">Valuation Method:</label>
@@ -182,8 +191,30 @@
             type="text"
             name="totalQtyOnHand"
             value="<%= item.totalQtyOnHand %>"
-            size="10"
-            maxlength="10"
+            size="6"
+            maxlength="6"
+          />
+        </div>
+        <div class="item-field">
+          <label for="qtyOnOrder">Qty On Order:</label>
+          <input
+            readonly
+            type="text"
+            name="qtyOnOrder"
+            value="<%= item.qtyOnOrder %>"
+            size="6"
+            maxlength="6"
+          />
+        </div>
+        <div class="item-field">
+          <label for="qtyAllocated">Qty Allocated:</label>
+          <input
+            readonly
+            type="text"
+            name="qtyAllocated"
+            value="<%= item.qtyAllocated %>"
+            size="6"
+            maxlength="6"
           />
         </div>
         <div class="item-field">

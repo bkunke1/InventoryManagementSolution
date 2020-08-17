@@ -42,15 +42,22 @@ exports.getItem = (req, res, next) => {
         .then((item) => {
           UOM.find()
             .then((uomList) => {
-              res.render('./dashboard/inventory/item', {
-                item: item,
-                pageTitle: 'Item Profile',
-                mainMenuPath: 'inventory',
-                subMenuPath: 'item-maintenance',
-                message: message,
-                warehouseList: warehouseList,
-                uomList: uomList,
-              });
+              Category.find()
+                .then((categoryList) => {
+                  res.render('./dashboard/inventory/item', {
+                    item: item,
+                    pageTitle: 'Item Profile',
+                    mainMenuPath: 'inventory',
+                    subMenuPath: 'item-maintenance',
+                    message: message,
+                    warehouseList: warehouseList,
+                    uomList: uomList,
+                    categoryList: categoryList,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             })
             .catch((err) => {
               console.log(err);
@@ -94,18 +101,32 @@ exports.searchItemByNewID = (req, res, next) => {
 };
 
 exports.getItemMaintenance = (req, res, next) => {
-  Warehouse.find()
-    .then((warehouseList) => {
-      UOM.find()
-        .then((uomList) => {
-          res.render('dashboard/inventory/item-maintenance', {
-            pageTitle: 'Item Maintenance',
-            mainMenuPath: 'inventory',
-            subMenuPath: 'item-maintenance',
-            errorMessage: null,
-            warehouseList: warehouseList,
-            uomList: uomList,
-          });
+  Item.find()
+    .then((item) => {
+      Warehouse.find()
+        .then((warehouseList) => {
+          UOM.find()
+            .then((uomList) => {
+              Category.find()
+                .then((categoryList) => {
+                  res.render('dashboard/inventory/item-maintenance', {
+                    pageTitle: 'Item Maintenance',
+                    mainMenuPath: 'inventory',
+                    subMenuPath: 'item-maintenance',
+                    errorMessage: null,
+                    item: item,
+                    warehouseList: warehouseList,
+                    uomList: uomList,
+                    categoryList: categoryList,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -121,17 +142,24 @@ exports.getAddItem = (req, res, next) => {
     .then((warehouseList) => {
       UOM.find()
         .then((uomList) => {
-          res.render('dashboard/inventory/add-item', {
-            pageTitle: 'Add Item',
-            mainMenuPath: 'inventory',
-            subMenuPath: 'add-item',
-            newItemID: req.query.newItemID,
-            errorMessage: null,
-            oldInput: { itemID: '' },
-            validationErrors: [],
-            warehouseList: warehouseList,
-            uomList: uomList,
-          });
+          Category.find()
+            .then((categoryList) => {
+              res.render('dashboard/inventory/add-item', {
+                pageTitle: 'Add Item',
+                mainMenuPath: 'inventory',
+                subMenuPath: 'add-item',
+                newItemID: req.query.newItemID,
+                errorMessage: null,
+                oldInput: { itemID: '' },
+                validationErrors: [],
+                warehouseList: warehouseList,
+                uomList: uomList,
+                categoryList: categoryList,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -155,6 +183,8 @@ exports.postAddItem = (req, res, next) => {
   const purchaseUOM = req.body.purchaseUOM;
   const defaultPrice = req.body.defaultPrice;
   const totalQtyOnHand = 0;
+  const qtyOnOrder = 0;
+  const qtyAllocated = 0;
 
   const errors = validationResult(req);
   console.log(errors);
@@ -180,7 +210,6 @@ exports.postAddItem = (req, res, next) => {
       },
       validationErrors: errors.array(),
     });
-    console.log(oldInput);
   }
 
   // if (itemID && itemStatus && description && category && valuationMethod && type && defaultWarehouse && baseUOM && salesUOM && purchaseUOM && defaultPrice)
@@ -204,6 +233,8 @@ exports.postAddItem = (req, res, next) => {
       purchaseUOM: purchaseUOM,
       defaultPrice: defaultPrice,
       totalQtyOnHand: totalQtyOnHand,
+      qtyOnOrder: qtyOnOrder,
+      qtyAllocated: qtyAllocated,
       userId: req.session.user.email,
     });
     item
@@ -243,6 +274,8 @@ exports.postUpdateItem = (req, res, next) => {
   const purchaseUOM = req.body.purchaseUOM;
   const defaultPrice = req.body.defaultPrice;
   const totalQtyOnHand = req.body.totalQtyOnHand;
+  const qtyOnOrder = req.body.qtyOnOrder;
+  const qtyAllocated = req.body.qtyAllocated;
   const userId = req.body.userId;
   const id = req.body._id;
 
@@ -260,6 +293,8 @@ exports.postUpdateItem = (req, res, next) => {
       item.purchaseUOM = purchaseUOM;
       item.defaultPrice = defaultPrice;
       item.totalQtyOnHand = totalQtyOnHand;
+      item.qtyOnOrder = qtyOnOrder;
+      item.qtyAllocated = qtyAllocated;
       item.userId = userId;
       return item.save();
     })
@@ -637,7 +672,7 @@ exports.postAddCategory = (req, res, next) => {
       } else {
         const category = new Category({
           ID: ID,
-          name: name.toUpperCase()
+          name: name.toUpperCase(),
         });
         category
           .save()
