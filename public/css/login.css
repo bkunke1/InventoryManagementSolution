@@ -1,0 +1,60 @@
+html {
+  height: 100%;
+}
+
+.login-page {
+  background-image: linear-gradient(black, rgb(34, 34, 34));
+  background-position: center;
+  background-repeat: no-repeat;
+  color: rgb(243, 242, 242);
+}
+
+.centered {
+  text-align: center;
+}
+
+.v-centered {
+  margin-top: 15%;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+li {
+    margin: 1rem;
+}
+
+.login-resetPassword {
+    margin: .25rem;
+}
+
+.login-resetPassword a {
+    color: rgb(0, 132, 255);
+}
+
+.login-resetPassword a:hover {
+    color: rgb(0, 183, 255);
+}
+
+.login-button {
+    margin: .75rem;
+}
+
+.login-password {
+    margin: .75rem;
+}
+
+.login-roles {
+    margin-top: 5rem;
+}
+
+#emailLabel {
+    margin-right: 220px;
+}
+
+#passwordLabel {
+    margin-right: 180px;
+}

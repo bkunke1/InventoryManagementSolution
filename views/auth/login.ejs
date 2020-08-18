@@ -2,40 +2,68 @@
 <html lang="en">
   <head>
     <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/login.css" />
   </head>
-  <body>
-    <h1>Login page</h1>
+  <body class="login-page centered v-centered">
+    <h1><i class="fab fa-app-store-ios"></i></h1>
+    <h1>Login</h1>
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
     <form action="/login" method="POST">
       <div class="item-field">
-        <label for="email">Email:</label>
+        <label id="emailLabel" for="email">EMAIL</label>
+        <br>
         <input
+          id="emailInput"
           class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
           type="email"
           name="email"
-          size="64"
+          size="35"
           maxlength="64"
           value="<%= oldInput.email %>"
         />
       </div>
-      <div class="item-field">
-        <label for="password">Password:</label>
+      <div class="login-password">
+        <label id="passwordLabel" for="password">PASSWORD</label>
+        <br>
         <input
+          id="passwordInput"
           class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
           type="password"
           name="password"
-          size="16"
-          maxlength="16"
+          size="35"
+          maxlength="35"
           value="<%= oldInput.password %>"
         />
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary login-button">Login</button>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     </form>
-    <div>
+    <div class="login-resetPassword">
       <a href="/reset">Reset Password</a>
     </div>
+    <div class="login-roles centered">
+      <h3>Demo Roles</h3>
+      <ul>
+        <li>Admin
+          <br>
+          <i id ="adminBtn" class="fas fa-user-shield"></i>
+        </li>
+        <li>Purchaser
+          <br>
+          <i id ="purchaserBtn" class="fas fa-user-clock"></i>
+        </li>
+        <li>Salesperson
+          <br>
+          <i id ="salespersonBtn" class="fas fa-comments-dollar"></i>
+        </li>
+        <li>Warehouse
+          <br>
+          <i id ="warehouseBtn" class="fas fa-warehouse"></i>
+        </li>
+      </ul>
+    </div>
+    <script src="/js/login.js"></script>
   </body>
 </html>
