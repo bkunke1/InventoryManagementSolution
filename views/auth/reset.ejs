@@ -2,18 +2,24 @@
 <html lang="en">
   <head>
     <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/auth.css" />
   </head>
-  <body>
+  <body class="login-page centered v-centered">
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
     <form action="/reset" method="POST">
       <div class="item-field">
+        <h1>Forgot your password?</h1>
+        <h5>Enter your email address and we will send you a password reset email.</h5>
         <label for="email">Email:</label>
         <input type="email" name="email" size="64" maxlength="64" />
       </div>
       <button type="submit" class="btn btn-primary">Reset Password</button>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     </form>
+    <div class="signup-login-redirect">
+      <h4>Already have an account? <a href="/login">LOGIN</a></h4>
+    </div>
   </body>
 </html>

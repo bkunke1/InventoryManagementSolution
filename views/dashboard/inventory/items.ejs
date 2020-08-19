@@ -24,10 +24,9 @@
     </div>
     <div class="workspace">
       <div>
-        <h1 class="">Item List</h1>
-        <table>
+        <h1 class="centered-text">Item List</h1>
+        <table class="items-table">
           <tr>
-            <th>MongoDB_ID</th>
             <th>Item ID</th>
             <th>Description</th>
             <th>Status</th>
@@ -42,7 +41,6 @@
           </tr>
           <% for (let item of items) { %>
           <tr>
-            <td><h5><%= item._id%></h5></td>
             <td><h5><%= item.itemID%></h5></td>
             <td><h5><%= item.itemStatus%></h5></td>
             <td><h5><%= item.description%></h5></td>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
   </head>
   <body class="login-page centered v-centered">
     <h1><i class="fab fa-app-store-ios"></i></h1>
@@ -10,10 +10,13 @@
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
+    <% if (message) { %>
+      <div class="user-message"><%= message %></div>
+      <% } %>
     <form action="/login" method="POST">
       <div class="item-field">
         <label id="emailLabel" for="email">EMAIL</label>
-        <br>
+        <br />
         <input
           id="emailInput"
           class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
@@ -26,7 +29,7 @@
       </div>
       <div class="login-password">
         <label id="passwordLabel" for="password">PASSWORD</label>
-        <br>
+        <br />
         <input
           id="passwordInput"
           class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
@@ -45,24 +48,32 @@
     </div>
     <div class="login-roles centered">
       <h3>Demo Roles</h3>
+      <h5>(click to auto fill credentials)</h5>
       <ul>
-        <li>Admin
-          <br>
-          <i id ="adminBtn" class="fas fa-user-shield"></i>
+        <li id="adminBtn">
+          Admin
+          <br />
+          <i class="fas fa-user-shield"></i>
         </li>
-        <li>Purchaser
-          <br>
-          <i id ="purchaserBtn" class="fas fa-user-clock"></i>
+        <li id="purchaserBtn">
+          Purchaser
+          <br />
+          <i class="fas fa-user-clock"></i>
         </li>
-        <li>Salesperson
-          <br>
-          <i id ="salespersonBtn" class="fas fa-comments-dollar"></i>
+        <li id="salespersonBtn">
+          Salesperson
+          <br />
+          <i class="fas fa-comments-dollar"></i>
         </li>
-        <li>Warehouse
-          <br>
-          <i id ="warehouseBtn" class="fas fa-warehouse"></i>
+        <li id="warehouseBtn">
+          Warehouse
+          <br />
+          <i class="fas fa-warehouse"></i>
         </li>
       </ul>
+    </div>
+    <div class="login-resetPassword">
+      <h4>Dont have an account? <a href="/signup">SIGN UP</a></h4>
     </div>
     <script src="/js/login.js"></script>
   </body>

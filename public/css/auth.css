@@ -58,3 +58,31 @@ li {
 #passwordLabel {
     margin-right: 180px;
 }
+
+#signup-emailInput {
+  margin-right: 230px;
+}
+
+#signup-passwordInput {
+  margin-right: 200px;
+}
+
+#signup-confirmPassword {
+  margin-right: 145px;
+}
+
+#signup-signupBtn {
+  margin: .4rem;
+}
+
+.signup-login-redirect {
+  margin-top: 3rem;
+}
+
+.signup-login-redirect a {
+  color: rgb(0, 132, 255);
+}
+
+.signup-login-redirect a:hover {
+  color: rgb(0, 183, 255);
+}

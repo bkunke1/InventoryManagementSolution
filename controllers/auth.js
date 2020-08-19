@@ -24,18 +24,25 @@ const transporter = nodemailer.createTransport(
 );
 
 exports.getLogin = (req, res, next) => {
-  let message = req.flash('error');
+  let message = req.flash('message');
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
   res.render('auth/login', {
     pageTitle: 'Login',
     path: 'dashboard/login',
-    errorMessage: message,
-    oldInput: { email: "", password: "" },
-    validationErrors: []
+    message: message,
+    errorMessage: error,
+    oldInput: { email: '', password: '' },
+    validationErrors: [],
   });
 };
 
@@ -49,8 +56,9 @@ exports.postLogin = (req, res, next) => {
       pageTitle: 'Login',
       path: 'dashboard/login',
       errorMessage: errors.array()[0].msg,
+      message: null,
       oldInput: { email: email, password: password },
-      validationErrors: errors.array()
+      validationErrors: errors.array(),
     });
   }
 
@@ -62,8 +70,9 @@ exports.postLogin = (req, res, next) => {
           pageTitle: 'Login',
           path: 'dashboard/login',
           errorMessage: 'Invalid email or password.',
+          message: null,
           oldInput: { email: email, password: password },
-          validationErrors: [] //leaving off as to not indicate which input was incorrect
+          validationErrors: [], //leaving off as to not indicate which input was incorrect
         });
       }
       bcrypt.compare(password, user.password).then((doMatch) => {
@@ -71,7 +80,7 @@ exports.postLogin = (req, res, next) => {
           req.session.loggedIn = true;
           req.session.user = user;
           return req.session.save((err) => {
-            console.log(err);
+            console.log('Login errors:', err);
             return res.redirect('/');
           });
         }
@@ -82,7 +91,7 @@ exports.postLogin = (req, res, next) => {
           path: 'dashboard/login',
           errorMessage: 'Invalid email or password.',
           oldInput: { email: email, password: password },
-          validationErrors: [] //leaving off as to not indicate which input was incorrect
+          validationErrors: [], //leaving off as to not indicate which input was incorrect
         });
       });
     })
@@ -93,7 +102,7 @@ exports.postLogin = (req, res, next) => {
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
-    console.log(err);
+    console.log('Log out errors:', err);
     res.redirect('/');
   });
 };
@@ -109,8 +118,8 @@ exports.getSignup = (req, res, next) => {
     pageTitle: 'Sign Up',
     mainMenuPath: 'signup',
     errorMessage: message,
-    oldInput: { email: "", password: "", confirmPassword: "" },
-    validationErrors: []
+    oldInput: { email: '', password: '', confirmPassword: '' },
+    validationErrors: [],
   });
 };
 
@@ -125,8 +134,12 @@ exports.postSignup = (req, res, next) => {
       pageTitle: 'Sign Up',
       mainMenuPath: 'signup',
       errorMessage: errors.array()[0].msg,
-      oldInput: { email: email, password: password, confirmPassword: req.body.confirmPassword },
-      validationErrors: errors.array()
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: req.body.confirmPassword,
+      },
+      validationErrors: errors.array(),
     });
   }
   bcrypt
@@ -135,6 +148,7 @@ exports.postSignup = (req, res, next) => {
       const user = new User({
         email: email,
         password: hashedPassword,
+        role: 'admin',
       });
       return user.save();
     })
@@ -188,6 +202,7 @@ exports.postReset = (req, res, next) => {
         return user.save();
       })
       .then((result) => {
+        req.flash('message', 'Reset email has been sent!');
         res.redirect('/');
         // commented out until there is a verified email to send from using sendGrid
         // transporter.sendMail({

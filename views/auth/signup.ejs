@@ -2,49 +2,55 @@
 <html lang="en">
   <head>
     <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/css/auth.css" />
   </head>
   <body class="login-page centered v-centered">
-    <h1>Signup page</h1>
+    <h1>Sign up</h1>
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
     <form action="/signup" method="POST">
       <div class="item-field">
-          <label for="email">Email:</label>
+          <label id="signup-emailInput" for="email">Email:</label>
+          <br>
           <input
             class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>"
             type="text"
             name="email"
-            size="64"
+            size="35"
             maxlength="64"
             value="<%= oldInput.email %>"
           />
         </div>
         <div class="item-field">
-          <label for="password">Password:</label>
+          <label id="signup-passwordInput" for="password">Password:</label>
+          <br>
           <input
           class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
             type="password"
             name="password"
-            size="16"
-            maxlength="16"
+            size="35"
+            maxlength="35"
             value="<%= oldInput.password %>"
           />
         </div>
         <div class="item-field">
-          <label for="confirmPassword">Confirm password:</label>
+          <label id="signup-confirmPassword" for="confirmPassword">Confirm password:</label>
+          <br>
           <input
           class="<%= validationErrors.find(e => e.param === 'confirmPassword') ? 'invalid' : '' %>"
             type="password"
             name="confirmPassword"
-            size="16"
-            maxlength="16"
+            size="35"
+            maxlength="35"
             value="<%= oldInput.confirmPassword %>"
           />
         </div>
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <button id="signup-signupBtn" type="submit" class="btn btn-primary">Sign Up</button>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="signup-login-redirect">
+          <h4>Already have an account? <a href="/login">LOGIN</a></h4>
+        </div>
   </form>
   </body>
 </html>

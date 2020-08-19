@@ -3,10 +3,13 @@ const { check, body } = require('express-validator/check');
 
 const adminController = require('../controllers/admin');
 const isAuth = require('../middleware/is-auth');
+const purchasingAuth = require('../middleware/purchasing-auth');
+const salesAuth = require('../middleware/sales-auth');
+const systemConfigAuth = require('../middleware/systemConfig-auth');
 
 const router = express.Router();
 
-router.get('/', adminController.getIndex);
+router.get('/', isAuth, adminController.getIndex);
 
 // Inventory routes
 
@@ -175,13 +178,13 @@ router.post('/inventory/category-delete', adminController.postDeleteCategory);
 
 
 
-// router.get('/so', adminController.getSalesOrder);
+router.get('/so', salesAuth,  adminController.getSalesOrder);
 
-// router.get('/po', adminController.getPurchaseOrder);
+router.get('/po', purchasingAuth, adminController.getPurchaseOrder);
 
-// router.get('/reports', adminController.getReports);
+router.get('/reports', adminController.getReports);
 
-// router.get('/sysconfig', adminController.getSysconfig);
+router.get('/sysconfig', systemConfigAuth, adminController.getSysconfig);
 
 // router.get('/transfer-item', adminController.getTransferItem);
 

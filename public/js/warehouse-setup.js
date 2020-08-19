@@ -1,1 +1,0 @@
-const editButton = document.getElementById('editButton');

@@ -32,6 +32,7 @@ body {
 .user-login-info-area {
   display: flex;
   margin-left: 100px;
+  margin-right: 350px;
 }
 
 .user-login-info-text {
@@ -43,7 +44,7 @@ body {
 }
 
 .user-login-info__log-out-btn {
-  color: #45a29e;
+  color: #081fa3;
   font-size: 1rem;
 }
 
@@ -86,11 +87,12 @@ div#navbar li a {
   border: 2px solid black;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background-image: linear-gradient(180deg, #45a29e, #1f2833);
+  /* background-image: linear-gradient(180deg, #45a29e, #1f2833); */
+  background-image: linear-gradient(180deg, #0060df, #1f2833);
 }
 
 div#navbar li a:hover {
-  background-image: linear-gradient(180deg, #66fcf1, #1f2833);
+  background-image: linear-gradient(180deg, #00a0df, #1f2833);
 }
 
 div#navbar li .active {
@@ -98,7 +100,9 @@ div#navbar li .active {
   font-weight: 700;
   border: 2px solid #1f2833;
   background-image: none;
-  background-color: #c5c6c7;
+  /* background-color: #c5c6c7; */
+  /* background-color: #079ff7; */
+  background-image: linear-gradient(180deg, #06a4ff, #00c3ca);
 }
 
 #sub-menu {
@@ -193,7 +197,8 @@ table {
 
 .user-message {
   margin: auto;
-  width: 90%;
+  margin-bottom: 1rem;
+  width: 25%;
   border: 1px solid darkblue;
   padding: 0.5rem;
   border-radius: 3px;
@@ -216,6 +221,10 @@ table {
   justify-content: center;
 }
 
+.centered-text {
+  text-align: center;
+}
+
 .flex {
   display: flex;
 }
@@ -227,4 +236,14 @@ table {
 
 .inventory-setup--rightCol {
   width: 50%;
+}
+
+.items-table {
+  margin: auto;  
+}
+
+.items-table td {
+  text-align: center;
+  padding-right: .4rem;
+  padding-left: .4rem;
 }
