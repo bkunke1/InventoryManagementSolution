@@ -247,3 +247,14 @@ table {
   padding-right: .4rem;
   padding-left: .4rem;
 }
+
+#uomFieldsRight {
+  width: 50%;
+  border: red solid 2px;
+  overflow: scroll:
+}
+
+#uomFieldsLeft {
+  width: 50%;
+  border: blue solid 2px;
+}

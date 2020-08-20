@@ -67,6 +67,14 @@ const itemSchema = new Schema({
     type: String,
     required: false
   },
+  avgCost: {
+    type: Number,
+    required: false
+  },
+  lotCost: {
+    type: Object,
+    required: false
+  }
 });
 
 module.exports = mongoose.model('Item', itemSchema);

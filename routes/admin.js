@@ -84,6 +84,8 @@ router.get('/inventory/item/:itemId', adminController.getItem);
 
 // router.get('/edit-item', adminController.getEditItem);
 
+router.get('/inventory/item/:itemID/', adminController.getItemLotCost);
+
 router.post('/inventory/update-item', adminController.postUpdateItem);
 
 router.get('/inventory/previousItem/:itemId', adminController.getPreviousItem);

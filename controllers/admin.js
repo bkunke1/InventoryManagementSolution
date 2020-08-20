@@ -40,10 +40,16 @@ exports.getItem = (req, res, next) => {
     .then((warehouseList) => {
       Item.findById(itemId)
         .then((item) => {
+          const itemLotList = item.lotCost;
+          console.log(itemLotList);
           UOM.find()
             .then((uomList) => {
               Category.find()
                 .then((categoryList) => {
+                  //testing lotcost displays
+                    // itemLotList.forEach(function(lot) {
+                    //   console.log(lot.lotNum);
+                    // });
                   res.render('./dashboard/inventory/item', {
                     item: item,
                     pageTitle: 'Item Profile',
@@ -53,6 +59,7 @@ exports.getItem = (req, res, next) => {
                     warehouseList: warehouseList,
                     uomList: uomList,
                     categoryList: categoryList,
+                    itemLotList: itemLotList
                   });
                 })
                 .catch((err) => {
@@ -98,6 +105,10 @@ exports.searchItemByNewID = (req, res, next) => {
       }
     });
   }
+};
+
+exports.getItemLotCost = (req, res, next) => {
+  console.log('button pressed');
 };
 
 exports.getItemMaintenance = (req, res, next) => {
@@ -185,6 +196,8 @@ exports.postAddItem = (req, res, next) => {
   const totalQtyOnHand = 0;
   const qtyOnOrder = 0;
   const qtyAllocated = 0;
+  const avgCost = 0;
+  const lotCost = {};
 
   const errors = validationResult(req);
   console.log(errors);
@@ -236,6 +249,8 @@ exports.postAddItem = (req, res, next) => {
       qtyOnOrder: qtyOnOrder,
       qtyAllocated: qtyAllocated,
       userId: req.session.user.email,
+      avgCost: avgCost,
+      lotCost: lotCost,
     });
     item
       .save()
@@ -278,6 +293,8 @@ exports.postUpdateItem = (req, res, next) => {
   const qtyAllocated = req.body.qtyAllocated;
   const userId = req.body.userId;
   const id = req.body._id;
+  const avgCost = req.body.avgCost;
+  const lotCost = req.body.lotCost;
 
   Item.findById(id)
     .then((item) => {
@@ -296,6 +313,8 @@ exports.postUpdateItem = (req, res, next) => {
       item.qtyOnOrder = qtyOnOrder;
       item.qtyAllocated = qtyAllocated;
       item.userId = userId;
+      item.avgCost = avgCost;
+      item.lotCost = lotCost;
       return item.save();
     })
     .then((result) => {
