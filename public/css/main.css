@@ -258,3 +258,7 @@ table {
   width: 50%;
   border: blue solid 2px;
 }
+
+.layoutBorder {
+  border: red solid 1px;
+}

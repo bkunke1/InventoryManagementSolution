@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/purchaseOrder.css" />
   </head>
   <body>
     <%- include('../includes/banner.ejs') %>
@@ -24,7 +25,144 @@
     </div>
 
     <div id="workspace">
-      <h1>purchase orders homepage</h1>
+      <form action="/po/create-new" method="POST" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="layoutBorder flex">
+          <h1>Order # <%  %></h1>
+
+          <a href="/inventory/po/previousItem/"
+            ><button id="backwardsBtn" type="submit">
+              <svg height="20" width="20">
+                <polygon
+                  points="20,20 0,10 20,0"
+                  style="
+                    fill: rgb(87, 87, 87);
+                    stroke: rgb(3, 3, 3);
+                    stroke-width: 1;
+                  "
+                />
+              </svg></button
+          ></a>
+
+          <a href="/inventory/nextItem/"
+            ><button id="forwardsBtn" type="submit">
+              <svg height="20" width="20">
+                <polygon
+                  points="0,20 20,10 0,0"
+                  style="
+                    fill: rgb(87, 87, 87);
+                    stroke: rgb(3, 3, 3);
+                    stroke-width: 1;
+                  "
+                />
+              </svg>
+            </button>
+          </a>
+
+          <button class="poBtns">Search</button>
+          <select name="poSelection" id="poSelection" class="poBtns">
+            <option value="ALL" selected>ALL</option>
+            <option value="OPEN">OPEN</option>
+            <option value="CLOSED">CLOSED</option>
+          </select>
+          <h1>***PO Status***</h1>
+        </div>
+        <div class="layoutBorder">
+          <label for="vendor">Vendor:</label>
+          <input type="text" name="vendor" value="**vendor" size="30" />
+        </div>
+        <div class="layoutBorder">
+          <label for="orderDate">Order Date:</label>
+          <input type="date" name="orderDate" value="**orderDate" size="8" />
+          <label for="expectedDate">Expected Date:</label>
+          <input
+            type="date"
+            name="expectedDate"
+            value="**expectedDate"
+            size="8"
+          />
+          <label for="shippingMethod">Shipping Method:</label>
+          <select name="shippingMethod" id="shippingMethod">
+            <option value="DELIVERY" selected>loopThruOptions</option>
+            <option value="PICKUP">PICKUP</option>
+            <option value="LTL">LTL</option>
+          </select>
+          <label for="terms">Terms:</label>
+          <select name="terms" id="terms">
+            <option value="ALL" selected>loopThruOptions</option>
+            <option value="NET15">NET15</option>
+            <option value="NET30">NET30</option>
+            <option value="COD">COD</option>
+          </select>
+          <h3>Submitted by: **USER</h3>
+        </div>
+        <div class="layoutBorder flex">
+          <div>
+            <h1>Ship to:</h1>
+          </div>
+          <div class="companyInfo">
+            <h6>company name</h6>
+            <h6>company address</h6>
+            <h6>company phone</h6>
+          </div>
+          <div>
+            <button>Whs</button>
+          </div>
+        </div>
+        <hr />
+        <h1>Line Items</h1>
+        <div class="layoutBorder">
+          <table id="poTable">
+            <tr>
+              <th class="poTableLine">Line</th>
+              <th class="poTableDescription">Description</th>
+              <th class="poTableQuantity">Quantity</th>
+              <th class="poTableUOM">UOM</th>
+              <th class="poTableCost">Cost</th>
+              <th class="poTableExtended">Extended</th>
+              <th class="poTableDeleteBtn"></th>
+            </tr>
+            <tr>
+              <td class="poTableLine"><input type="text" name="">1</td>
+              <td class="poTableDescription">WHOLE DUCK</td>
+              <td class="poTableQuantity">5</td>
+              <td class="poTableUOM">EACH</td>
+              <td class="poTableCost">5.00</td>
+              <td class="poTableExtended">25.00</td>
+              <td class="poTableDeleteBtn">X</td>
+            </tr>
+            <tr>
+              <td class="poTableLine"><button id="poTableAddLineBtn" type="button">+</button></td>
+              <td class="poTableDescription"></td>
+              <td class="poTableQuantity"></td>
+              <td class="poTableUOM"></td>
+              <td class="poTableCost"></td>
+              <td class="poTableExtended"></td>
+              <td class="poTableDeleteBtn"></td>
+            </tr>
+            <tfoot>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>TOTAL:</td>
+              <td>SUM</td>
+            </tfoot>
+          </table>
+          <h4 class="poSum">SUM: $125.00</h4>
+          <button id="poSaveBtn" class="poSum">Save</button>
+        </div>
+      </form>
     </div>
+
+    <button>New</button>
+    <button>Delete</button>
+    <button>Print PO</button>
+    <button>Print Receiver</button>
+    <button>Receive PO</button>
+
+
+    <script src="/js/purchaseOrder.js"></script>
   </body>
 </html>

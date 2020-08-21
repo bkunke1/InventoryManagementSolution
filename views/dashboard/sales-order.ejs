@@ -24,7 +24,104 @@
     </div>
 
     <div id="workspace">
-      <h1>sales order homepage</h1>
+      <div class="layoutBorder flex">
+        <h1>Order # ***</h1>
+        <form
+          action="/inventory/po/previousItem/"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
+          <button id="backwardsBtn" type="submit">
+            <svg height="20" width="20">
+              <polygon
+                points="20,20 0,10 20,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
+            </svg>
+          </button>
+        </form>
+        <form
+          action="/inventory/nextItem/"
+          method="GET"
+          class="inventory-toolbar-items"
+        >
+          <button id="forwardsBtn" type="submit">
+            <svg height="20" width="20">
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
+            </svg>
+          </button>
+        </form>
+        <button>Search</button>
+        <select name="poSelection" id="poSelection">
+          <option value="ALL" selected>ALL</option>
+          <option value="OPEN" >OPEN</option>
+          <option value="CLOSED" >CLOSED</option>
+        </select>
+        <h1>***PO Status***</h1>
+      </div>
+      <div class="layoutBorder">
+        <label for="orderDate">Order Date:</label>
+        <input
+            type="date"
+            name="orderDate"
+            value="**orderDate"
+            size="8"
+          />
+          <label for="deliveryDate">Delivery Date:</label>
+        <input
+            type="date"
+            name="deliveryDate"
+            value="**deliveryDate"
+            size="8"
+          />
+          <label for="paymentTerms">Payment Terms:</label>
+          <select name="paymentTerms" id="paymentTerms">
+            <option value="ALL" selected>loopThruOptions</option>
+            <option value="NET15" >NET15</option>
+            <option value="NET30" >NET30</option>
+            <option value="COD" >COD</option>
+          </select>
+      </div>
+      <div class="layoutBorder flex">
+        <div>
+          <h1>Bill to:</h1>
+        </div>
+        
+        <div class="companyInfo">
+          <h6>company name</h6>
+          <h6>company address</h6>
+          <h6>company phone</h6>
+        </div>
+        <div>
+          <h1>Bill to:</h1>
+        </div>
+        <div class="shippingInfo">
+          <h6>customer no</h6>
+          <h6>customer name</h6>
+          <h6>customer address</h6>
+          <h6>customer phone</h6>
+        </div>
+      </div>
+      <div class="layoutBorder flex">
+        <h6>Customer PO: **</h6>
+        <h6>PO: **</h6>
+        <h6>Customer PO: **</h6>
+        <h6>Customer PO: **</h6>
+        <h6>Customer PO: **</h6>
+        <h6>Customer PO: **</h6>
+      </div>
+      
     </div>
   </body>
 </html>
