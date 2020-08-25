@@ -25,10 +25,11 @@
     </div>
 
     <div id="workspace">
-      <form action="/po/create-new" method="POST" autocomplete="off">
+      <form action="/po/create-new" method="POST" autocomplete="off" onsubmit="return sendTableData()">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="layoutBorder flex">
           <h1>Order # <%  %></h1>
+          <input type="hidden" name="orderNum" value="2">
 
           <a href="/inventory/po/previousItem/"
             ><button id="backwardsBtn" type="submit">
@@ -95,6 +96,7 @@
             <option value="COD">COD</option>
           </select>
           <h3>Submitted by: **USER</h3>
+          <input type="hidden" name="createdBy" value="userName">
         </div>
         <div class="layoutBorder flex">
           <div>
@@ -115,24 +117,17 @@
           <table id="poTable">
             <tr>
               <th class="poTableLine">Line</th>
+              <th class="poTableItemNum">Item Num</th>
               <th class="poTableDescription">Description</th>
               <th class="poTableQuantity">Quantity</th>
               <th class="poTableUOM">UOM</th>
               <th class="poTableCost">Cost</th>
               <th class="poTableExtended">Extended</th>
               <th class="poTableDeleteBtn"></th>
-            </tr>
-            <tr>
-              <td class="poTableLine"><input type="text" name="">1</td>
-              <td class="poTableDescription">WHOLE DUCK</td>
-              <td class="poTableQuantity">5</td>
-              <td class="poTableUOM">EACH</td>
-              <td class="poTableCost">5.00</td>
-              <td class="poTableExtended">25.00</td>
-              <td class="poTableDeleteBtn">X</td>
-            </tr>
+            </tr>            
             <tr>
               <td class="poTableLine"><button id="poTableAddLineBtn" type="button">+</button></td>
+              <td class="poTableItemNum"></td>
               <td class="poTableDescription"></td>
               <td class="poTableQuantity"></td>
               <td class="poTableUOM"></td>
@@ -140,16 +135,18 @@
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
             </tr>
-            <tfoot>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>TOTAL:</td>
-              <td>SUM</td>
-            </tfoot>
+            <tr>
+              <td class="poTableLine">1</td>
+              <td class="poTableItemNum" contenteditable>test</td>
+              <td class="poTableDescription" contenteditable>WHOLE DUCK</td>
+              <td class="poTableQuantity" contenteditable>5</td>
+              <td class="poTableUOM">EACH</td>
+              <td class="poTableCost" contenteditable>5.00</td>
+              <td class="poTableExtended">25.00</td>
+              <td class="poTableDeleteBtn">X</td>
+            </tr>
           </table>
+          <input id="poTableData" type="hidden" name="poTableData" value="">
           <h4 class="poSum">SUM: $125.00</h4>
           <button id="poSaveBtn" class="poSum">Save</button>
         </div>

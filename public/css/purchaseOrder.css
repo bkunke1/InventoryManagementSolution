@@ -19,8 +19,13 @@ td {
     text-align: center;
 }
 
+.poTableItemNum {
+    width: 10%;
+    text-align: center;
+}
+
 .poTableDescription {
-    width: 57%;
+    width: 47%;
     text-align: left;
     padding-left: 1.2rem;
 }

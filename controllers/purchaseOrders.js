@@ -9,32 +9,43 @@ const PurchaseOrder = require('../models/purchaseOrder');
 
 exports.postCreatePO = (req, res, next) => {
   const poNum = req.body.poNum;
-  const status = req.body.status;
+  const poSelection = req.body.poSelection;
+  const poStatus = req.body.poStatus;
+  const vendor = req.body.vendor;
   const orderDate = req.body.orderDate;
   const expectedDate = req.body.expectedDate;
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
   const shipToLocation = req.body.shipToLocation;
-  const lineDetails = req.body.lineDetails;
+  const poTableData = JSON.parse(req.body.poTableData);
 
-  console.log(req.body)
-}
-   
-    
-//   },
-//   lineDetails: [
-//     { line: {
-        
-//     },
-//     itemID: {
-       
-//     },
-//     itemDescription: {
-        
-//     },
-//     qtyOrdered: {
-       
-//     },
-//     cost: {
-       
+  console.log(req.body);
+
+  const purchaseOrder = new PurchaseOrder({
+    poNum: poNum,
+    status: 'new',
+    vendorNum: vendor,
+    orderDate: orderDate,
+    expectedDate: expectedDate,
+    shippingMethod: shippingMethod,
+    terms: terms,
+    createdBy: createdBy,
+    shipToLocation: 'needTofillin',
+    poTableData: poTableData
+  });
+  purchaseOrder
+    .save()
+    .then((result) => {
+      console.log('Created Purchase Order');
+      req.flash('createdMessage', 'PO was created!');
+      res.redirect('/po');;
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect('/500');
+    });
+
+
+  
+};
