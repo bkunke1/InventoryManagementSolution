@@ -46,6 +46,7 @@ poTableAddLineBtn.addEventListener('click', (event) => {
   newPOTableUOM.innerText = `EACH`;
   newPOTableCost.innerText = `1.00`;
   newPOTableExtended.innerText = `99.00`;
+  newPOTableDeleteBtn.innerHTML = `<i id="poLineDeleteBtn" class="fas fa-minus-circle"></i>`;
 });
 
 const poOrganizeTableData = () => {
@@ -67,7 +68,8 @@ const poOrganizeTableData = () => {
       itemID: data[1].textContent,
       itemDescription: data[2].textContent,
       qtyOrdered: data[3].textContent,
-      cost: data[4].textContent,
+      uom: data[4].textContent,
+      cost: data[5].textContent,
     };
 
     console.log('line', line);
@@ -80,6 +82,30 @@ const poOrganizeTableData = () => {
 const sendTableData = () => {
   const poTableData = document.getElementById('poTableData');
   poTableData.value = JSON.stringify(poOrganizeTableData());
-//   poOrganizeTableData();
+  //   poOrganizeTableData();
   return true;
 };
+
+//populates order date and expected date fields
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+document.querySelector('#orderDateInput').valueAsDate = today;
+document.querySelector('#expectedDateInput').valueAsDate = tomorrow;
+
+// deletes po Line and udpates line #s
+const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
+poLineDeleteBtn.addEventListener('click', (event) => {
+  const lineNum = event.target.closest('tr').firstElementChild.textContent;
+  console.log('deleted poLine:', +lineNum);
+  poTable.deleteRow(+lineNum + 1);
+
+  const updateLineNums = () => {
+      const lines = poTable.getElementsByClassName('poTableLine');
+        for (let i = 2; i <= lines.length - 1; i++ ) {
+            console.log(lines[i].textContent);
+            lines[i].textContent = i - 1;
+        }       
+  }
+  updateLineNums();
+});

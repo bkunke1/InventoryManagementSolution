@@ -25,14 +25,14 @@
     </div>
 
     <div id="workspace">
-      <form action="/po/create-new" method="POST" autocomplete="off" onsubmit="return sendTableData()">
+      <form action="/po/save" method="POST" autocomplete="off" onsubmit="return sendTableData()">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="layoutBorder flex">
-          <h1>Order # <%  %></h1>
-          <input type="hidden" name="orderNum" value="2">
+          <h1>Order # <%= newPONumber %></h1>
+          <input type="hidden" name="poNum" value="<%= newPONumber %>">
 
           <a href="/inventory/po/previousItem/"
-            ><button id="backwardsBtn" type="submit">
+            ><button id="backwardsBtn" type="submit" class="poArrowSearchBtnLeft">
               <svg height="20" width="20">
                 <polygon
                   points="20,20 0,10 20,0"
@@ -46,7 +46,7 @@
           ></a>
 
           <a href="/inventory/nextItem/"
-            ><button id="forwardsBtn" type="submit">
+            ><button id="forwardsBtn" type="submit" class="poArrowSearchBtnRight">
               <svg height="20" width="20">
                 <polygon
                   points="0,20 20,10 0,0"
@@ -66,50 +66,46 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select>
-          <h1>***PO Status***</h1>
+          <h1 class="poStatusText">PO Status: **NEW**</h1>
+          <input type="hidden" name="poStatus" value="NEW">
         </div>
-        <div class="layoutBorder">
+        <div id="vendorSelection" class="layoutBorder">
           <label for="vendor">Vendor:</label>
-          <input type="text" name="vendor" value="**vendor" size="30" />
+          <input type="text" name="vendor" value="SAMPLE VENDOR" size="30" />
+          <button type="button" tooltip="test"><i class="fas fa-user-tie"></i></button>
         </div>
         <div class="layoutBorder">
           <label for="orderDate">Order Date:</label>
-          <input type="date" name="orderDate" value="**orderDate" size="8" />
+          <input id="orderDateInput" class="poSelectFields" type="date" name="orderDate" size="8" />
           <label for="expectedDate">Expected Date:</label>
           <input
+            id="expectedDateInput"
+            class="poSelectFields"
             type="date"
             name="expectedDate"
-            value="**expectedDate"
             size="8"
           />
           <label for="shippingMethod">Shipping Method:</label>
-          <select name="shippingMethod" id="shippingMethod">
+          <select name="shippingMethod" id="shippingMethod" class="poSelectFields">
             <option value="DELIVERY" selected>loopThruOptions</option>
             <option value="PICKUP">PICKUP</option>
             <option value="LTL">LTL</option>
-          </select>
-          <label for="terms">Terms:</label>
-          <select name="terms" id="terms">
-            <option value="ALL" selected>loopThruOptions</option>
-            <option value="NET15">NET15</option>
-            <option value="NET30">NET30</option>
-            <option value="COD">COD</option>
-          </select>
-          <h3>Submitted by: **USER</h3>
+          </select>         
+          <label for="shipToLocation">Ship to Loation:</label>
+            <select name="shipToLocation" id="shipToLocation" class="poSelectFields">
+                <option value="loopThruOptions">loopThruOptions</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <label for="terms">Terms:</label>
+            <select name="terms" id="terms" class="poSelectFields">
+              <option value="ALL" selected>loopThruOptions</option>
+              <option value="NET15">NET15</option>
+              <option value="NET30">NET30</option>
+              <option value="COD">COD</option>
+            </select>
+          <h3>Submitted by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="userName">
-        </div>
-        <div class="layoutBorder flex">
-          <div>
-            <h1>Ship to:</h1>
-          </div>
-          <div class="companyInfo">
-            <h6>company name</h6>
-            <h6>company address</h6>
-            <h6>company phone</h6>
-          </div>
-          <div>
-            <button>Whs</button>
-          </div>
         </div>
         <hr />
         <h1>Line Items</h1>
@@ -143,11 +139,11 @@
               <td class="poTableUOM">EACH</td>
               <td class="poTableCost" contenteditable>5.00</td>
               <td class="poTableExtended">25.00</td>
-              <td class="poTableDeleteBtn">X</td>
+              <td class="poTableDeleteBtn"><i id="poLineDeleteBtn" class="fas fa-minus-circle"></i></td>
             </tr>
           </table>
           <input id="poTableData" type="hidden" name="poTableData" value="">
-          <h4 class="poSum">SUM: $125.00</h4>
+          <h4 class="poSum">SUM: $xxx.xx</h4>
           <button id="poSaveBtn" class="poSum">Save</button>
         </div>
       </form>

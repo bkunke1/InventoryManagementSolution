@@ -57,8 +57,12 @@ const purchaseOrderSchema = new Schema({
         type: String,
         required: true
     },
+    uom: {
+        type: String,
+        required: true
+    },
     cost: {
-        type: Number,
+        type: String,
         required: true
     }
     }

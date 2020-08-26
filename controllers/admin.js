@@ -407,14 +407,6 @@ exports.getSalesOrder = (req, res, next) => {
   });
 };
 
-exports.getPurchaseOrder = (req, res, next) => {
-  res.render('dashboard/purchase-order', {
-    pageTitle: 'Purchase Orders',
-    mainMenuPath: 'purchaseOrders',
-    subMenuPath: '',
-  });
-};
-
 exports.getReports = (req, res, next) => {
   res.render('dashboard/reports', {
     pageTitle: 'Reports',

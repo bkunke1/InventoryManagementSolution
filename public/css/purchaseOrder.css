@@ -12,6 +12,7 @@
 
 td {
     padding: 0 1rem;
+    padding: .15rem;
 }
 
 .poTableLine {
@@ -56,6 +57,7 @@ td {
 
 .poTableDeleteBtn {
     width: 3%;
+    text-align: center;
 }
 
 .poSum {
@@ -66,4 +68,33 @@ td {
     height: 20px;
     margin: 1.7% 1rem;
 
+}
+
+.poArrowSearchBtnLeft {
+    margin: 1.5rem 1rem 0 3rem;
+}
+
+.poArrowSearchBtnRight {
+    margin: 1.5rem 1rem 0 0;
+}
+
+.poStatusText {
+    margin-left: 2rem;
+}
+
+#vendorSelection {
+    margin-bottom: 1rem;
+}
+
+.poSelectFields {
+    margin-right: 1rem;
+}
+
+#poLineDeleteBtn {
+    color: red;
+    margin: auto;
+}
+
+#poLineDeleteBtn :hover {
+    color: rgb(226, 204, 195);
 }
