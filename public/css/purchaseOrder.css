@@ -18,6 +18,7 @@ td {
 .poTableLine {
     width: 5%;
     text-align: center;
+    background: darkgray;
 }
 
 .poTableItemNum {
@@ -31,6 +32,10 @@ td {
     padding-left: 1.2rem;
 }
 
+.poTableFocus:focus {
+    background: white;
+}
+
 .poTableQuantity {
     width: 10%;
     text-align: right;
@@ -39,8 +44,7 @@ td {
 
 .poTableUOM {
     width: 5%;
-    text-align: left;
-    padding-left: 1rem;
+    text-align: center;
 }
 
 .poTableCost {
@@ -61,7 +65,11 @@ td {
 }
 
 .poSum {
-    margin-left: 86%;
+    margin-left: 1rem;
+}
+
+.poSumLabel {
+    margin-left: 84%;
 }
 
 .poBtns {
@@ -91,10 +99,10 @@ td {
 }
 
 #poLineDeleteBtn {
-    color: red;
+    color: rgb(173, 0, 0);
     margin: auto;
 }
 
-#poLineDeleteBtn :hover {
-    color: rgb(226, 204, 195);
+#poLineDeleteBtn:hover {
+    color: red;
 }

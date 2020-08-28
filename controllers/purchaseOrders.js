@@ -6,6 +6,8 @@ const Warehouse = require('../models/warehouse');
 const UOM = require('../models/uom');
 const Category = require('../models/category');
 const PurchaseOrder = require('../models/purchaseOrder');
+const uom = require('../models/uom');
+const { name } = require('ejs');
 
 exports.getPurchaseOrder = (req, res, next) => {
   res.render('purchaseOrder/purchase-order-blank', {
@@ -70,3 +72,10 @@ exports.postCreatePO = (req, res, next) => {
       res.redirect('/500');
     });
 };
+
+// sends uom table data to front end
+exports.getUOMs = (req, res, next) => {
+        res.status(200).json({
+            uoms: [{ name: 'EACH', conversionQty: 1 }, { name: 'CS12', conversionQty: 12 }]
+        })
+      };

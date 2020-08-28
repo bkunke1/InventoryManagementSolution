@@ -1,5 +1,31 @@
 // const { getNextItem } = require("../../controllers/admin");
 
+//not sure if this is here by mistake
+// const { options } = require('../../routes/auth');
+
+// gets UOM data from back end
+let UOMs;
+const getUOM = () => {
+  const csrf = document.querySelector('[name=_csrf]').value;
+
+  fetch('/po/getUOMs/', {
+    method: 'GET',
+    headers: {
+      'csrf-token': csrf,
+    },
+  })
+    .then((result) => {
+      return result.json();
+    })
+    .then((data) => {
+      UOMs = data.uoms;
+    })
+    .catch((err) => {
+      console.log('err', err);
+    });
+};
+getUOM();
+
 const poTable = document.getElementById('poTable');
 
 const poTableAddLineBtn = document.getElementById('poTableAddLineBtn');
@@ -28,7 +54,15 @@ poTableAddLineBtn.addEventListener('click', (event) => {
   const newPOTableExtended = newRow.insertCell(6);
   const newPOTableDeleteBtn = newRow.insertCell(7);
 
-  newPOTableDeleteBtn.innerHTML = `<a href="#">Delete</a>`;
+  newPOTableDeleteBtn.innerHTML = '<a href="#">Delete</a>';
+  newPOTableUOM.innerHTML = '<select></select>';
+
+  console.log(UOMs);
+  for (uom of UOMs) {
+    newPOTableUOM.firstElementChild.add(
+      new Option(uom.name, uom.conversionQty)
+    );
+  }
 
   newPOTableLine.classList.add('poTableLine');
   newPOTableItemNum.classList.add('poTableItemNum');
@@ -39,14 +73,50 @@ poTableAddLineBtn.addEventListener('click', (event) => {
   newPOTableExtended.classList.add('poTableExtended');
   newPOTableDeleteBtn.classList.add('poTableDeleteBtn');
 
+  newPOTableItemNum.classList.add('poTableFocus');
+  newPOTableDescription.classList.add('poTableFocus');
+  newPOTableQuantity.classList.add('poTableFocus');
+  newPOTableUOM.classList.add('poTableFocus');
+  newPOTableCost.classList.add('poTableFocus');
+
+  newPOTableItemNum.contentEditable = 'true';
+  newPOTableDescription.contentEditable = 'true';
+  newPOTableQuantity.contentEditable = 'true';
+  newPOTableUOM.contentEditable = 'true';
+  newPOTableCost.contentEditable = 'true';
+
+  // setup listeners to update extended cost when updating qty, uom or cost
+  newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+  newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+  newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+
   newPOTableLine.innerText = newPOTableItemNumCalc();
-  newPOTableItemNum.innerText = `123`;
-  newPOTableDescription.innerText = `new item desc`.toUpperCase();
-  newPOTableQuantity.innerText = `99`;
-  newPOTableUOM.innerText = `EACH`;
-  newPOTableCost.innerText = `1.00`;
-  newPOTableExtended.innerText = `99.00`;
-  newPOTableDeleteBtn.innerHTML = `<i id="poLineDeleteBtn" class="fas fa-minus-circle"></i>`;
+  newPOTableItemNum.innerText = '123';
+  newPOTableDescription.innerText = 'new item desc'.toUpperCase();
+  newPOTableQuantity.innerText = '99';
+  //   newPOTableUOM.innerText = 'EACH';
+  newPOTableCost.innerText = '1.00';
+  newPOTableExtended.innerText = '99.00';
+  newPOTableDeleteBtn.innerHTML =
+    '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
+
+  // adds event listener to new line and removes from the old allowing tabbing into a new line item
+  const newLineTabListener = () => {
+      function tabToNewLine (e) {
+        if (event.keyCode == 9) {
+                  console.log('success');
+                }
+      };
+
+      const listOfLines = poTable.getElementsByClassName('poTableCost');
+      for (let i = 0; i <= listOfLines.length - 1; i++) {
+          if (i !== listOfLines.length - 1) {
+              listOfLines[i].removeEventListener('keydown', tabToNewLine);
+          }
+          listOfLines[i].addEventListener('keydown', tabToNewLine)
+      }
+  }
+  newLineTabListener();
 });
 
 const poOrganizeTableData = () => {
@@ -59,7 +129,7 @@ const poOrganizeTableData = () => {
     // const line = {}
 
     const data = rows[i].getElementsByTagName('td');
-    console.log(data);
+    // console.log(data);
     // for (let i = 0; i < data.length - 1; i++) {
     //     // console.log(data[i].textContent);
     //     // line.push(data[i].textContent);
@@ -94,18 +164,42 @@ document.querySelector('#orderDateInput').valueAsDate = today;
 document.querySelector('#expectedDateInput').valueAsDate = tomorrow;
 
 // deletes po Line and udpates line #s
-const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
-poLineDeleteBtn.addEventListener('click', (event) => {
-  const lineNum = event.target.closest('tr').firstElementChild.textContent;
+// const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
+const poLineDeleteBtn = (lineBtn) => {
+  const lineNum = lineBtn.closest('tr').firstElementChild.textContent;
   console.log('deleted poLine:', +lineNum);
   poTable.deleteRow(+lineNum + 1);
 
   const updateLineNums = () => {
-      const lines = poTable.getElementsByClassName('poTableLine');
-        for (let i = 2; i <= lines.length - 1; i++ ) {
-            console.log(lines[i].textContent);
-            lines[i].textContent = i - 1;
-        }       
-  }
+    const lines = poTable.getElementsByClassName('poTableLine');
+    for (let i = 2; i <= lines.length - 1; i++) {
+      console.log(lines[i].textContent);
+      lines[i].textContent = i - 1;
+    }
+  };
   updateLineNums();
-});
+};
+
+// updates extended cost
+const poLineUpdateExtCost = (element) => {
+  const qty = element.parentElement.querySelector('.poTableQuantity')
+    .textContent;
+  const uom = element.parentElement.querySelector('.poTableUOM').textContent;
+  const cost = element.parentElement.querySelector('.poTableCost').textContent;
+  const poSum = document.querySelector('.poSum');
+  let extCost = element.parentElement.querySelector('.poTableExtended');
+  let extCostTotal = (+qty * 1 * +cost).toFixed(2);
+  extCost.innerText = extCostTotal;
+
+  poSum.textContent = poSumUpdate();
+};
+
+// updated po sum
+const poSumUpdate = () => {
+  let sum = 0;
+  const listOfLines = poTable.getElementsByClassName('poTableExtended');
+  for (let i = 2; i <= listOfLines.length - 1; i++) {
+    sum = sum + +listOfLines[i].textContent;
+  }
+  return sum.toFixed(2);
+};

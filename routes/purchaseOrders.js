@@ -14,4 +14,8 @@ router.get('/po/new', purchasingAuth, purchaseOrderController.getNewPurchaseOrde
 
 router.post('/po/save', purchasingAuth, purchaseOrderController.postCreatePO);
 
+
+router.get('/po/getUOMs/', purchasingAuth, purchaseOrderController.getUOMs);
+
+
 module.exports = router;
