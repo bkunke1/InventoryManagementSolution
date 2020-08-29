@@ -18,15 +18,23 @@ exports.getPurchaseOrder = (req, res, next) => {
 };
 
 exports.getNewPurchaseOrder = (req, res, next) => {
-  PurchaseOrder.find()
-    .then((poList) => {
-      res.render('purchaseOrder/purchase-order-new', {
-        pageTitle: 'New Purchase Orders',
-        mainMenuPath: 'purchaseOrders',
-        subMenuPath: '',
-        newPONumber: ++poList.length,
-        createdBy: req.session.user.email
-      });
+  UOM.find()
+    .then((uomList) => {
+      PurchaseOrder.find()
+        .then((poList) => {
+          console.log(uomList);
+          res.render('purchaseOrder/purchase-order-new', {
+            pageTitle: 'New Purchase Orders',
+            mainMenuPath: 'purchaseOrders',
+            subMenuPath: '',
+            newPONumber: ++poList.length,
+            createdBy: req.session.user.email,
+            shippingMethods: uomList, // should be updated to shippingMethod once crud is setup
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -75,7 +83,17 @@ exports.postCreatePO = (req, res, next) => {
 
 // sends uom table data to front end
 exports.getUOMs = (req, res, next) => {
-        res.status(200).json({
-            uoms: [{ name: 'EACH', conversionQty: 1 }, { name: 'CS12', conversionQty: 12 }]
-        })
-      };
+  res.status(200).json({
+    uoms: [
+      { name: 'EACH', conversionQty: 1 },
+      { name: 'CS12', conversionQty: 12 },
+    ],
+  });
+};
+
+// sends uom table data to front end
+exports.getShippingMethods = (req, res, next) => {
+  res.status(200).json({
+    shippingMethods: ['DOCK PICKUP', 'DELIVERY', 'LTL', 'DROP SHIP'],
+  });
+};

@@ -17,5 +17,6 @@ router.post('/po/save', purchasingAuth, purchaseOrderController.postCreatePO);
 
 router.get('/po/getUOMs/', purchasingAuth, purchaseOrderController.getUOMs);
 
+router.get('/po/getShippingMethods/', purchasingAuth, purchaseOrderController.getShippingMethods);
 
 module.exports = router;

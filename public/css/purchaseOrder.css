@@ -21,6 +21,11 @@ td {
     background: darkgray;
 }
 
+.poTableLineHeader {
+    width: 5%;
+    text-align: center;
+}
+
 .poTableItemNum {
     width: 10%;
     text-align: center;
@@ -106,3 +111,28 @@ td {
 #poLineDeleteBtn:hover {
     color: red;
 }
+
+#poSaveBtn {
+    margin-left: 89%;
+    margin-bottom: 3rem;;
+}
+
+.fixed_header tbody{
+    display:block;
+    overflow:auto;
+    /* height:200px;
+    width:100%; */
+  }
+
+  /* .fixed_header thead tr{
+    display:block;
+  } */
+
+  #poTableHeaders {
+    width: 95%;
+  }
+
+  .poLineScroll {
+      height: 200px;
+      overflow: auto;
+  }
