@@ -136,3 +136,31 @@ td {
       height: 200px;
       overflow: auto;
   }
+
+  .optionSection {    
+    margin: auto;
+    width: 80%;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .optionTable {
+    height: 225px;
+    overflow: auto;
+    width: 80%;
+  }
+
+  .optionTableEle {
+      width: 90%;
+      text-align: center;
+  }
+
+  .bottom-margin {
+    margin-bottom: .5rem;
+  }
+
+  .overflow-auto {
+      overflow: auto;
+  }

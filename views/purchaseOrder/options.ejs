@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/purchaseOrder.css" />
+  </head>
+  <body>
+    <%- include('../includes/banner.ejs') %>
+    <div id="main-menu">
+      <div id="navbar">
+        <ul>
+          <li><a href="/" class="">Dashboard</a></li>
+          <li><a href="/so" class="">Sales Orders</a></li>
+          <li><a href="/po" class="active">Purchase Orders</a></li>
+          <li><a href="/inventory/item-maintenance" class="">Inventory</a></li>
+          <li><a href="/reports" class="">Reports</a></li>
+          <li><a href="/sysconfig" class="">System Config</a></li>
+        </ul>
+      </div>
+      <div id="sub-menu">
+        <ul>
+          <%- include('../includes/po-submenu.ejs') %>
+        </ul>
+      </div>
+    </div>
+
+    <div id="workspace" class="overflow-auto">
+
+      <div id="toolbar" class="inventory-toolbar centered">
+        <h1>Purchasing Options Setup</h1>
+      </div>
+
+      <div class="optionSection">
+        <div class="flex">
+          <div class="options-setup--leftCol">
+            <h2>Add Shipping Method</h2>
+            <form
+              action="/po/options/addShippingMethod"
+              method="POST"
+              autocomplete="off"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div>
+                <label for="shippingMethodID">Shipping Method ID:</label>
+                <input class="bottom-margin" type="text" name="shippingMethodID" value="" />
+              </div>
+              <div>
+                <label for="shippingMethodName">Shipping Method Name:</label>
+                <input class="bottom-margin" id="shippingMethodName" name="shippingMethodName" />
+              </div>
+              <input type="submit" value="Save" />
+            </form>
+
+            <h2>Edit Shipping Method</h2>
+            <form
+              action="/po/options/editShippingMethod"
+              method="POST"
+              autocomplete="off"
+              id="editShippingMethod"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div>
+                <label for="editShippingMethodID">Shipping Method ID:</label>
+                <input class="bottom-margin" type="text" name="editShippingMethodID" value="" />
+              </div>
+              <div>
+                <label for="editShippingMethodName">Shipping Method Name:</label>
+                <input class="bottom-margin" id="editShippingMethodName" name="editShippingMethodName" />
+              </div>
+              <input type="submit" value="Update Changes" />
+            </form>
+          </div>
+  
+          <div class="options-setup--rightCol">
+            <h2>Shipping Method List</h2>
+            <div class="optionTable">
+              <table class="optionTableEle">
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                </tr>
+                <% for (shippingMethod of shippingMethodList) { %>
+                <tr>
+                  <td><%= shippingMethod.ID %></td>
+                  <td><%= shippingMethod.name %></td>
+                  <td>
+                    <form action="/po/options/deleteShippingMethod" method="POST">
+                      <input
+                        type="hidden"
+                        value="<%= shippingMethod.ID %>"
+                        name="shippingMethodID"
+                      />
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                      <button class="btn" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+                <% } %>
+              </table>
+            </div>
+            
+          </div>
+        </div>        
+      </div>     
+
+      <div class="optionSection">
+        <div class="flex">
+          <div class="options-setup--leftCol">
+            <h2>Add Payment Term</h2>
+            <form
+              action="/po/options/addPaymentTerm"
+              method="POST"
+              autocomplete="off"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div>
+                <label for="paymentTermID">Payment Term ID:</label>
+                <input class="bottom-margin" type="text" name="paymentTermID" value="" />
+              </div>
+              <div>
+                <label for="paymentTermCode">Payment Term Code:</label>
+                <input class="bottom-margin" id="paymentTermCode" name="paymentTermCode" />
+              </div>
+              <div>
+                <label for="paymentTermDays">Payment Term Days:</label>
+                <input class="bottom-margin" id="paymentTermDays" name="paymentTermDays" />
+              </div>
+              <input type="submit" value="Save" />
+            </form>
+
+            <h2>Edit Payment Term</h2>
+            <form
+              action="/po/options/editPaymentTerm"
+              method="POST"
+              autocomplete="off"
+              id="editPaymentTerm"
+            >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div>
+                <label for="editPaymentTermID">Payment Term ID:</label>
+                <input class="bottom-margin" type="text" name="editPaymentTermID" value="" />
+              </div>
+              <div>
+                <label for="editPaymentTermCode">Payment Term Code:</label>
+                <input class="bottom-margin" id="editPaymentTermCode" name="editPaymentTermCode" />
+              </div>
+              <div>
+                <label for="editPaymentTermDays">Payment Term Days:</label>
+                <input class="bottom-margin" id="editPaymentTermDays" name="editPaymentTermDays" />
+              </div>
+              <input type="submit" value="Update Changes" />
+            </form>
+          </div>
+  
+          <div class="options-setup--rightCol">
+            <h2>Payment Terms List</h2>
+            <div class="optionTable">
+              <table class="optionTableEle">
+                <tr>
+                  <th>ID</th>
+                  <th>Code</th>
+                  <th>Days</th>
+                </tr>
+                <% for (paymentTerm of paymentTermList) { %>
+                <tr>
+                  <td><%= paymentTerm.ID %></td>
+                  <td><%= paymentTerm.code %></td>
+                  <td><%= paymentTerm.days %></td>
+                  <td>
+                    <form action="/po/options/deletePaymentTerm" method="POST">
+                      <input
+                        type="hidden"
+                        value="<%= paymentTerm.ID %>"
+                        name="paymentTermID"
+                      />
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                      <button class="btn" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+                <% } %>
+              </table>
+            </div>
+            
+          </div>
+        </div>        
+      </div>  
+
+    </div>
+  </body>
+</html>

@@ -229,6 +229,15 @@ table {
   display: flex;
 }
 
+.options-setup--leftCol {
+  width: 50%;
+  margin-left: 250px;
+}
+
+.options-setup--rightCol {
+  width: 50%;
+}
+
 .inventory-setup--leftCol {
   width: 50%;
   margin-left: 250px;
