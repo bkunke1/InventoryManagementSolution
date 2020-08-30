@@ -251,7 +251,7 @@ table {
 #uomFieldsRight {
   width: 50%;
   border: red solid 2px;
-  overflow: scroll:
+  overflow: scroll;
 }
 
 #uomFieldsLeft {

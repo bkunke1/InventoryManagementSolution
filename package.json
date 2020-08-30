@@ -18,6 +18,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-validator": "^6.6.0",
+    "lodash": "^4.17.20",
     "mongodb": "^3.5.8",
     "mongoose": "^5.9.25",
     "nodemailer": "^6.4.10",
