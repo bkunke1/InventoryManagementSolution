@@ -25,14 +25,23 @@
     </div>
 
     <div id="workspace">
-      <form action="/po/save" method="POST" autocomplete="off" onsubmit="return sendTableData()">
+      <form
+        action="/po/save"
+        method="POST"
+        autocomplete="off"
+        onsubmit="return sendTableData()"
+      >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="layoutBorder flex">
           <h1>Order # <%= newPONumber %></h1>
-          <input type="hidden" name="poNum" value="<%= newPONumber %>">
+          <input type="hidden" name="poNum" value="<%= newPONumber %>" />
 
           <a href="/inventory/po/previousItem/"
-            ><button id="backwardsBtn" type="submit" class="poArrowSearchBtnLeft">
+            ><button
+              id="backwardsBtn"
+              type="submit"
+              class="poArrowSearchBtnLeft"
+            >
               <svg height="20" width="20">
                 <polygon
                   points="20,20 0,10 20,0"
@@ -46,7 +55,11 @@
           ></a>
 
           <a href="/inventory/nextItem/"
-            ><button id="forwardsBtn" type="submit" class="poArrowSearchBtnRight">
+            ><button
+              id="forwardsBtn"
+              type="submit"
+              class="poArrowSearchBtnRight"
+            >
               <svg height="20" width="20">
                 <polygon
                   points="0,20 20,10 0,0"
@@ -67,16 +80,29 @@
             <option value="CLOSED">CLOSED</option>
           </select>
           <h1 class="poStatusText">PO Status: **NEW**</h1>
-          <input type="hidden" name="poStatus" value="NEW">
+          <input type="hidden" name="poStatus" value="NEW" />
         </div>
         <div id="vendorSelection" class="layoutBorder">
           <label for="vendor">Vendor:</label>
-          <input type="text" name="vendor" value="SAMPLE VENDOR" size="30" />
-          <button type="button" tooltip="test"><i class="fas fa-user-tie"></i></button>
+          <input
+            type="text"
+            name="vendor"
+            value="<%= vendorList[0].name %>"
+            size="30"
+          />
+          <button type="button" id="vendorSelectionBtn" tooltip="test">
+            <i class="fas fa-user-tie"></i>
+          </button>
         </div>
         <div class="layoutBorder">
           <label for="orderDate">Order Date:</label>
-          <input id="orderDateInput" class="poSelectFields" type="date" name="orderDate" size="8" />
+          <input
+            id="orderDateInput"
+            class="poSelectFields"
+            type="date"
+            name="orderDate"
+            size="8"
+          />
           <label for="expectedDate">Expected Date:</label>
           <input
             id="expectedDateInput"
@@ -86,44 +112,58 @@
             size="8"
           />
           <label for="shippingMethod">Shipping Method:</label>
-          <select name="shippingMethod" id="shippingMethod" class="poSelectFields">
+          <select
+            name="shippingMethod"
+            id="shippingMethod"
+            class="poSelectFields"
+          >
             <% for (shippingMethod of shippingMethodList) { %>
-              <option value="<%= shippingMethod.name %>"><%= shippingMethod.name %></option>
+            <option value="<%= shippingMethod.name %>"
+              ><%= shippingMethod.name %></option
+            >
             <% } %>
-          </select>         
+          </select>
           <label for="shipToLocation">Ship to Location:</label>
-            <select name="shipToLocation" id="shipToLocation" class="poSelectFields">
-              <% for (warehouse of warehouseList) { %>
-                <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
-              <% } %>
-            </select>
-            <label for="terms">Terms:</label>
-            <select name="terms" id="terms" class="poSelectFields">
-              <% for (paymentTerm of paymentTermList) { %>
-                <option value="<%= paymentTerm.code %>"><%= paymentTerm.code %></option>
-              <% } %>
-            </select>
+          <select
+            name="shipToLocation"
+            id="shipToLocation"
+            class="poSelectFields"
+          >
+            <% for (warehouse of warehouseList) { %>
+            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
+            <% } %>
+          </select>
+          <label for="terms">Terms:</label>
+          <select name="terms" id="terms" class="poSelectFields">
+            <% for (paymentTerm of paymentTermList) { %>
+            <option value="<%= paymentTerm.code %>"
+              ><%= paymentTerm.code %></option
+            >
+            <% } %>
+          </select>
           <h3>Submitted by: <%= createdBy %></h3>
-          <input type="hidden" name="createdBy" value="userName">
+          <input type="hidden" name="createdBy" value="userName" />
         </div>
         <hr />
         <h1>Line Items</h1>
         <table id="poTableHeaders">
-            <tr>
-              <th class="poTableLineHeader">Line</th>
-              <th class="poTableItemNum">Item Num</th>
-              <th class="poTableDescription">Description</th>
-              <th class="poTableQuantity">Quantity</th>
-              <th class="poTableUOM">UOM</th>
-              <th class="poTableCost">Cost</th>
-              <th class="poTableExtended">Extended</th>
-              <th class="poTableDeleteBtn"></th>
-            </tr>   
-          </table>
+          <tr>
+            <th class="poTableLineHeader">Line</th>
+            <th class="poTableItemNum">Item Num</th>
+            <th class="poTableDescription">Description</th>
+            <th class="poTableQuantity">Quantity</th>
+            <th class="poTableUOM">UOM</th>
+            <th class="poTableCost">Cost</th>
+            <th class="poTableExtended">Extended</th>
+            <th class="poTableDeleteBtn"></th>
+          </tr>
+        </table>
         <div class="layoutBorder poLineScroll">
-          <table id="poTable">          
+          <table id="poTable">
             <tr>
-              <td class="poTableLine"><button id="poTableAddLineBtn" type="button">+</button></td>
+              <td class="poTableLine">
+                <button id="poTableAddLineBtn" type="button">+</button>
+              </td>
               <td class="poTableItemNum"></td>
               <td class="poTableDescription"></td>
               <td class="poTableQuantity"></td>
@@ -133,14 +173,37 @@
               <td class="poTableDeleteBtn"></td>
             </tr>
           </table>
-          <input id="poTableData" type="hidden" name="poTableData" value="">                   
+          <input id="poTableData" type="hidden" name="poTableData" value="" />
         </div>
         <div class="flex poSumLabel">
-            <h4 >Subtotal:</h4>
-            <h4 class="poSum">0</h4>
-          </div> 
+          <h4>Subtotal:</h4>
+          <h4 class="poSum">0</h4>
+        </div>
         <button id="poSaveBtn">Save</button>
       </form>
+      <!-- The vendorSearchModal -->
+      <div id="vendorSelectionModal" class="vendorSearchModal">
+        <!-- vendorSearchModal content -->
+        <div class="vendorSearchModal-content">
+          <span class="close">&times;</span>
+          <h2 class="vendorSelectHeading">Select a Vendor</h2>
+          <table id="vendorSelectionTable">
+            <tr>
+              <th>Vendor Name</th>
+            </tr>
+            <% for (const vendor of vendorList) { %>
+              <tr>
+                <td>
+                  <%= vendor.name %>
+                </td>
+                <td>
+                  <button id="vendorSelectBtn" onclick="selectVendor(this)">Select</button>
+                </td>
+              </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
     </div>
 
     <button>New</button>
@@ -148,7 +211,6 @@
     <button>Print PO</button>
     <button>Print Receiver</button>
     <button>Receive PO</button>
-
 
     <script src="/js/purchaseOrder.js"></script>
   </body>

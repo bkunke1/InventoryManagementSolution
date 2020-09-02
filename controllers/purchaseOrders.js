@@ -8,6 +8,7 @@ const Category = require('../models/category');
 const PurchaseOrder = require('../models/purchaseOrder');
 const ShippingMethod = require('../models/shippingMethod');
 const PaymentTerm = require('../models/paymentTerm');
+const Vendor = require('../models/vendor');
 
 exports.getPurchaseOrder = (req, res, next) => {
   res.render('purchaseOrder/purchase-order-blank', {
@@ -18,33 +19,49 @@ exports.getPurchaseOrder = (req, res, next) => {
 };
 
 exports.getNewPurchaseOrder = (req, res, next) => {
-  Warehouse.find().then(warehouseList => {
-    PaymentTerm.find().then(paymentTermList => {
-      ShippingMethod.find()
-      .then((shippingMethodList) => {
-        PurchaseOrder.find()
-          .then((poList) => {
-            console.log(shippingMethodList);
-            res.render('purchaseOrder/purchase-order-new', {
-              pageTitle: 'New Purchase Orders',
-              mainMenuPath: 'purchaseOrders',
-              subMenuPath: '',
-              newPONumber: ++poList.length,
-              createdBy: req.session.user.email,
-              shippingMethodList: shippingMethodList,
-              paymentTermList: paymentTermList,
-              warehouseList: warehouseList
+  Vendor
+    .find()
+    .then((vendorList) => {
+      Warehouse.find()
+        .then((warehouseList) => {
+          PaymentTerm.find()
+            .then((paymentTermList) => {
+              ShippingMethod.find()
+                .then((shippingMethodList) => {
+                  PurchaseOrder.find()
+                    .then((poList) => {
+                      console.log(vendorList);
+                      res.render('purchaseOrder/purchase-order-new', {
+                        pageTitle: 'New Purchase Orders',
+                        mainMenuPath: 'purchaseOrders',
+                        subMenuPath: '',
+                        newPONumber: ++poList.length,
+                        createdBy: req.session.user.email,
+                        shippingMethodList: shippingMethodList,
+                        paymentTermList: paymentTermList,
+                        warehouseList: warehouseList,
+                        vendorList: vendorList
+                      });
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
             });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }).catch(err => {console.log(err)});  
-  }).catch(err => {console.log(err)});  
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postCreatePO = (req, res, next) => {
@@ -105,24 +122,26 @@ exports.getShippingMethods = (req, res, next) => {
 };
 
 exports.getOptions = (req, res, next) => {
-  PaymentTerm.find().then(paymentTermList => {
-    ShippingMethod.find()
-    .then((shippingMethodList) => {
-      console.log(shippingMethodList);
-      res.render('purchaseOrder/options', {
-        pageTitle: 'Purchasing Options',
-        mainMenuPath: 'purchaseOptions',
-        subMenuPath: '',
-        shippingMethodList: shippingMethodList,
-        paymentTermList: paymentTermList
-      });
+  PaymentTerm.find()
+    .then((paymentTermList) => {
+      ShippingMethod.find()
+        .then((shippingMethodList) => {
+          console.log(shippingMethodList);
+          res.render('purchaseOrder/options', {
+            pageTitle: 'Purchasing Options',
+            mainMenuPath: 'purchaseOptions',
+            subMenuPath: '',
+            shippingMethodList: shippingMethodList,
+            paymentTermList: paymentTermList,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);
     });
-  }).catch((err) => {
-    console.log(err);
-  });  
 };
 
 exports.postAddShippingMethod = (req, res, next) => {
@@ -134,15 +153,19 @@ exports.postAddShippingMethod = (req, res, next) => {
   ShippingMethod.find()
     .then((shippingMethodList) => {
       if (!errors.isEmpty()) {
-        PaymentTerm.find().then(paymentTermList => {
-          res.render('purchaseOrder/options', {
-            pageTitle: 'Purchasing Options',
-            mainMenuPath: 'purchaseOptions',
-            subMenuPath: '',
-            shippingMethodList: shippingMethodList,
-            paymentTermList: paymentTermList
+        PaymentTerm.find()
+          .then((paymentTermList) => {
+            res.render('purchaseOrder/options', {
+              pageTitle: 'Purchasing Options',
+              mainMenuPath: 'purchaseOptions',
+              subMenuPath: '',
+              shippingMethodList: shippingMethodList,
+              paymentTermList: paymentTermList,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        }).catch(err => {console.log(err)});        
       } else if (!ID) {
         console.log('Missing Shipping Method ID!');
         return res.redirect('/po/options');
@@ -183,7 +206,7 @@ exports.postEditShippingMethod = (req, res, next) => {
           mainMenuPath: 'purchaseOptions',
           subMenuPath: '',
           shippingMethodList: shippingMethodList,
-          paymentTermList: paymentTermList
+          paymentTermList: paymentTermList,
         });
       } else if (!ID) {
         console.log('Missing Shipping Method ID!');
@@ -236,7 +259,7 @@ exports.postAddPaymentTerm = (req, res, next) => {
           mainMenuPath: 'purchaseOptions',
           subMenuPath: '',
           shippingMethodList: shippingMethodList,
-          paymentTermList: paymentTermList
+          paymentTermList: paymentTermList,
         });
       } else if (!ID) {
         console.log('Missing Payment Term ID!');
@@ -245,7 +268,7 @@ exports.postAddPaymentTerm = (req, res, next) => {
         const paymentTerm = new PaymentTerm({
           ID: ID,
           code: code.toUpperCase(),
-          days: days
+          days: days,
         });
         paymentTerm
           .save()
@@ -280,7 +303,7 @@ exports.postEditPaymentTerm = (req, res, next) => {
           mainMenuPath: 'purchaseOptions',
           subMenuPath: '',
           shippingMethodList: shippingMethodList,
-          paymentTermList: paymentTermList
+          paymentTermList: paymentTermList,
         });
       } else if (!ID) {
         console.log('Missing Payment Term ID!');

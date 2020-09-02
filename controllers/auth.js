@@ -125,6 +125,7 @@ exports.getSignup = (req, res, next) => {
 
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
+  console.log(email);
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
@@ -137,7 +138,7 @@ exports.postSignup = (req, res, next) => {
       oldInput: {
         email: email,
         password: password,
-        confirmPassword: req.body.confirmPassword,
+        confirmPassword: confirmPassword,
       },
       validationErrors: errors.array(),
     });
@@ -145,6 +146,7 @@ exports.postSignup = (req, res, next) => {
   bcrypt
     .hash(password, 12)
     .then((hashedPassword) => {
+      console.log(email);
       const user = new User({
         email: email,
         password: hashedPassword,
@@ -154,13 +156,13 @@ exports.postSignup = (req, res, next) => {
     })
     // uncomment with sendgrid bug is fixed
     .then(() => {
-      // transporter.sendMail({
-      //   to: email,
-      //   from: 'brandon@customwebware.com',
-      //   subject: 'Custom Webware signup success!',
-      //   html: '<h1>You successfully signed up!</h1> <a href="http://www.customwebware.com/unsubscribe">Unsubscribe</a>',
-      //   text: '4451 Derby Ln SE Smyrna, GA 30082 407-698-6113'
-      // });
+      transporter.sendMail({
+        to: email,
+        from: 'brandon@customwebware.com',
+        subject: 'Custom Webware signup success!',
+        html: '<h1>You successfully signed up!</h1> <a href="http://www.customwebware.com/unsubscribe">Unsubscribe</a>',
+        text: '4451 Derby Ln SE Smyrna, GA 30082 407-698-6113'
+      });
       console.log('signup confirmation email sent');
       return res.redirect('/login');
     })
@@ -205,15 +207,15 @@ exports.postReset = (req, res, next) => {
         req.flash('message', 'Reset email has been sent!');
         res.redirect('/');
         // commented out until there is a verified email to send from using sendGrid
-        // transporter.sendMail({
-        //   to: email,
-        //   from: 'support@arcanite-solutions.com',
-        //   subject: 'Password Reset!',
-        //   html: `
-        //   <p>You requested a password reset.</p>
-        //   <p>Click this <a href="http://localhost3000/reset/${token}">link</a> to set a new password.</p>
-        // `,
-        // });
+        transporter.sendMail({
+          to: email,
+          from: 'support@arcanite-solutions.com',
+          subject: 'Password Reset!',
+          html: `
+          <p>You requested a password reset.</p>
+          <p>Click this <a href="http://localhost3000/reset/${token}">link</a> to set a new password.</p>
+        `,
+        });
       })
       .catch((err) => {
         console.log(err);

@@ -83,11 +83,12 @@
         </div>
         <div id="vendorSelection" class="layoutBorder">
           <label for="vendor">Vendor:</label>
-          <input type="text" name="vendor" value="" size="30" />
+          <input disabled type="text" name="vendor" value="" size="30" />
         </div>
         <div class="layoutBorder">
           <label for="orderDate">Order Date:</label>
           <input
+          disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
@@ -96,6 +97,7 @@
           />
           <label for="expectedDate">Expected Date:</label>
           <input
+          disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -104,6 +106,7 @@
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
+          disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
@@ -114,6 +117,7 @@
           </select>
           <label for="shipToLocation">Ship to Loation:</label>
           <select
+          disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
@@ -123,7 +127,7 @@
             <option value="2">2</option>
           </select>
           <label for="terms">Terms:</label>
-          <select name="terms" id="terms" class="poSelectFields">
+          <select disabled name="terms" id="terms" class="poSelectFields">
             <option value="ALL" selected>loopThruOptions</option>
             <option value="NET15">NET15</option>
             <option value="NET30">NET30</option>

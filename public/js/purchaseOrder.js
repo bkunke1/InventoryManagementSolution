@@ -7,7 +7,6 @@ const poTable = document.getElementById('poTable');
 
 const poTableAddLineBtn = document.getElementById('poTableAddLineBtn');
 
-
 // gets UOM data from back end
 let UOMs;
 const getUOM = () => {
@@ -46,7 +45,7 @@ const getShippingMethods = () => {
       return result.json();
     })
     .then((data) => {
-        shippingMethods = data.shippingMethods;
+      shippingMethods = data.shippingMethods;
     })
     .catch((err) => {
       console.log('err', err);
@@ -55,11 +54,11 @@ const getShippingMethods = () => {
 getShippingMethods();
 
 // helper function for adding/removing event listener for tabbing into new po line
-const tabToNewLine = function() {
-    if (event.keyCode == 9) {
-        poAddNewLine();
-            }
-  };
+const tabToNewLine = function () {
+  if (event.keyCode == 9) {
+    poAddNewLine();
+  }
+};
 
 const poOrganizeTableData = () => {
   const poTableDataArray = [];
@@ -147,88 +146,126 @@ const poSumUpdate = () => {
   return sum.toFixed(2);
 };
 
-const poAddNewLine = function() {
-
-    // function that calculates the number of rows in the PO table so we can update the Line Numbers accordingly
-    const newPOTableItemNumCalc = () => {
-      let totalRowCount = -1;
-      const rows = poTable.getElementsByTagName('tr');
-      for (let i = 0; i < rows.length; i++) {
-        totalRowCount++;
-      }
-      return totalRowCount;
-    };
-  
-    newPOTableItemNumCalc();
-  
-    const newRow = poTable.insertRow(-1);
-    const newPOTableLine = newRow.insertCell(0);
-    const newPOTableItemNum = newRow.insertCell(1);
-    const newPOTableDescription = newRow.insertCell(2);
-    const newPOTableQuantity = newRow.insertCell(3);
-    const newPOTableUOM = newRow.insertCell(4);
-    const newPOTableCost = newRow.insertCell(5);
-    const newPOTableExtended = newRow.insertCell(6);
-    const newPOTableDeleteBtn = newRow.insertCell(7);
-  
-    newPOTableDeleteBtn.innerHTML = '<a href="#">Delete</a>';
-    newPOTableUOM.innerHTML = '<select></select>';
-  
-    for (uom of UOMs) {
-      newPOTableUOM.firstElementChild.add(
-        new Option(uom.name, uom.conversionQty)
-      );
+const poAddNewLine = function () {
+  // function that calculates the number of rows in the PO table so we can update the Line Numbers accordingly
+  const newPOTableItemNumCalc = () => {
+    let totalRowCount = -1;
+    const rows = poTable.getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+      totalRowCount++;
     }
-  
-    newPOTableLine.classList.add('poTableLine');
-    newPOTableItemNum.classList.add('poTableItemNum');
-    newPOTableDescription.classList.add('poTableDescription');
-    newPOTableQuantity.classList.add('poTableQuantity');
-    newPOTableUOM.classList.add('poTableUOM');
-    newPOTableCost.classList.add('poTableCost');
-    newPOTableExtended.classList.add('poTableExtended');
-    newPOTableDeleteBtn.classList.add('poTableDeleteBtn');
-  
-    newPOTableItemNum.classList.add('poTableFocus');
-    newPOTableDescription.classList.add('poTableFocus');
-    newPOTableQuantity.classList.add('poTableFocus');
-    newPOTableUOM.classList.add('poTableFocus');
-    newPOTableCost.classList.add('poTableFocus');
-  
-    newPOTableItemNum.contentEditable = 'true';
-    newPOTableDescription.contentEditable = 'true';
-    newPOTableQuantity.contentEditable = 'true';
-    newPOTableUOM.contentEditable = 'true';
-    newPOTableCost.contentEditable = 'true';
-  
-    // setup listeners to update extended cost when updating qty, uom or cost
-    newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-    newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-    newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-  
-    newPOTableLine.innerText = newPOTableItemNumCalc();
-    newPOTableItemNum.innerText = '123';
-    newPOTableDescription.innerText = 'new item desc'.toUpperCase();
-    newPOTableQuantity.innerText = '99';
-    //   newPOTableUOM.innerText = 'EACH';
-    newPOTableCost.innerText = '1.00';
-    newPOTableExtended.innerText = '99.00';
-    newPOTableDeleteBtn.innerHTML =
-      '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
-  
-    // adds event listener to new line and removes from the old allowing tabbing into a new line item
-    const newLineTabListener = () => {  
-  
-        const listOfLines = poTable.getElementsByClassName('poTableCost');
-        for (let i = 0; i <= listOfLines.length - 1; i++) {
-            if (i !== listOfLines.length - 1) {
-                listOfLines[i].removeEventListener('keydown', tabToNewLine, true);
-                } else {
-                    listOfLines[i].addEventListener('keydown', tabToNewLine, true)
-                }
-        }
-    }
-    newLineTabListener();
+    return totalRowCount;
   };
 
-  poTableAddLineBtn.addEventListener('click', poAddNewLine);
+  newPOTableItemNumCalc();
+
+  const newRow = poTable.insertRow(-1);
+  const newPOTableLine = newRow.insertCell(0);
+  const newPOTableItemNum = newRow.insertCell(1);
+  const newPOTableDescription = newRow.insertCell(2);
+  const newPOTableQuantity = newRow.insertCell(3);
+  const newPOTableUOM = newRow.insertCell(4);
+  const newPOTableCost = newRow.insertCell(5);
+  const newPOTableExtended = newRow.insertCell(6);
+  const newPOTableDeleteBtn = newRow.insertCell(7);
+
+  newPOTableDeleteBtn.innerHTML = '<a href="#">Delete</a>';
+  newPOTableUOM.innerHTML = '<select></select>';
+
+  for (uom of UOMs) {
+    newPOTableUOM.firstElementChild.add(
+      new Option(uom.name, uom.conversionQty)
+    );
+  }
+
+  newPOTableLine.classList.add('poTableLine');
+  newPOTableItemNum.classList.add('poTableItemNum');
+  newPOTableDescription.classList.add('poTableDescription');
+  newPOTableQuantity.classList.add('poTableQuantity');
+  newPOTableUOM.classList.add('poTableUOM');
+  newPOTableCost.classList.add('poTableCost');
+  newPOTableExtended.classList.add('poTableExtended');
+  newPOTableDeleteBtn.classList.add('poTableDeleteBtn');
+
+  newPOTableItemNum.classList.add('poTableFocus');
+  newPOTableDescription.classList.add('poTableFocus');
+  newPOTableQuantity.classList.add('poTableFocus');
+  newPOTableUOM.classList.add('poTableFocus');
+  newPOTableCost.classList.add('poTableFocus');
+
+  newPOTableItemNum.contentEditable = 'true';
+  newPOTableDescription.contentEditable = 'true';
+  newPOTableQuantity.contentEditable = 'true';
+  newPOTableUOM.contentEditable = 'true';
+  newPOTableCost.contentEditable = 'true';
+
+  // setup listeners to update extended cost when updating qty, uom or cost
+  newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+  newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+  newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+
+  newPOTableLine.innerText = newPOTableItemNumCalc();
+  newPOTableItemNum.innerText = '123';
+  newPOTableDescription.innerText = 'new item desc'.toUpperCase();
+  newPOTableQuantity.innerText = '99';
+  //   newPOTableUOM.innerText = 'EACH';
+  newPOTableCost.innerText = '1.00';
+  newPOTableExtended.innerText = '99.00';
+  newPOTableDeleteBtn.innerHTML =
+    '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
+
+  // adds event listener to new line and removes from the old allowing tabbing into a new line item
+  const newLineTabListener = () => {
+    const listOfLines = poTable.getElementsByClassName('poTableCost');
+    for (let i = 0; i <= listOfLines.length - 1; i++) {
+      if (i !== listOfLines.length - 1) {
+        listOfLines[i].removeEventListener('keydown', tabToNewLine, true);
+      } else {
+        listOfLines[i].addEventListener('keydown', tabToNewLine, true);
+      }
+    }
+  };
+  newLineTabListener();
+};
+
+poTableAddLineBtn.addEventListener('click', poAddNewLine);
+
+// Get the vendor selection modal
+const modal = document.getElementById('vendorSelectionModal');
+
+// Get the button that opens the modal
+const vendorSelectionBtn = document.getElementById('vendorSelectionBtn');
+
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName('close')[0];
+
+// When the user clicks the button, open the modal
+vendorSelectionBtn.onclick = function () {
+  modal.style.display = 'block';
+};
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+  modal.style.display = 'none';
+};
+
+// When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//   if (event.target == modal) {
+//     modal.style.display = "none";
+//   }
+// }
+
+// Get the button that selects the vendor
+const vendorSelectBtn = document.getElementById('vendorSelectBtn');
+
+// When the user clicks the button, inserts selected vendor into vendor field in purchase order
+const selectVendor = function (vendorEle) {
+  console.log(vendorEle);
+  const vendorName = vendorEle.closest('tr').firstElementChild.textContent.trim();
+  console.log(vendorName);
+  const vendorInput = document.getElementById('vendorSelection');
+  console.log(vendorInput);
+  vendorInput.querySelector('input').value = vendorName;
+  modal.style.display = 'none';
+};

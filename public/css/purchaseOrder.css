@@ -1,166 +1,215 @@
 .billingInfo {
-    display: block;
+  display: block;
 }
 
 .shippingInfo {
-    display: block;
+  display: block;
 }
 
 #poTable {
-    width: 95%;
+  width: 95%;
 }
 
 td {
-    padding: 0 1rem;
-    padding: .15rem;
+  padding: 0 1rem;
+  padding: 0.15rem;
 }
 
 .poTableLine {
-    width: 5%;
-    text-align: center;
-    background: darkgray;
+  width: 5%;
+  text-align: center;
+  background: darkgray;
 }
 
 .poTableLineHeader {
-    width: 5%;
-    text-align: center;
+  width: 5%;
+  text-align: center;
 }
 
 .poTableItemNum {
-    width: 10%;
-    text-align: center;
+  width: 10%;
+  text-align: center;
 }
 
 .poTableDescription {
-    width: 47%;
-    text-align: left;
-    padding-left: 1.2rem;
+  width: 47%;
+  text-align: left;
+  padding-left: 1.2rem;
 }
 
 .poTableFocus:focus {
-    background: white;
+  background: white;
 }
 
 .poTableQuantity {
-    width: 10%;
-    text-align: right;
-    padding-right: 1rem;
+  width: 10%;
+  text-align: right;
+  padding-right: 1rem;
 }
 
 .poTableUOM {
-    width: 5%;
-    text-align: center;
+  width: 5%;
+  text-align: center;
 }
 
 .poTableCost {
-    width: 10%;
-    text-align: right;
-    padding-right: 1rem;
+  width: 10%;
+  text-align: right;
+  padding-right: 1rem;
 }
 
 .poTableExtended {
-    width: 10%;
-    text-align: right;
-    padding-right: 1rem;
+  width: 10%;
+  text-align: right;
+  padding-right: 1rem;
 }
 
 .poTableDeleteBtn {
-    width: 3%;
-    text-align: center;
+  width: 3%;
+  text-align: center;
 }
 
 .poSum {
-    margin-left: 1rem;
+  margin-left: 1rem;
 }
 
 .poSumLabel {
-    margin-left: 84%;
+  margin-left: 84%;
 }
 
 .poBtns {
-    height: 20px;
-    margin: 1.7% 1rem;
-
+  height: 20px;
+  margin: 1.7% 1rem;
 }
 
 .poArrowSearchBtnLeft {
-    margin: 1.5rem 1rem 0 3rem;
+  margin: 1.5rem 1rem 0 3rem;
 }
 
 .poArrowSearchBtnRight {
-    margin: 1.5rem 1rem 0 0;
+  margin: 1.5rem 1rem 0 0;
 }
 
 .poStatusText {
-    margin-left: 2rem;
+  margin-left: 2rem;
 }
 
 #vendorSelection {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .poSelectFields {
-    margin-right: 1rem;
+  margin-right: 1rem;
 }
 
 #poLineDeleteBtn {
-    color: rgb(173, 0, 0);
-    margin: auto;
+  color: rgb(173, 0, 0);
+  margin: auto;
 }
 
 #poLineDeleteBtn:hover {
-    color: red;
+  color: red;
 }
 
 #poSaveBtn {
-    margin-left: 89%;
-    margin-bottom: 3rem;;
+  margin-left: 89%;
+  margin-bottom: 3rem;
 }
 
-.fixed_header tbody{
-    display:block;
-    overflow:auto;
-    /* height:200px;
+.fixed_header tbody {
+  display: block;
+  overflow: auto;
+  /* height:200px;
     width:100%; */
-  }
+}
 
-  /* .fixed_header thead tr{
+/* .fixed_header thead tr{
     display:block;
   } */
 
-  #poTableHeaders {
-    width: 95%;
-  }
+#poTableHeaders {
+  width: 95%;
+}
 
-  .poLineScroll {
-      height: 200px;
-      overflow: auto;
-  }
+.poLineScroll {
+  height: 200px;
+  overflow: auto;
+}
 
-  .optionSection {    
-    margin: auto;
-    width: 80%;
-    border: 2px solid black;
-    border-radius: 10px;
-    padding: 1rem;
+.optionSection {
+  margin: auto;
+  width: 80%;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.optionTable {
+  height: 225px;
+  overflow: auto;
+  width: 80%;
+}
+
+.optionTableEle {
+  width: 90%;
+  text-align: center;
+}
+
+.bottom-margin {
+  margin-bottom: 0.5rem;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+/* The Modal (background) */
+.vendorSearchModal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 200px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.vendorSearchModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#vendorSelectionTable {
+  margin: auto;
+  width: 80%;
+  text-align: center;
+}
+
+.vendorSelectHeading {
+    text-align: center;
     margin-bottom: 2rem;
-  }
-
-  .optionTable {
-    height: 225px;
-    overflow: auto;
-    width: 80%;
-  }
-
-  .optionTableEle {
-      width: 90%;
-      text-align: center;
-  }
-
-  .bottom-margin {
-    margin-bottom: .5rem;
-  }
-
-  .overflow-auto {
-      overflow: auto;
-  }
+}
