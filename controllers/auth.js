@@ -205,15 +205,15 @@ exports.postReset = (req, res, next) => {
       })
       .then((result) => {
         req.flash('message', 'Reset email has been sent!');
-        res.redirect('/');
-        // commented out until there is a verified email to send from using sendGrid
+        res.redirect('/login');
+        console.log('password reset sent to:', email);
         transporter.sendMail({
           to: email,
-          from: 'support@arcanite-solutions.com',
+          from: 'brandon@customwebware.com',
           subject: 'Password Reset!',
           html: `
           <p>You requested a password reset.</p>
-          <p>Click this <a href="http://localhost3000/reset/${token}">link</a> to set a new password.</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
         `,
         });
       })
@@ -281,6 +281,7 @@ exports.postNewPassword = (req, res, next) => {
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
   let resetUser;
+  console.log('newPassword', newPassword, 'userId', userId, 'passwordToken', passwordToken);
 
   User.findOne({
     resetToken: passwordToken,
@@ -288,6 +289,7 @@ exports.postNewPassword = (req, res, next) => {
     _id: userId,
   })
     .then((user) => {
+      console.log(user);
       resetUser = user;
       return bcrypt.hash(newPassword, 12);
     })
@@ -301,6 +303,8 @@ exports.postNewPassword = (req, res, next) => {
       res.redirect('/login');
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
