@@ -1,5 +1,8 @@
 // const { getNextItem } = require("../../controllers/admin");
 
+// const item = require('../../models/item');
+// const { get } = require('lodash');
+
 //not sure if this is here by mistake
 // const { options } = require('../../routes/auth');
 
@@ -204,15 +207,18 @@ const poAddNewLine = function () {
   newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
   newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
 
-  newPOTableLine.innerText = newPOTableItemNumCalc();
-  newPOTableItemNum.innerText = '123';
-  newPOTableDescription.innerText = 'new item desc'.toUpperCase();
-  newPOTableQuantity.innerText = '99';
-  //   newPOTableUOM.innerText = 'EACH';
-  newPOTableCost.innerText = '1.00';
-  newPOTableExtended.innerText = '99.00';
+  // commented out, was used to fill lines with fake data during testing
+  newPOTableLine.innerText = newPOTableItemNumCalc();  
+  // newPOTableDescription.innerText = ''.toUpperCase();
+  // newPOTableQuantity.innerText = '';
+  // //   newPOTableUOM.innerText = 'EACH';
+  // newPOTableCost.innerText = '';
+  // newPOTableExtended.innerText = '';
   newPOTableDeleteBtn.innerHTML =
     '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
+
+  // adds event listener to new line allowing items to be entered in item num cell
+  newPOTableItemNum.addEventListener('keydown', insertItem, true);
 
   // adds event listener to new line and removes from the old allowing tabbing into a new line item
   const newLineTabListener = () => {
@@ -226,6 +232,8 @@ const poAddNewLine = function () {
     }
   };
   newLineTabListener();
+  newPOTableItemNum.get(0).focus();
+  console.log(newPOTableItemNum)
 };
 
 poTableAddLineBtn.addEventListener('click', poAddNewLine);
@@ -262,10 +270,51 @@ const vendorSelectBtn = document.getElementById('vendorSelectBtn');
 // When the user clicks the button, inserts selected vendor into vendor field in purchase order
 const selectVendor = function (vendorEle) {
   console.log(vendorEle);
-  const vendorName = vendorEle.closest('tr').firstElementChild.textContent.trim();
+  const vendorName = vendorEle
+    .closest('tr')
+    .firstElementChild.textContent.trim();
   console.log(vendorName);
   const vendorInput = document.getElementById('vendorSelection');
   console.log(vendorInput);
   vendorInput.querySelector('input').value = vendorName;
   modal.style.display = 'none';
+};
+
+// Line Item lookup
+const insertItem = function (itemNum) {
+  if (event.keyCode == 13 || event.keyCode == 9) {
+    event.preventDefault();
+    const itemID = itemNum.target.textContent;
+
+    const csrf = document.querySelector('[name=_csrf]').value;
+
+    fetch(`/po/getItem/${itemID}`, {
+      method: 'POST',
+      headers: {
+        'csrf-token': csrf,
+      },
+    })
+      .then((result) => {
+        return result.json();
+      })
+      .then((item) => {
+        const itemID = itemNum.target;
+        const itemDescription = itemID.nextElementSibling;
+        const itemQuantity = itemDescription.nextElementSibling;
+        const itemPurchaseUOM = itemQuantity.nextElementSibling;
+        const itemCost = itemPurchaseUOM.nextElementSibling;
+        itemID.textContent = item.itemID;
+        itemDescription.textContent = item.description;
+        itemQuantity.focus();
+        itemCost.textContent = 99.99;
+        for (option of itemPurchaseUOM.firstElementChild.options) {
+          if (option.text === item.purchaseUOM) {
+            option.setAttribute('selected', true);
+          }
+        }
+      })
+      .catch((err) => {
+        console.log('err', err);
+      });
+  }
 };

@@ -32,7 +32,7 @@
         onsubmit="return sendTableData()"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        <div class="layoutBorder flex">
+        <div class="flex">
           <h1>Order # <% %></h1>
           <input type="hidden" name="orderNum" value="2" />
 
@@ -81,11 +81,11 @@
           </select>
           <h1 id="poStatus" class="poStatusText">PO Status:</h1>
         </div>
-        <div id="vendorSelection" class="layoutBorder">
+        <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
           <input disabled type="text" name="vendor" value="" size="30" />
         </div>
-        <div class="layoutBorder">
+        <div>
           <label for="orderDate">Order Date:</label>
           <input
           disabled
@@ -143,7 +143,7 @@
         </div>
         <hr />
         <h1>Line Items</h1>
-        <div class="layoutBorder">
+        <div>
           <table id="poTable">
             <tr>
               <th class="poTableLine">Line</th>

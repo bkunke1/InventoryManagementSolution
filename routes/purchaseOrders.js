@@ -19,6 +19,8 @@ router.get('/po/getUOMs/', purchasingAuth, purchaseOrderController.getUOMs);
 
 router.get('/po/getShippingMethods/', purchasingAuth, purchaseOrderController.getShippingMethods);
 
+router.post('/po/getItem/:itemId', purchasingAuth, purchaseOrderController.postFindItem);
+
 
 router.get('/po/options/', purchasingAuth, purchaseOrderController.getOptions);
 

@@ -19,8 +19,7 @@ exports.getPurchaseOrder = (req, res, next) => {
 };
 
 exports.getNewPurchaseOrder = (req, res, next) => {
-  Vendor
-    .find()
+  Vendor.find()
     .then((vendorList) => {
       Warehouse.find()
         .then((warehouseList) => {
@@ -30,7 +29,6 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                 .then((shippingMethodList) => {
                   PurchaseOrder.find()
                     .then((poList) => {
-                      console.log(vendorList);
                       res.render('purchaseOrder/purchase-order-new', {
                         pageTitle: 'New Purchase Orders',
                         mainMenuPath: 'purchaseOrders',
@@ -40,7 +38,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                         shippingMethodList: shippingMethodList,
                         paymentTermList: paymentTermList,
                         warehouseList: warehouseList,
-                        vendorList: vendorList
+                        vendorList: vendorList,
                       });
                     })
                     .catch((err) => {
@@ -101,6 +99,19 @@ exports.postCreatePO = (req, res, next) => {
     .catch((err) => {
       console.log(err);
       res.redirect('/500');
+    });
+};
+
+// sends item data to front end
+exports.postFindItem = (req, res, next) => {
+  const itemId = req.params.itemId;
+  Item.findOne({ itemID: itemId })
+    .then((item) => {
+      console.log('item', item);
+      res.status(200).json(item);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
