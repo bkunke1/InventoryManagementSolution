@@ -87,8 +87,9 @@ const poOrganizeTableData = () => {
     };
 
     console.log('line', line);
-
-    poTableDataArray.push(line);
+    if (line.itemID !== '') {
+      poTableDataArray.push(line);
+    }
   }
   return poTableDataArray;
 };
@@ -199,7 +200,7 @@ const poAddNewLine = function () {
   newPOTableItemNum.contentEditable = 'true';
   newPOTableDescription.contentEditable = 'true';
   newPOTableQuantity.contentEditable = 'true';
-  newPOTableUOM.contentEditable = 'true';
+  // newPOTableUOM.contentEditable = 'true'; // removed so that users can tab directly into the select element
   newPOTableCost.contentEditable = 'true';
 
   // setup listeners to update extended cost when updating qty, uom or cost
@@ -208,7 +209,7 @@ const poAddNewLine = function () {
   newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
 
   // commented out, was used to fill lines with fake data during testing
-  newPOTableLine.innerText = newPOTableItemNumCalc();  
+  newPOTableLine.innerText = newPOTableItemNumCalc();
   // newPOTableDescription.innerText = ''.toUpperCase();
   // newPOTableQuantity.innerText = '';
   // //   newPOTableUOM.innerText = 'EACH';
@@ -216,6 +217,9 @@ const poAddNewLine = function () {
   // newPOTableExtended.innerText = '';
   newPOTableDeleteBtn.innerHTML =
     '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
+
+  // adds event listener to new line allowing item search selections to be inserted into po line
+  newPOTableItemNum.addEventListener('keydown', itemLookupInsert, true);
 
   // adds event listener to new line allowing items to be entered in item num cell
   newPOTableItemNum.addEventListener('keydown', insertItem, true);
@@ -232,8 +236,11 @@ const poAddNewLine = function () {
     }
   };
   newLineTabListener();
-  newPOTableItemNum.get(0).focus();
-  console.log(newPOTableItemNum)
+  // newPOTableItemNum.get(0).focus();
+  if (newPOTableLine.textContent === '1') {
+    newPOTableItemNum.focus();
+  }
+  console.log(newPOTableItemNum);
 };
 
 poTableAddLineBtn.addEventListener('click', poAddNewLine);
@@ -282,6 +289,7 @@ const selectVendor = function (vendorEle) {
 
 // Line Item lookup
 const insertItem = function (itemNum) {
+  console.log(itemNum);
   if (event.keyCode == 13 || event.keyCode == 9) {
     event.preventDefault();
     const itemID = itemNum.target.textContent;
@@ -317,4 +325,133 @@ const insertItem = function (itemNum) {
         console.log('err', err);
       });
   }
+  console.log('failed');
+};
+
+// Get the item selection modal
+const itemModal = document.getElementById('itemSelectionModal');
+
+// Get the button that opens the modal
+const itemSelectionBtn = document.getElementById('itemSelectionBtn');
+
+// Get the <span> element that closes the modal
+const itemSpan = document.getElementsByClassName('close')[1];
+
+// When the user clicks the button, open the modal
+itemSelectionBtn.onclick = function () {
+  itemModal.style.display = 'block';
+};
+
+// When the user clicks on <span> (x), close the modal
+itemSpan.onclick = function () {
+  itemModal.style.display = 'none';
+};
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == itemModal) {
+    itemModal.style.display = 'none';
+  }
+};
+
+// Get the button that selects the item
+const itemSelectBtn = document.getElementById('itemSelectBtn');
+
+// When the user clicks the button, inserts selected item into item field in purchase order
+const selectItem = function (itemEle) {
+  const itemID = itemEle.closest('tr').firstElementChild.textContent.trim();
+  console.log(itemID);
+  insertItemFromSearchModal(itemID);
+  itemModal.style.display = 'none';
+};
+
+// Lets user use F1 to insert item search selection into po line
+const itemLookupInsert = function () {
+  if (event.keyCode == 112) {
+    event.preventDefault();
+    console.log(event);
+    itemModal.style.display = 'block';
+  }
+};
+
+////////////////////////////////
+//..Item selection filtering..//
+////////////////////////////////
+const applyFilterBtn = document.getElementById('applyFilterBtn');
+
+const applyItemSelectionFilter = () => {
+  const filterType = document.getElementById('itemSearchFilterSelection').value;
+  const filterOperator = document.getElementById('itemSearchFilterOperator')
+    .value;
+
+  const filterInput = document.getElementById('itemSearchFilterValue');
+  const filterValue = filterInput.value.toUpperCase();
+
+  const itemTable = document.getElementById('itemSelectionTable');
+  const tr = itemTable.getElementsByTagName('tr');
+
+  for (let i = 0; i < tr.length; i++) {
+    const sortingIndex = (filterType) => {
+      return filterType === 'itemID'
+        ? 0
+        : filterType === 'description'
+        ? 1
+        : filterType === 'category'
+        ? 2
+        : filterType === 'type'
+        ? 3
+        : 4;
+    };
+    let td = tr[i].getElementsByTagName('td')[sortingIndex(filterType)];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
+        tr[i].style.display = '';
+      } else {
+        tr[i].style.display = 'none';
+      }
+    }
+  }
+};
+
+// applyFilterBtn.addEventListener('click', applyItemSelectionFilter); // removed because we're using keyup event instead of apply button
+
+const insertItemFromSearchModal = function (itemNum) {
+  poAddNewLine();
+  const table = document.getElementById('poTable');
+  const rows = table.getElementsByTagName('tr');
+  const lastRow = rows[rows.length - 1];
+  console.log('last', lastRow);
+  const insertionPoint = lastRow.firstElementChild.nextElementSibling;
+  console.log(insertionPoint);
+  const csrf = document.querySelector('[name=_csrf]').value;
+
+  fetch(`/po/getItem/${itemNum}`, {
+    method: 'POST',
+    headers: {
+      'csrf-token': csrf,
+    },
+  })
+    .then((result) => {
+      return result.json();
+    })
+    .then((item) => {
+      const itemID = insertionPoint;
+      const itemDescription = itemID.nextElementSibling;
+      const itemQuantity = itemDescription.nextElementSibling;
+      const itemPurchaseUOM = itemQuantity.nextElementSibling;
+      const itemCost = itemPurchaseUOM.nextElementSibling;
+      itemID.textContent = item.itemID;
+      itemDescription.textContent = item.description;
+      itemQuantity.focus();
+      itemCost.textContent = 99.99;
+      for (option of itemPurchaseUOM.firstElementChild.options) {
+        if (option.text === item.purchaseUOM) {
+          option.setAttribute('selected', true);
+        }
+      }
+    })
+    .catch((err) => {
+      console.log('err', err);
+    });
 };

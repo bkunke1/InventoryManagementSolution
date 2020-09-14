@@ -19,27 +19,34 @@ exports.getPurchaseOrder = (req, res, next) => {
 };
 
 exports.getNewPurchaseOrder = (req, res, next) => {
-  Vendor.find()
-    .then((vendorList) => {
-      Warehouse.find()
-        .then((warehouseList) => {
-          PaymentTerm.find()
-            .then((paymentTermList) => {
-              ShippingMethod.find()
-                .then((shippingMethodList) => {
-                  PurchaseOrder.find()
-                    .then((poList) => {
-                      res.render('purchaseOrder/purchase-order-new', {
-                        pageTitle: 'New Purchase Orders',
-                        mainMenuPath: 'purchaseOrders',
-                        subMenuPath: '',
-                        newPONumber: ++poList.length,
-                        createdBy: req.session.user.email,
-                        shippingMethodList: shippingMethodList,
-                        paymentTermList: paymentTermList,
-                        warehouseList: warehouseList,
-                        vendorList: vendorList,
-                      });
+  Item.find()
+    .then((itemList) => {
+      Vendor.find()
+        .then((vendorList) => {
+          Warehouse.find()
+            .then((warehouseList) => {
+              PaymentTerm.find()
+                .then((paymentTermList) => {
+                  ShippingMethod.find()
+                    .then((shippingMethodList) => {
+                      PurchaseOrder.find()
+                        .then((poList) => {
+                          res.render('purchaseOrder/purchase-order-new', {
+                            pageTitle: 'New Purchase Orders',
+                            mainMenuPath: 'purchaseOrders',
+                            subMenuPath: '',
+                            newPONumber: ++poList.length,
+                            createdBy: req.session.user.email,
+                            shippingMethodList: shippingMethodList,
+                            paymentTermList: paymentTermList,
+                            warehouseList: warehouseList,
+                            vendorList: vendorList,
+                            itemList: itemList
+                          });
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
                     })
                     .catch((err) => {
                       console.log(err);
@@ -65,7 +72,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
 exports.postCreatePO = (req, res, next) => {
   const poNum = req.body.poNum;
   const poSelection = req.body.poSelection;
-  const poStatus = 'OPEN';
+  const poStatus = req.body.poStatus;
   const vendor = req.body.vendor;
   const orderDate = req.body.orderDate;
   const expectedDate = req.body.expectedDate;
@@ -79,7 +86,7 @@ exports.postCreatePO = (req, res, next) => {
 
   const purchaseOrder = new PurchaseOrder({
     poNum: poNum,
-    status: poStatus,
+    status: 'OPEN',
     vendorNum: vendor,
     orderDate: orderDate,
     expectedDate: expectedDate,
@@ -352,3 +359,14 @@ exports.postDeletePaymentTerm = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+
+// // filters item list in item loopup modal
+// exports.postFilterItemSelectionList = (req, res, next) => {
+//   res.status(200).json({
+//     uoms: [
+//       { name: 'EACH', conversionQty: 1 },
+//       { name: 'CS12', conversionQty: 12 },
+//     ],
+//   });
+// };

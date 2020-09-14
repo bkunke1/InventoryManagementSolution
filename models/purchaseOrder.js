@@ -40,7 +40,7 @@ const purchaseOrderSchema = new Schema({
     type: String,
     required: true
   },
-  lineDetails: [
+  poTableData: [
     { line: {
         type: String,
         required: true

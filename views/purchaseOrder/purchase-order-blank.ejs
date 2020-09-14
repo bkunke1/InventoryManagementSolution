@@ -88,7 +88,7 @@
         <div>
           <label for="orderDate">Order Date:</label>
           <input
-          disabled
+            disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
@@ -97,7 +97,7 @@
           />
           <label for="expectedDate">Expected Date:</label>
           <input
-          disabled
+            disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -106,7 +106,7 @@
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
-          disabled
+            disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
@@ -117,7 +117,7 @@
           </select>
           <label for="shipToLocation">Ship to Loation:</label>
           <select
-          disabled
+            disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
@@ -170,18 +170,19 @@
           </table>
           <input id="poTableData" type="hidden" name="poTableData" value="" />
           <div class="flex poSumLabel">
-            <h4 >Subtotal:</h4>
+            <h4>Subtotal:</h4>
             <h4 class="poSum">0</h4>
-          </div> 
+          </div>
         </div>
       </form>
     </div>
-
-    <a href="/po/new"><button>New</button></a>
-    <button>Delete</button>
-    <button>Print PO</button>
-    <button>Print Receiver</button>
-    <button>Receive PO</button>
+    <div class="poActionBtns">
+      <a href="/po/new"><button>New</button></a>
+      <button>Delete</button>
+      <button>Print PO</button>
+      <button>Print Receiver</button>
+      <button>Receive PO</button>
+    </div>
 
     <script src="/js/purchaseOrder.js"></script>
   </body>

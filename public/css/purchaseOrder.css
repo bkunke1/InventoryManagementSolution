@@ -164,7 +164,7 @@ td {
   overflow: auto;
 }
 
-/* The Modal (background) */
+/* The vendorModal (background) */
 .vendorSearchModal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -179,7 +179,7 @@ td {
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-/* Modal Content */
+/* vendorModal Content */
 .vendorSearchModal-content {
   background-color: #fefefe;
   margin: auto;
@@ -188,7 +188,7 @@ td {
   width: 40%;
 }
 
-/* The Close Button */
+/* The vendorModal Close Button */
 .close {
   color: #aaaaaa;
   float: right;
@@ -210,6 +210,96 @@ td {
 }
 
 .vendorSelectHeading {
-    text-align: center;
-    margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.poActionBtns {
+  text-align: right;
+  margin: 1rem 3rem;
+}
+
+/* The itemModal (background) */
+.itemSearchModal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 200px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* itemModal Content */
+.itemSearchModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+}
+
+/* The itemModal Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#itemSelectionTable {
+  margin: auto;
+  width: 80%;
+  text-align: center;
+}
+
+.itemSelectHeading {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.poActionBtns {
+  text-align: right;
+  margin: 1rem 3rem;
+}
+
+.itemSearchFilter {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  margin-bottom: 1rem;
+  height: 1.5rem;
+}
+
+.itemSearchFilter h5 {
+  margin-top: 0;
+  padding-top: .2rem;
+}
+
+.itemSearchFilter > * {
+  margin-right: 1rem;
+}
+
+#itemSelectionTable button {
+  margin-left: 5px;
+  margin-bottom: .6rem;
+}
+
+/* #itemSelectionTable th {
+  display: flex;
+} */
+
+.sortBtn {
+  padding: 0 3px;
 }

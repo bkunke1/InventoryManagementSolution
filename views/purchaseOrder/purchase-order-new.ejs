@@ -118,9 +118,9 @@
             class="poSelectFields"
           >
             <% for (shippingMethod of shippingMethodList) { %>
-            <option value="<%= shippingMethod.name %>"
-              ><%= shippingMethod.name %></option
-            >
+            <option value="<%= shippingMethod.name %>"></option>
+              <%= shippingMethod.name %>
+            </option>
             <% } %>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
@@ -136,13 +136,13 @@
           <label for="terms">Terms:</label>
           <select name="terms" id="terms" class="poSelectFields">
             <% for (paymentTerm of paymentTermList) { %>
-            <option value="<%= paymentTerm.code %>"
-              ><%= paymentTerm.code %></option
-            >
+            <option value="<%= paymentTerm.code %>">
+              <%= paymentTerm.code %>
+            </option>
             <% } %>
           </select>
           <h3>Submitted by: <%= createdBy %></h3>
-          <input type="hidden" name="createdBy" value="userName" />
+          <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>
         <hr />
         <h1>Line Items</h1>
@@ -164,7 +164,11 @@
               <td class="poTableLine">
                 <button id="poTableAddLineBtn" type="button">+</button>
               </td>
-              <td class="poTableItemNum"></td>
+              <td class="poTableItemNum">
+                <button id="itemSelectionBtn" type="button">
+                  Item lookup (F1)
+                </button>
+              </td>
               <td class="poTableDescription"></td>
               <td class="poTableQuantity"></td>
               <td class="poTableUOM"></td>
@@ -181,6 +185,7 @@
         </div>
         <button id="poSaveBtn">Save</button>
       </form>
+
       <!-- The vendorSearchModal -->
       <div id="vendorSelectionModal" class="vendorSearchModal">
         <!-- vendorSearchModal content -->
@@ -192,25 +197,74 @@
               <th>Vendor Name</th>
             </tr>
             <% for (const vendor of vendorList) { %>
-              <tr>
-                <td>
-                  <%= vendor.name %>
-                </td>
-                <td>
-                  <button id="vendorSelectBtn" onclick="selectVendor(this)">Select</button>
-                </td>
-              </tr>
+            <tr>
+              <td><%= vendor.name %></td>
+              <td>
+                <button id="vendorSelectBtn" onclick="selectVendor(this)">
+                  Select
+                </button>
+              </td>
+            </tr>
+            <% } %>
+          </table>
+        </div>
+      </div>
+
+      <!-- The itemSearchModal -->
+      <div id="itemSelectionModal" class="itemSearchModal">
+        <!-- itemSearchModal content -->
+        <div class="itemSearchModal-content">
+          <span class="close">&times;</span>
+          <h2 class="itemSelectHeading">Select an item</h2>
+          <div class="itemSearchFilter">
+            <h5>Filter:</h5>
+            <select name="itemSearchFilterSelection" id="itemSearchFilterSelection">
+              <option value="itemID">Item ID</option>
+              <option value="description">Description</option>
+              <option value="category">Category</option>
+              <option value="type">Type</option>
+            </select>
+            <select name="itemSearchFilterOperator" id="itemSearchFilterOperator">
+              <!-- <option value="equals">Equals</option> -->
+              <option value="contains">Contains</option>
+              <!-- <option value="excludes">Excludes</option> -->
+            </select>
+            <input type="text" id="itemSearchFilterValue" onkeyup="applyItemSelectionFilter()">
+            <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
+          </div>
+          <table id="itemSelectionTable">
+            <tr>
+              <th>Item ID</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Qty Available</th>
+            </tr>
+            <% for (const item of itemList) { %>
+            <tr>
+              <td><%= item.itemID %></td>
+              <td><%= item.description %></td>
+              <td><%= item.category %></td>
+              <td><%= item.type %></td>
+              <td><%= item.totalQtyOnHand - item.qtyAllocated %></td>
+              <td>
+                <button id="itemSelectBtn" onclick="selectItem(this)">
+                  Select
+                </button>
+              </td>
+            </tr>
             <% } %>
           </table>
         </div>
       </div>
     </div>
-
-    <button>New</button>
-    <button>Delete</button>
-    <button>Print PO</button>
-    <button>Print Receiver</button>
-    <button>Receive PO</button>
+    <div class="poActionBtns">
+      <button>New</button>
+      <button>Delete</button>
+      <button>Print PO</button>
+      <button>Print Receiver</button>
+      <button>Receive PO</button>
+    </div>
 
     <script src="/js/purchaseOrder.js"></script>
   </body>
