@@ -9,60 +9,51 @@ const PurchaseOrder = require('../models/purchaseOrder');
 const ShippingMethod = require('../models/shippingMethod');
 const PaymentTerm = require('../models/paymentTerm');
 const Vendor = require('../models/vendor');
+const purchaseOrder = require('../models/purchaseOrder');
 
 exports.getPurchaseOrder = (req, res, next) => {
-  res.render('purchaseOrder/purchase-order-blank', {
-    pageTitle: 'Purchase Orders',
-    mainMenuPath: 'purchaseOrders',
-    subMenuPath: '',
-  });
+  purchaseOrder
+    .find()
+    .then((poList) => {
+      res.render('purchaseOrder/purchase-order-blank', {
+        pageTitle: 'Purchase Orders',
+        mainMenuPath: 'purchaseOrders',
+        subMenuPath: '',
+        poList: poList,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getNewPurchaseOrder = (req, res, next) => {
   Item.find()
     .then((itemList) => {
-      Vendor.find()
-        .then((vendorList) => {
-          Warehouse.find()
-            .then((warehouseList) => {
-              PaymentTerm.find()
-                .then((paymentTermList) => {
-                  ShippingMethod.find()
-                    .then((shippingMethodList) => {
-                      PurchaseOrder.find()
-                        .then((poList) => {
-                          res.render('purchaseOrder/purchase-order-new', {
-                            pageTitle: 'New Purchase Orders',
-                            mainMenuPath: 'purchaseOrders',
-                            subMenuPath: '',
-                            newPONumber: ++poList.length,
-                            createdBy: req.session.user.email,
-                            shippingMethodList: shippingMethodList,
-                            paymentTermList: paymentTermList,
-                            warehouseList: warehouseList,
-                            vendorList: vendorList,
-                            itemList: itemList
-                          });
-                        })
-                        .catch((err) => {
-                          console.log(err);
-                        });
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                    });
-                })
-                .catch((err) => {
-                  console.log(err);
+      Vendor.find().then((vendorList) => {
+        Warehouse.find().then((warehouseList) => {
+          PaymentTerm.find().then((paymentTermList) => {
+            ShippingMethod.find().then((shippingMethodList) => {
+              PurchaseOrder.find().then((poList) => {
+                console.log(poList);
+                res.render('purchaseOrder/purchase-order-new', {
+                  pageTitle: 'New Purchase Orders',
+                  mainMenuPath: 'purchaseOrders',
+                  subMenuPath: '',
+                  newPONumber: ++poList.length,
+                  createdBy: req.session.user.email,
+                  shippingMethodList: shippingMethodList,
+                  paymentTermList: paymentTermList,
+                  warehouseList: warehouseList,
+                  vendorList: vendorList,
+                  itemList: itemList,
+                  poList: poList
                 });
-            })
-            .catch((err) => {
-              console.log(err);
+              });
             });
-        })
-        .catch((err) => {
-          console.log(err);
+          });
         });
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -360,7 +351,6 @@ exports.postDeletePaymentTerm = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-
 // // filters item list in item loopup modal
 // exports.postFilterItemSelectionList = (req, res, next) => {
 //   res.status(200).json({
@@ -370,3 +360,112 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 //     ],
 //   });
 // };
+
+exports.getExistingPurchaseOrder = (req, res, next) => {
+  const poNum = req.params.poNum;
+  console.log('poNum', poNum);
+  Item.find()
+    .then((itemList) => {
+      Vendor.find().then((vendorList) => {
+        Warehouse.find().then((warehouseList) => {
+          PaymentTerm.find().then((paymentTermList) => {
+            ShippingMethod.find().then((shippingMethodList) => {
+              PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
+                PurchaseOrder.find().then((poList) => {
+                  const poExpectedDateYear = po.expectedDate.getFullYear();
+                  const poExpectedDateMonth = po.expectedDate
+                    .getMonth()
+                    .toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    });
+                  const poExpectedDateDate = po.expectedDate
+                    .getDate()
+                    .toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    });
+                  const poExpectedDate = `${poExpectedDateYear}-${poExpectedDateMonth}-${poExpectedDateDate}`;
+                  console.log('expectedDate', poExpectedDate);
+                  const poOrderDateYear = po.orderDate.getFullYear();
+                  const poOrderDateMonth = po.orderDate
+                    .getMonth()
+                    .toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    });
+                  const poOrderDateDate = po.orderDate
+                    .getDate()
+                    .toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    });
+                  const poOrderDate = `${poOrderDateYear}-${poOrderDateMonth}-${poOrderDateDate}`;
+                  console.log('orderDate', poOrderDate);
+                  res.render('purchaseOrder/purchase-order-view', {
+                    pageTitle: 'View Purchase Orders',
+                    mainMenuPath: 'purchaseOrders',
+                    subMenuPath: 'viewPO',
+                    newPONumber: po.poNum,
+                    createdBy: po.createdBy,
+                    shippingMethodList: shippingMethodList,
+                    paymentTermList: paymentTermList,
+                    warehouseList: warehouseList,
+                    vendorList: vendorList,
+                    itemList: itemList,
+                    poDetails: po,
+                    poList: poList,
+                    poOrderDate: poOrderDate,
+                    poExpectedDate: poExpectedDate,
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postUpdatePO = (req, res, next) => {
+  const id = req.body.id;
+  const poNum = req.body.poNum;
+  const poSelection = req.body.poSelection;
+  const poStatus = req.body.poStatus;
+  const vendor = req.body.vendor;
+  const orderDate = req.body.orderDate;
+  const expectedDate = req.body.expectedDate;
+  const shippingMethod = req.body.shippingMethod;
+  const terms = req.body.terms;
+  const createdBy = req.body.createdBy;
+  const shipToLocation = req.body.shipToLocation;
+  const poTableData = JSON.parse(req.body.poTableData);
+
+  PurchaseOrder.findById(id)
+    .then((po) => {
+      console.log('po', po);
+      // po.poNum = poNum;
+      // po.status = poStatus;
+      po.vendorNum = vendor;
+      po.orderDate = orderDate;
+      po.expectedDate = expectedDate;
+      po.shippingMethod = shippingMethod;
+      po.terms = terms;
+      po.createdBy = createdBy;
+      po.shipToLocation = shipToLocation;
+      po.poTableData = poTableData;
+      return po.save();
+    })
+    .then((result) => {
+      console.log('Updated Purchase Order');
+      req.flash('updatedMessage', 'PO was updated!');
+      res.redirect('/po');
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect('/500');
+    });
+};

@@ -26,15 +26,15 @@
 
     <div id="workspace">
       <form
-        action="/po/save"
+        action="/po/update"
         method="POST"
         autocomplete="off"
         onsubmit="return sendTableData()"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
-          <h1>Order # <%= newPONumber %></h1>
-          <input type="hidden" name="poNum" value="<%= newPONumber %>" />
+          <h1>Order # <%= poDetails.poNum %></h1>
+          <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
 
           <a href="/inventory/po/previousItem/"
             ><button
@@ -73,13 +73,15 @@
             </button>
           </a>
 
-          <button class="poBtns" id="poSelectionBtn" type="button">Search</button>
+          <button class="poBtns" id="poSelectionBtn" type="button">
+            Search
+          </button>
           <select name="poSelection" id="poSelection" class="poBtns">
             <option value="ALL" selected>ALL</option>
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select>
-          <h1 class="poStatusText">PO Status: **NEW**</h1>
+          <h1 class="poStatusText">PO Status: *<%= poDetails.status %>*</h1>
           <input type="hidden" name="poStatus" value="NEW" />
         </div>
         <div id="vendorSelection">
@@ -87,7 +89,7 @@
           <input
             type="text"
             name="vendor"
-            value="<%= vendorList[0].name %>"
+            value="<%= poDetails.vendorNum %>"
             size="30"
           />
           <button type="button" id="vendorSelectionBtn" tooltip="test">
@@ -102,6 +104,7 @@
             type="date"
             name="orderDate"
             size="8"
+            value="<%= poOrderDate %>"
           />
           <label for="expectedDate">Expected Date:</label>
           <input
@@ -110,6 +113,7 @@
             type="date"
             name="expectedDate"
             size="8"
+            value="<%= poExpectedDate %>"
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
@@ -117,11 +121,12 @@
             id="shippingMethod"
             class="poSelectFields"
           >
-            <% for (shippingMethod of shippingMethodList) { %>
-            <option value="<%= shippingMethod.name %>"></option>
-              <%= shippingMethod.name %>
+            <% shippingMethodList.forEach(function(shippingMethod) { %>
+            <option value="<%" ="shippingMethod.name" %>
+              <% if (shippingMethod.name == poDetails.shippingMethod) { %>
+              SELECTED <% } %> ><%= shippingMethod.name %>
             </option>
-            <% } %>
+            <% }); %>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
           <select
@@ -129,17 +134,21 @@
             id="shipToLocation"
             class="poSelectFields"
           >
-            <% for (warehouse of warehouseList) { %>
-            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
-            <% } %>
+            <% warehouseList.forEach(function(warehouse) { %>
+            <option value="<%" ="warehouse.name" %>
+              <% if (warehouse.name == poDetails.shipToLocation) { %> SELECTED
+              <% } %> ><%= warehouse.name %>
+            </option>
+            <% }); %>
           </select>
           <label for="terms">Terms:</label>
           <select name="terms" id="terms" class="poSelectFields">
-            <% for (paymentTerm of paymentTermList) { %>
-            <option value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
+            <% paymentTermList.forEach(function(paymentTerm) { %>
+            <option value="<%" ="paymentTerm.code" %>
+              <% if (paymentTerm.code == poDetails.terms) { %> SELECTED <% } %>
+              ><%= paymentTerm.code %>
             </option>
-            <% } %>
+            <% }); %>
           </select>
           <h3>Submitted by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
@@ -176,14 +185,66 @@
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
             </tr>
+            <% poDetails.poTableData.forEach(function(line) { %>
+            <tr>
+              <td class="poTableLine"><%= line.line %></td>
+              <td class="poTableItemNum poTableFocus" contenteditable="true">
+                <%= line.itemID %>
+              </td>
+              <td
+                class="poTableDescription poTableFocus"
+                contenteditable="true"
+              >
+                <%= line.itemDescription %>
+              </td>
+              <td
+                class="poTableQuantity poTableFocus"
+                contenteditable="true"
+                onfocusout="poLineUpdateExtCost(this)"
+              >
+                <%= line.qtyOrdered %>
+              </td>
+              <td
+                class="poTableUOM poTableFocus"
+                onfocusout="poLineUpdateExtCost(this)"
+              >
+                <select>
+                  <option value="1" selected="true">EACH</option>
+                  <option value="12">CS12</option>
+                </select>
+              </td>
+              <td
+                class="poTableCost poTableFocus"
+                contenteditable="true"
+                onfocusout="poLineUpdateExtCost(this)"
+              >
+                <%= line.cost %>
+              </td>
+              <td class="poTableExtended">
+                <%= line.cost * line.qtyOrdered %>
+              </td>
+              <td class="poTableDeleteBtn">
+                <i
+                  id="poLineDeleteBtn"
+                  class="fas fa-minus-circle"
+                  onclick="poLineDeleteBtn(this)"
+                  aria-hidden="true"
+                ></i>
+              </td>
+            </tr>
+            <% }); %>
           </table>
           <input id="poTableData" type="hidden" name="poTableData" value="" />
         </div>
         <div class="flex poSumLabel">
+          <% let poSumAmount = 0; poDetails.poTableData.forEach(function(line) {
+          const lineTotal = +line.qtyOrdered * +line.cost; poSumAmount =
+          (+lineTotal + +poSumAmount).toFixed(2); }) %>
           <h4>Subtotal:</h4>
-          <h4 class="poSum">0</h4>
+          <h4 class="poSum"><%= poSumAmount %></h4>
         </div>
-        <button id="poSaveBtn">Save</button>
+        <button id="poUpdateBtn">Update</button>
+        <input type="hidden" name="id" value="<%= poDetails._id %>" />
       </form>
 
       <!-- The vendorSearchModal -->
@@ -218,18 +279,28 @@
           <h2 class="itemSelectHeading">Select an item</h2>
           <div class="itemSearchFilter">
             <h5>Filter:</h5>
-            <select name="itemSearchFilterSelection" id="itemSearchFilterSelection">
+            <select
+              name="itemSearchFilterSelection"
+              id="itemSearchFilterSelection"
+            >
               <option value="itemID">Item ID</option>
               <option value="description">Description</option>
               <option value="category">Category</option>
               <option value="type">Type</option>
             </select>
-            <select name="itemSearchFilterOperator" id="itemSearchFilterOperator">
+            <select
+              name="itemSearchFilterOperator"
+              id="itemSearchFilterOperator"
+            >
               <!-- <option value="equals">Equals</option> -->
               <option value="contains">Contains</option>
               <!-- <option value="excludes">Excludes</option> -->
             </select>
-            <input type="text" id="itemSearchFilterValue" onkeyup="applyItemSelectionFilter()">
+            <input
+              type="text"
+              id="itemSearchFilterValue"
+              onkeyup="applyItemSelectionFilter()"
+            />
             <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
           </div>
           <table id="itemSelectionTable">
@@ -267,8 +338,8 @@
           <div class="poSearchFilter">
             <h5>Filter:</h5>
             <select name="poSearchFilterSelection" id="poSearchFilterSelection">
-                <option value="orderDate">Order Date</option>
-                <option value="expectedDate">Expected Date</option>
+              <option value="orderDate">Order Date</option>
+              <option value="expectedDate">Expected Date</option>
               <option value="poNum">PO Num</option>
               <option value="vendor">Vendor</option>
             </select>
@@ -277,7 +348,11 @@
               <option value="contains">Contains</option>
               <!-- <option value="excludes">Excludes</option> -->
             </select>
-            <input type="text" id="poSearchFilterValue" onkeyup="applyPOSelectionFilter()">
+            <input
+              type="text"
+              id="poSearchFilterValue"
+              onkeyup="applyPOSelectionFilter()"
+            />
             <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
           </div>
           <table id="poSelectionTable">

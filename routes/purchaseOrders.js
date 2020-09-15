@@ -12,8 +12,11 @@ router.get('/po', purchasingAuth, purchaseOrderController.getPurchaseOrder);
 
 router.get('/po/new', purchasingAuth, purchaseOrderController.getNewPurchaseOrder);
 
+router.get('/po/view/:poNum', purchasingAuth, purchaseOrderController.getExistingPurchaseOrder);
+
 router.post('/po/save', purchasingAuth, purchaseOrderController.postCreatePO);
 
+router.post('/po/update', purchasingAuth, purchaseOrderController.postUpdatePO);
 
 router.get('/po/getUOMs/', purchasingAuth, purchaseOrderController.getUOMs);
 

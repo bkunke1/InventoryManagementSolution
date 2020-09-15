@@ -102,12 +102,12 @@ const sendTableData = () => {
 };
 
 //populates order date and expected date fields
-const today = new Date();
-today.setDate(today.getDate() - 1);
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-document.querySelector('#orderDateInput').valueAsDate = today;
-document.querySelector('#expectedDateInput').valueAsDate = tomorrow;
+// const today = new Date();
+// today.setDate(today.getDate() - 1);
+// const tomorrow = new Date(today);
+// tomorrow.setDate(tomorrow.getDate() + 1);
+// document.querySelector('#orderDateInput').valueAsDate = today;
+// document.querySelector('#expectedDateInput').valueAsDate = tomorrow;
 
 // deletes po Line and udpates line #s
 // const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
@@ -255,9 +255,11 @@ const vendorSelectionBtn = document.getElementById('vendorSelectionBtn');
 const span = document.getElementsByClassName('close')[0];
 
 // When the user clicks the button, open the modal
-vendorSelectionBtn.onclick = function () {
-  modal.style.display = 'block';
-};
+if (vendorSelectionBtn) {
+  vendorSelectionBtn.onclick = function () {
+    modal.style.display = 'block';
+  };
+}
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
@@ -455,3 +457,37 @@ const insertItemFromSearchModal = function (itemNum) {
       console.log('err', err);
     });
 };
+
+/////////////////////
+// poSearch///////
+//////////////
+
+// Get the vendor selection modal
+const poSelectionModal = document.getElementById('poSelectionModal');
+
+// Get the button that opens the modal
+const poSelectionBtn = document.getElementById('poSelectionBtn');
+
+// Get the <span> element that closes the modal
+const poSearchSpan = document.getElementsByClassName('close')[2];
+
+// When the user clicks the button, open the modal
+poSelectionBtn.onclick = function () {
+  console.log('modal');
+  poSelectionModal.style.display = 'block';
+};
+
+// When the user clicks on <span> (x), close the modal
+poSearchSpan.onclick = function () {
+  poSelectionModal.style.display = 'none';
+};
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == poSelectionModal) {
+    poSelectionModal.style.display = 'none';
+  }
+};
+
+// Get the button that selects the vendor
+const poSelectBtn = document.getElementById('poSelectBtn');

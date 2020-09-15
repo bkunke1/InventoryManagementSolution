@@ -73,7 +73,9 @@
             </button>
           </a>
 
-          <button class="poBtns">Search</button>
+          <button class="poBtns" id="poSelectionBtn" type="button">
+            Search
+          </button>
           <select name="poSelection" id="poSelection" class="poBtns">
             <option value="ALL" selected>ALL</option>
             <option value="OPEN">OPEN</option>
@@ -175,6 +177,56 @@
           </div>
         </div>
       </form>
+
+      <!-- The poSearchModal -->
+      <div id="poSelectionModal" class="poSearchModal">
+        <!-- poSearchModal content -->
+        <div class="poSearchModal-content">
+          <span class="close">&times;</span>
+          <h2 class="poSelectHeading">Select a Purchase Order</h2>
+          <div class="poSearchFilter">
+            <h5>Filter:</h5>
+            <select name="poSearchFilterSelection" id="poSearchFilterSelection">
+              <option value="orderDate">Order Date</option>
+              <option value="expectedDate">Expected Date</option>
+              <option value="poNum">PO Num</option>
+              <option value="vendor">Vendor</option>
+            </select>
+            <select name="poSearchFilterOperator" id="poSearchFilterOperator">
+              <!-- <option value="equals">Equals</option> -->
+              <option value="contains">Contains</option>
+              <!-- <option value="excludes">Excludes</option> -->
+            </select>
+            <input
+              type="text"
+              id="poSearchFilterValue"
+              onkeyup="applyPOSelectionFilter()"
+            />
+            <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
+          </div>
+          <table id="poSelectionTable">
+            <tr>
+              <th>Order Date</th>
+              <th>Expected Date</th>
+              <th>PO Num</th>
+              <th>Vendor</th>
+            </tr>
+            <% poList.forEach(function(po) { %>
+            <tr>
+              <td><%= po.orderDate %></td>
+              <td><%= po.expectedDate %></td>
+              <td><%= po.poNum %></td>
+              <td><%= po.vendorNum %></td>
+              <td>
+                <button id="poSelectBtn" onclick="selectPo(this)">
+                  Select
+                </button>
+              </td>
+            </tr>
+            <% }) %>
+          </table>
+        </div>
+      </div>
     </div>
     <div class="poActionBtns">
       <a href="/po/new"><button>New</button></a>
