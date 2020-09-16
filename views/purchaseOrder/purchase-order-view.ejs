@@ -6,6 +6,7 @@
   </head>
   <body>
     <%- include('../includes/banner.ejs') %>
+
     <div id="main-menu">
       <div id="navbar">
         <ul>
@@ -121,12 +122,16 @@
             id="shippingMethod"
             class="poSelectFields"
           >
-            <% shippingMethodList.forEach(function(shippingMethod) { %>
-            <option value="<%" ="shippingMethod.name" %>
-              <% if (shippingMethod.name == poDetails.shippingMethod) { %>
-              SELECTED <% } %> ><%= shippingMethod.name %>
+            <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
+            (shippingMethod.name == poDetails.shippingMethod) { %>
+            <option SELECTED value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
             </option>
-            <% }); %>
+            <% } else { %>
+            <option value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } %> <% }); %>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
           <select
@@ -134,25 +139,32 @@
             id="shipToLocation"
             class="poSelectFields"
           >
-            <% warehouseList.forEach(function(warehouse) { %>
-            <option value="<%" ="warehouse.name" %>
-              <% if (warehouse.name == poDetails.shipToLocation) { %> SELECTED
-              <% } %> ><%= warehouse.name %>
+            <% warehouseList.forEach(function(warehouse) { %> <% if
+            (warehouse.name == poDetails.shipToLocation) { %>
+            <option SELECTED value="<%= warehouse.name %>">
+              <%= warehouse.name %>
             </option>
-            <% }); %>
+            <% } else { %>
+            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
+            <% } %> <% }); %>
           </select>
           <label for="terms">Terms:</label>
           <select name="terms" id="terms" class="poSelectFields">
-            <% paymentTermList.forEach(function(paymentTerm) { %>
-            <option value="<%" ="paymentTerm.code" %>
-              <% if (paymentTerm.code == poDetails.terms) { %> SELECTED <% } %>
-              ><%= paymentTerm.code %>
+            <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+            (paymentTerm.code == poDetails.terms) { %>
+            <option SELECTED value="<%= paymentTerm.code %>">
+              <%= paymentTerm.code %>
             </option>
-            <% }); %>
+            <% } else { %>
+            <option value="<%= paymentTerm.code %>">
+              <%= paymentTerm.code %>
+            </option>
+            <% } %> <% }); %>
           </select>
           <h3>Submitted by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>
+
         <hr />
         <h1>Line Items</h1>
         <table id="poTableHeaders">
@@ -378,7 +390,6 @@
           </table>
         </div>
       </div>
-
     </div>
     <div class="poActionBtns">
       <button>New</button>
@@ -388,6 +399,7 @@
       <button>Receive PO</button>
     </div>
 
-    <script src="/js/purchaseOrder.js"></script>
+    <script src="/js/purchaseOrder.js"></script> 
+    <script src="/js/purchaseOrderViewDate.js"></script>
   </body>
 </html>

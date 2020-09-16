@@ -113,9 +113,7 @@
             id="shippingMethod"
             class="poSelectFields"
           >
-            <option value="DELIVERY" selected>loopThruOptions</option>
-            <option value="PICKUP">PICKUP</option>
-            <option value="LTL">LTL</option>
+          <option value="default">Default</option>
           </select>
           <label for="shipToLocation">Ship to Loation:</label>
           <select
@@ -124,16 +122,11 @@
             id="shipToLocation"
             class="poSelectFields"
           >
-            <option value="loopThruOptions">loopThruOptions</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
+          <option value="default">Default</option>
           </select>
           <label for="terms">Terms:</label>
           <select disabled name="terms" id="terms" class="poSelectFields">
-            <option value="ALL" selected>loopThruOptions</option>
-            <option value="NET15">NET15</option>
-            <option value="NET30">NET30</option>
-            <option value="COD">COD</option>
+            <option value="default">Default</option>
           </select>
           <h3>Submitted by:</h3>
           <input
@@ -236,6 +229,7 @@
       <button>Receive PO</button>
     </div>
 
-    <script src="/js/purchaseOrder.js"></script>
+    <script src="/js/purchaseOrder.js"></script>    
+    <script src="/js/purchaseOrderNewDate.js"></script>
   </body>
 </html>

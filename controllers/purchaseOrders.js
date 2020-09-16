@@ -35,7 +35,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
           PaymentTerm.find().then((paymentTermList) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.find().then((poList) => {
-                console.log(poList);
+                // console.log(shippingMethodList);
                 res.render('purchaseOrder/purchase-order-new', {
                   pageTitle: 'New Purchase Orders',
                   mainMenuPath: 'purchaseOrders',
@@ -47,7 +47,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                   warehouseList: warehouseList,
                   vendorList: vendorList,
                   itemList: itemList,
-                  poList: poList
+                  poList: poList,
                 });
               });
             });
@@ -66,7 +66,9 @@ exports.postCreatePO = (req, res, next) => {
   const poStatus = req.body.poStatus;
   const vendor = req.body.vendor;
   const orderDate = req.body.orderDate;
+  console.log('saved orderdate', orderDate);
   const expectedDate = req.body.expectedDate;
+  console.log('saved expected date', expectedDate)
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -372,6 +374,14 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
                 PurchaseOrder.find().then((poList) => {
+                  let expectedDate = new Date(po.expectedDate); 
+                  console.log('expdate', expectedDate)     
+                  console.log('date', expectedDate.getDate())
+                  console.log('month', expectedDate.getMonth()) 
+                  console.log('yr', expectedDate.getYear()) 
+                  console.log('yr', po.expectedDate.getYear(), 'mo', po.expectedDate.getMonth(), 'date', po.expectedDate.getDate())
+                  console.log(po.expectedDate.toDateString());
+                  
                   const poExpectedDateYear = po.expectedDate.getFullYear();
                   const poExpectedDateMonth = po.expectedDate
                     .getMonth()
@@ -379,12 +389,11 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                       minimumIntegerDigits: 2,
                       useGrouping: false,
                     });
-                  const poExpectedDateDate = po.expectedDate
-                    .getDate()
-                    .toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    });
+                  const poExpectedDateDate = expectedDate.getDate();
+                  poExpectedDateDate.toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  });
                   const poExpectedDate = `${poExpectedDateYear}-${poExpectedDateMonth}-${poExpectedDateDate}`;
                   console.log('expectedDate', poExpectedDate);
                   const poOrderDateYear = po.orderDate.getFullYear();
@@ -394,12 +403,11 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                       minimumIntegerDigits: 2,
                       useGrouping: false,
                     });
-                  const poOrderDateDate = po.orderDate
-                    .getDate()
-                    .toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    });
+                  let poOrderDateDate = po.orderDate.getDate() + 1;
+                  poOrderDateDate.toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  });
                   const poOrderDate = `${poOrderDateYear}-${poOrderDateMonth}-${poOrderDateDate}`;
                   console.log('orderDate', poOrderDate);
                   res.render('purchaseOrder/purchase-order-view', {

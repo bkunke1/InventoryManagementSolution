@@ -118,7 +118,7 @@
             class="poSelectFields"
           >
             <% for (shippingMethod of shippingMethodList) { %>
-            <option value="<%= shippingMethod.name %>"></option>
+            <option value="<%= shippingMethod.name %>">
               <%= shippingMethod.name %>
             </option>
             <% } %>
@@ -314,5 +314,6 @@
     </div>
 
     <script src="/js/purchaseOrder.js"></script>
+    <script src="/js/purchaseOrderNewDate.js"></script>
   </body>
 </html>

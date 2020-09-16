@@ -10,7 +10,7 @@ const poTable = document.getElementById('poTable');
 
 const poTableAddLineBtn = document.getElementById('poTableAddLineBtn');
 
-// gets UOM data from back end
+// // gets UOM data from back end
 let UOMs;
 const getUOM = () => {
   const csrf = document.querySelector('[name=_csrf]').value;
@@ -33,7 +33,7 @@ const getUOM = () => {
 };
 getUOM();
 
-// gets shipping method data from back end
+// // gets shipping method data from back end
 let shippingMethods;
 const getShippingMethods = () => {
   const csrf = document.querySelector('[name=_csrf]').value;
@@ -100,14 +100,6 @@ const sendTableData = () => {
   //   poOrganizeTableData();
   return true;
 };
-
-//populates order date and expected date fields
-// const today = new Date();
-// today.setDate(today.getDate() - 1);
-// const tomorrow = new Date(today);
-// tomorrow.setDate(tomorrow.getDate() + 1);
-// document.querySelector('#orderDateInput').valueAsDate = today;
-// document.querySelector('#expectedDateInput').valueAsDate = tomorrow;
 
 // deletes po Line and udpates line #s
 // const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
