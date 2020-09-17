@@ -10,6 +10,7 @@ const ShippingMethod = require('../models/shippingMethod');
 const PaymentTerm = require('../models/paymentTerm');
 const Vendor = require('../models/vendor');
 const purchaseOrder = require('../models/purchaseOrder');
+const { search } = require('../routes/purchaseOrders');
 
 exports.getPurchaseOrder = (req, res, next) => {
   purchaseOrder
@@ -68,7 +69,7 @@ exports.postCreatePO = (req, res, next) => {
   const orderDate = req.body.orderDate;
   console.log('saved orderdate', orderDate);
   const expectedDate = req.body.expectedDate;
-  console.log('saved expected date', expectedDate)
+  console.log('saved expected date', expectedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -365,7 +366,6 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 
 exports.getExistingPurchaseOrder = (req, res, next) => {
   const poNum = req.params.poNum;
-  console.log('poNum', poNum);
   Item.find()
     .then((itemList) => {
       Vendor.find().then((vendorList) => {
@@ -374,42 +374,33 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
                 PurchaseOrder.find().then((poList) => {
-                  let expectedDate = new Date(po.expectedDate); 
-                  console.log('expdate', expectedDate)     
-                  console.log('date', expectedDate.getDate())
-                  console.log('month', expectedDate.getMonth()) 
-                  console.log('yr', expectedDate.getYear()) 
-                  console.log('yr', po.expectedDate.getYear(), 'mo', po.expectedDate.getMonth(), 'date', po.expectedDate.getDate())
-                  console.log(po.expectedDate.toDateString());
-                  
-                  const poExpectedDateYear = po.expectedDate.getFullYear();
-                  const poExpectedDateMonth = po.expectedDate
-                    .getMonth()
-                    .toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    });
-                  const poExpectedDateDate = expectedDate.getDate();
-                  poExpectedDateDate.toLocaleString('en-US', {
+                  const formatOrderDate = new Date(po.orderDate);
+                  formatOrderDate.setMinutes(
+                    formatOrderDate.getMinutes() + 240
+                  );
+                  const orderDate = `${formatOrderDate.getFullYear()}-${(
+                    +formatOrderDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
                     minimumIntegerDigits: 2,
                     useGrouping: false,
-                  });
-                  const poExpectedDate = `${poExpectedDateYear}-${poExpectedDateMonth}-${poExpectedDateDate}`;
-                  console.log('expectedDate', poExpectedDate);
-                  const poOrderDateYear = po.orderDate.getFullYear();
-                  const poOrderDateMonth = po.orderDate
-                    .getMonth()
-                    .toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    });
-                  let poOrderDateDate = po.orderDate.getDate() + 1;
-                  poOrderDateDate.toLocaleString('en-US', {
+                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
                     minimumIntegerDigits: 2,
                     useGrouping: false,
-                  });
-                  const poOrderDate = `${poOrderDateYear}-${poOrderDateMonth}-${poOrderDateDate}`;
-                  console.log('orderDate', poOrderDate);
+                  })}`;
+                  const formatExpectedDate = new Date(po.expectedDate);
+                  formatExpectedDate.setMinutes(
+                    formatExpectedDate.getMinutes() + 240
+                  );
+                  const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                    +formatExpectedDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}`;
+
                   res.render('purchaseOrder/purchase-order-view', {
                     pageTitle: 'View Purchase Orders',
                     mainMenuPath: 'purchaseOrders',
@@ -423,8 +414,8 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                     itemList: itemList,
                     poDetails: po,
                     poList: poList,
-                    poOrderDate: poOrderDate,
-                    poExpectedDate: poExpectedDate,
+                    poOrderDate: orderDate,
+                    poExpectedDate: expectedDate,
                   });
                 });
               });
@@ -476,4 +467,42 @@ exports.postUpdatePO = (req, res, next) => {
       console.log(err);
       res.redirect('/500');
     });
+};
+
+exports.getNextPurchaseOrder = (req, res, next) => {
+  if (req.params.poNum === 'empty') {
+    PurchaseOrder.find().then(poList => {
+      console.log(poList[0].poNum);
+      res.redirect(`/po/view/${poList[0].poNum}`);
+    })
+    .catch(err => {console.log(err)});    
+  } 
+    let poList = [];
+    PurchaseOrder.find()
+      .then((pos) => {
+        console.log('polist', pos)
+        for (po of pos) {
+          poList.push(po.poNum);
+        }
+        console.log('poList', poList)
+        poNum = req.params.poNum;
+        console.log('poNum', poNum)
+        const currentItemIndex = poList.indexOf(poNum);
+        console.log('cur', currentItemIndex)
+        const nextItemIndex = currentItemIndex + 1;
+        const lastItemIndex = poList.length - 1;
+        if (currentItemIndex === lastItemIndex) {
+          return poList[0];
+        } else {
+          return poList[nextItemIndex];
+        }
+      })
+      .then((result) => {
+        console.log('res', result)
+        res.redirect(`/po/view/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  
 };

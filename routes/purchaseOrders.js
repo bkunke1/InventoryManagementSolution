@@ -24,6 +24,8 @@ router.get('/po/getShippingMethods/', purchasingAuth, purchaseOrderController.ge
 
 router.post('/po/getItem/:itemId', purchasingAuth, purchaseOrderController.postFindItem);
 
+router.get('/po/next/:poNum', purchasingAuth, purchaseOrderController.getNextPurchaseOrder);
+
 // router.post('/po/itemSelectionFilter/:filterType/:filterOperator', purchasingAuth, purchaseOrderController.postFilterItemSelectionList); might do this front side
 
 router.get('/po/options/', purchasingAuth, purchaseOrderController.getOptions);
