@@ -26,6 +26,9 @@ router.post('/po/getItem/:itemId', purchasingAuth, purchaseOrderController.postF
 
 router.get('/po/next/:poNum', purchasingAuth, purchaseOrderController.getNextPurchaseOrder);
 
+router.get('/po/previous/:poNum', purchasingAuth, purchaseOrderController.getPreviousPurchaseOrder);
+
+
 // router.post('/po/itemSelectionFilter/:filterType/:filterOperator', purchasingAuth, purchaseOrderController.postFilterItemSelectionList); might do this front side
 
 router.get('/po/options/', purchasingAuth, purchaseOrderController.getOptions);
@@ -41,6 +44,14 @@ router.post('/po/options/deleteShippingMethod', purchasingAuth, purchaseOrderCon
 router.post('/po/options/addPaymentTerm', purchasingAuth, purchaseOrderController.postAddPaymentTerm);
 router.post('/po/options/editPaymentTerm', purchasingAuth, purchaseOrderController.postEditPaymentTerm);
 router.post('/po/options/deletePaymentTerm', purchasingAuth, purchaseOrderController.postDeletePaymentTerm);
+
+
+
+//////////////
+// receiver //
+//////////////
+
+router.get('/po/receiver/view/:receiverNum', purchasingAuth, purchaseOrderController.getReciever);
 
 
 

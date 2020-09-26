@@ -197,7 +197,7 @@ exports.postAddItem = (req, res, next) => {
   const qtyOnOrder = 0;
   const qtyAllocated = 0;
   const avgCost = 0;
-  const lotCost = {};
+  const lotCost = [];
 
   const errors = validationResult(req);
   console.log(errors);

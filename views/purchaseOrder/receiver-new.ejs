@@ -34,7 +34,7 @@
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
-          <h1>Order # <%= poDetails.poNum %></h1>
+          <h1>Receiver # <%= poDetails.poNum %></h1>
           <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
 
           <a href="/po/previous/<%= poDetails.poNum%>"
@@ -83,7 +83,7 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 class="poStatusText">PO Status: *<%= poDetails.status %>*</h1>
+          <h1 class="poStatusText">Receiver Status: *<%= poDetails.status %>*</h1>
           <input type="hidden" name="poStatus" value="NEW" />
         </div>
         <div id="vendorSelection">
@@ -173,7 +173,8 @@
             <th class="poTableLineHeader">Line</th>
             <th class="poTableItemNum">Item Num</th>
             <th class="poTableDescription">Description</th>
-            <th class="poTableQuantity">Quantity</th>
+            <th class="poTableQuantity">Quantity Ordered</th>
+            <th class="poTableQuantity">Quantity Received</th>
             <th class="poTableUOM">UOM</th>
             <th class="poTableCost">Cost</th>
             <th class="poTableExtended">Extended</th>
@@ -192,6 +193,7 @@
                 </button>
               </td>
               <td class="poTableDescription"></td>
+              <td class="poTableQuantity"></td>
               <td class="poTableQuantity"></td>
               <td class="poTableUOM"></td>
               <td class="poTableCost"></td>
@@ -216,6 +218,13 @@
                 onfocusout="poLineUpdateExtCost(this)"
               >
                 <%= line.qtyOrdered %>
+              </td>
+              <td
+                class="poTableQuantity poTableFocus"
+                contenteditable="true"
+                onfocusout="poLineUpdateExtCost(this)"
+              >
+                0
               </td>
               <td
                 class="poTableUOM poTableFocus"
@@ -400,7 +409,7 @@
       <button>Delete</button>
       <button>Print PO</button>
       <button>Print Receiver</button>
-      <a href="/po/receiver/view/<%= poDetails.poNum %>" method="GET"><button>Receive PO</button></a>
+      <button>Receive PO</button>
     </div>
 
     <script src="/js/purchaseOrder.js"></script> 

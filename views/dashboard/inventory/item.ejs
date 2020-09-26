@@ -274,26 +274,29 @@
               </select>
             </div>
           </div>
-          <div id="uomFieldsRight">
-            <div id="lotCostDetails" style="display: none;">
-              Lot Cost Detail
-              <hr />
-              <table >
-              <tr>
-                <th>Lot Num</th>
-                <th>Qty</th>
-                <th>Cost</th>
-              </tr>
-              <% itemLotList.forEach(function(lot) { %>
+          <% if (itemLotList !== "") { %>
+            <div id="uomFieldsRight">
+              <div id="lotCostDetails" style="display: none;">
+                Lot Cost Detail
+                <hr />
+                <table >
                 <tr>
-                  <td><%= lot.lotNum %></td>
-                  <td><%= lot.qty %></td>
-                  <td><%= lot.cost %></td>
+                  <th>Lot Num</th>
+                  <th>Qty</th>
+                  <th>Cost</th>
                 </tr>
-                <% }) %>
-            </table>
+                <% itemLotList.forEach(function(lot) { %>
+                  <tr>
+                    <td><%= lot.lotNum %></td>
+                    <td><%= lot.qty %></td>
+                    <td><%= lot.cost %></td>
+                  </tr>
+                  <% }) %>
+              </table>
+              </div>
             </div>
-          </div>
+          <% } %>
+          
         </div>        
         
         <hr />
@@ -310,10 +313,12 @@
             onchange="updateEditedFields"
           />
         </div>
-        <hr />
-        <input type="submit" value="Update" id="updateBtn" />
+        <div class="updateCancelBtns">
+          <input type="submit" value="Update" id="updateBtn" />
+          <a href="../item/<%= item._id%>"><button type="button">Cancel</button></a>
+        </div>        
       </form>
-      <a href="../item/<%= item._id%>"><button>Cancel</button></a>
+      
     </div>
     <script src="/js/item.js"></script>
   </body>

@@ -144,7 +144,8 @@ div#sub-menu li a:hover {
   padding-left: 20px;
   background-color: #c5c6c7;
   border: 2px solid rgb(99, 100, 100);
-  height: 650px;
+  /* height: 650px; */
+  min-height: 650px;
 }
 
 .item-field {
@@ -258,16 +259,28 @@ table {
 }
 
 #uomFieldsRight {
-  width: 50%;
-  border: red solid 2px;
-  overflow: scroll;
+  width: 50%;  
 }
 
 #uomFieldsLeft {
   width: 50%;
-  border: blue solid 2px;
 }
 
 .layoutBorder {
   border: red solid 1px;
+}
+
+.signup-btn {
+  width: 70px;
+}
+
+#lotCostDetails {
+  overflow: scroll;
+  height: 200px;
+  margin-right: 2rem;
+}
+
+.updateCancelBtns {
+  margin: 1rem;
+  text-align: right;
 }

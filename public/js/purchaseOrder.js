@@ -483,3 +483,72 @@ window.onclick = function (event) {
 
 // Get the button that selects the vendor
 const poSelectBtn = document.getElementById('poSelectBtn');
+
+// When the user clicks the button, displays the selected PO
+const selectPO = function (poEle) {
+  console.log('poEle', poEle);
+  const poNum =
+    poEle.parentElement.previousElementSibling.previousElementSibling
+      .textContent;
+  '1'.trim();
+  console.log(poNum);
+  
+  displayPOFromSearchModal(poNum);
+  poSelectionModal.style.display = 'none';
+};
+
+const displayPOFromSearchModal = function (poNum) {
+  const csrf = document.querySelector('[name=_csrf]').value;
+
+  fetch(`/po/view/${poNum}`, {
+    method: 'GET',
+    headers: {
+      'csrf-token': csrf,
+    },
+  })
+  .then(result => {
+    console.log(result);
+    window.location.href = `${result.url}`
+  }).catch((err) => {
+    console.log('err', err);
+  });
+};
+
+////////////////////////////////
+//..PO selection filtering..//
+////////////////////////////////
+
+const applyPOSelectionFilter = () => {
+  const filterType = document.getElementById('poSearchFilterSelection').value;
+  const filterOperator = document.getElementById('poSearchFilterOperator')
+    .value;
+
+  const filterInput = document.getElementById('poSearchFilterValue');
+  const filterValue = filterInput.value.toUpperCase();
+
+  const poTable = document.getElementById('poSelectionTable');
+  const tr = poTable.getElementsByTagName('tr');
+
+  for (let i = 0; i < tr.length; i++) {
+    const sortingIndex = (filterType) => {
+      return filterType === 'orderDate'
+        ? 0
+        : filterType === 'expectedDate'
+        ? 1
+        : filterType === 'poNum'
+        ? 2
+        : filterType === 'status'
+        ? 3
+        : 4;
+    };
+    let td = tr[i].getElementsByTagName('td')[sortingIndex(filterType)];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
+        tr[i].style.display = '';
+      } else {
+        tr[i].style.display = 'none';
+      }
+    }
+  }
+};

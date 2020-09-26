@@ -36,10 +36,10 @@
           <h1>Order # <%= newPONumber %></h1>
           <input type="hidden" name="poNum" value="<%= newPONumber %>" />
 
-          <a href="/inventory/po/previousItem/"
+          <a href="/po/previous/empty"
             ><button
               id="backwardsBtn"
-              type="submit"
+              type="button"
               class="poArrowSearchBtnLeft"
             >
               <svg height="20" width="20">
@@ -75,11 +75,11 @@
           </a>
 
           <button class="poBtns" id="poSelectionBtn" type="button">Search</button>
-          <select name="poSelection" id="poSelection" class="poBtns">
+          <!-- <select name="poSelection" id="poSelection" class="poBtns">
             <option value="ALL" selected>ALL</option>
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
-          </select>
+          </select> -->
           <h1 class="poStatusText">PO Status: **NEW**</h1>
           <input type="hidden" name="poStatus" value="NEW" />
         </div>

@@ -471,38 +471,137 @@ exports.postUpdatePO = (req, res, next) => {
 
 exports.getNextPurchaseOrder = (req, res, next) => {
   if (req.params.poNum === 'empty') {
-    PurchaseOrder.find().then(poList => {
-      console.log(poList[0].poNum);
-      res.redirect(`/po/view/${poList[0].poNum}`);
+    PurchaseOrder.find()
+      .then((poList) => {
+        res.redirect(`/po/view/${poList[0].poNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  let poList = [];
+  PurchaseOrder.find()
+    .then((pos) => {
+      for (po of pos) {
+        poList.push(po.poNum);
+      }
+      poNum = req.params.poNum;
+      const currentPOIndex = poList.indexOf(poNum);
+      const nextPOIndex = currentPOIndex + 1;
+      const lastPOIndex = poList.length - 1;
+      if (currentPOIndex === lastPOIndex) {
+        return poList[0];
+      } else {
+        return poList[nextPOIndex];
+      }
     })
-    .catch(err => {console.log(err)});    
-  } 
+    .then((result) => {
+      res.redirect(`/po/view/${result}`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.getPreviousPurchaseOrder = (req, res, next) => {
+  if (req.params.poNum === 'empty') {
+    PurchaseOrder.find()
+      .then((poList) => {
+        const lastIndexPO = poList.length;
+        res.redirect(`/po/view/${poList[lastIndexPO - 1].poNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
     let poList = [];
     PurchaseOrder.find()
       .then((pos) => {
-        console.log('polist', pos)
         for (po of pos) {
           poList.push(po.poNum);
         }
-        console.log('poList', poList)
         poNum = req.params.poNum;
-        console.log('poNum', poNum)
-        const currentItemIndex = poList.indexOf(poNum);
-        console.log('cur', currentItemIndex)
-        const nextItemIndex = currentItemIndex + 1;
-        const lastItemIndex = poList.length - 1;
-        if (currentItemIndex === lastItemIndex) {
-          return poList[0];
+        const currentPOIndex = poList.indexOf(poNum);
+        const previousPOIndex = currentPOIndex - 1;
+        const lastPOIndex = poList.length - 1;
+        if (currentPOIndex === 0) {
+          return poList[lastPOIndex];
         } else {
-          return poList[nextItemIndex];
+          return poList[previousPOIndex];
         }
       })
       .then((result) => {
-        console.log('res', result)
+        console.log('res', result);
         res.redirect(`/po/view/${result}`);
       })
       .catch((err) => {
         console.log(err);
       });
-  
+  }
+};
+
+
+exports.getReciever = (req, res, next) => {
+  const poNum = req.params.receiverNum;
+  Item.find()
+    .then((itemList) => {
+      Vendor.find().then((vendorList) => {
+        Warehouse.find().then((warehouseList) => {
+          PaymentTerm.find().then((paymentTermList) => {
+            ShippingMethod.find().then((shippingMethodList) => {
+              PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
+                PurchaseOrder.find().then((poList) => {
+                  const formatOrderDate = new Date(po.orderDate);
+                  formatOrderDate.setMinutes(
+                    formatOrderDate.getMinutes() + 240
+                  );
+                  const orderDate = `${formatOrderDate.getFullYear()}-${(
+                    +formatOrderDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}`;
+                  const formatExpectedDate = new Date(po.expectedDate);
+                  formatExpectedDate.setMinutes(
+                    formatExpectedDate.getMinutes() + 240
+                  );
+                  const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                    +formatExpectedDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}`;
+
+                  res.render('purchaseOrder/receiver-new', {
+                    pageTitle: 'View Receiver',
+                    mainMenuPath: 'purchaseOrders',
+                    subMenuPath: 'viewReceiver',
+                    newPONumber: po.poNum,
+                    createdBy: po.createdBy,
+                    shippingMethodList: shippingMethodList,
+                    paymentTermList: paymentTermList,
+                    warehouseList: warehouseList,
+                    vendorList: vendorList,
+                    itemList: itemList,
+                    poDetails: po,
+                    poList: poList,
+                    poOrderDate: orderDate,
+                    poExpectedDate: expectedDate,
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
