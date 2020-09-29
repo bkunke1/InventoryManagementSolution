@@ -11,6 +11,7 @@ const PaymentTerm = require('../models/paymentTerm');
 const Vendor = require('../models/vendor');
 const purchaseOrder = require('../models/purchaseOrder');
 const { search } = require('../routes/purchaseOrders');
+const Receiver = require('../models/receiver');
 
 exports.getPurchaseOrder = (req, res, next) => {
   purchaseOrder
@@ -540,8 +541,39 @@ exports.getPreviousPurchaseOrder = (req, res, next) => {
   }
 };
 
+// loads blank receiver
+exports.getBlankReciever = (req, res, next) => {
+  Item.find()
+    .then((itemList) => {
+      Vendor.find().then((vendorList) => {
+        Warehouse.find().then((warehouseList) => {
+          PaymentTerm.find().then((paymentTermList) => {
+            ShippingMethod.find().then((shippingMethodList) => {
+              Receiver.find().then((receiverList) => {
+                res.render('purchaseOrder/receiver-blank', {
+                  pageTitle: 'View Receiver',
+                  mainMenuPath: 'purchaseOrders',
+                  subMenuPath: 'viewReceiver',
+                  shippingMethodList: shippingMethodList,
+                  paymentTermList: paymentTermList,
+                  warehouseList: warehouseList,
+                  vendorList: vendorList,
+                  itemList: itemList,
+                  receiverList: receiverList,
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
-exports.getReciever = (req, res, next) => {
+// loads unsaved receiver with current PO data
+exports.getLoadNewReciever = (req, res, next) => {
   const poNum = req.params.receiverNum;
   Item.find()
     .then((itemList) => {
@@ -593,6 +625,7 @@ exports.getReciever = (req, res, next) => {
                     poList: poList,
                     poOrderDate: orderDate,
                     poExpectedDate: expectedDate,
+                    receiverStatus: 'new',
                   });
                 });
               });
@@ -603,5 +636,154 @@ exports.getReciever = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+    });
+};
+
+exports.postCreateReceiver = (req, res, next) => {
+  console.log('created receiver');
+  const receiverNum = req.body.poNum;
+  const vendor = req.body.vendor;
+  const vendorInvoiceNum = req.body.vendorInvoiceNum;
+  const orderDate = req.body.orderDate;
+  console.log('saved orderdate', orderDate);
+  const expectedDate = req.body.expectedDate;
+  console.log('saved expected date', expectedDate);
+  const shippingMethod = req.body.shippingMethod;
+  const terms = req.body.terms;
+  const createdBy = req.body.createdBy;
+  const shipToLocation = req.body.shipToLocation;
+  const receiverTableData = JSON.parse(req.body.receiverTableData);
+
+  console.log(req.body);
+
+  const receiver = new Receiver({
+    receiverNum: receiverNum,
+    status: 'OPEN',
+    vendorNum: vendor,
+    vendorInvoiceNum: vendorInvoiceNum,
+    orderDate: orderDate,
+    receivedDate: expectedDate,
+    shippingMethod: shippingMethod,
+    terms: terms,
+    createdBy: createdBy,
+    shipToLocation: shipToLocation,
+    receiverTableData: receiverTableData,
+  });
+  receiver
+    .save()
+    .then((result) => {
+      console.log('Created Receiver');
+      req.flash('createdMessage', 'Receiver was created!');
+      res.redirect(`/po/receiver/view/${receiverNum}`);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect('/500');
+    });
+};
+
+exports.getExistingReceiver = (req, res, next) => {
+  const receiverNum = req.params.receiverNum;
+  Item.find()
+    .then((itemList) => {
+      Vendor.find().then((vendorList) => {
+        Warehouse.find().then((warehouseList) => {
+          PaymentTerm.find().then((paymentTermList) => {
+            ShippingMethod.find().then((shippingMethodList) => {
+              Receiver.findOne({ receiverNum: receiverNum }).then((receiver) => {
+                Receiver.find().then((receiverList) => {
+                  const formatOrderDate = new Date(receiver.orderDate);
+                  formatOrderDate.setMinutes(
+                    formatOrderDate.getMinutes() + 240
+                  );
+                  const orderDate = `${formatOrderDate.getFullYear()}-${(
+                    +formatOrderDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}`;
+                  const formatReceivedDate = new Date(receiver.receivedDate);
+                  formatReceivedDate.setMinutes(
+                    formatReceivedDate.getMinutes() + 240
+                  );
+                  const receivedDate = `${formatReceivedDate.getFullYear()}-${(
+                    +formatReceivedDate.getMonth() + 1
+                  ).toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}-${formatReceivedDate.getDate().toLocaleString('en-US', {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false,
+                  })}`;
+
+                  res.render('purchaseOrder/receiver-view', {
+                    pageTitle: 'View Receiver',
+                    mainMenuPath: 'purchaseOrders',
+                    subMenuPath: 'viewReceiver',
+                    newReceiverNumber: receiver.receiverNum,
+                    createdBy: receiver.createdBy,
+                    shippingMethodList: shippingMethodList,
+                    paymentTermList: paymentTermList,
+                    warehouseList: warehouseList,
+                    vendorList: vendorList,
+                    itemList: itemList,
+                    receiverDetails: receiver,
+                    receiverList: receiverList,
+                    receiverOrderDate: orderDate,
+                    receiverReceivedDate: receivedDate,
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postUpdatedReceiver = (req, res, next) => {
+  const id = req.body.id;
+  const receiverNum = req.body.receiverNum;
+  const receiverStatus = req.body.receiverStatus;
+  const vendor = req.body.vendor;
+  const vendorInvoiceNum = req.body.vendorInvoiceNum;
+  const orderDate = req.body.orderDate;
+  const expectedDate = req.body.expectedDate;
+  const shippingMethod = req.body.shippingMethod;
+  const terms = req.body.terms;
+  const createdBy = req.body.createdBy;
+  const shipToLocation = req.body.shipToLocation;
+  const receiverTableData = JSON.parse(req.body.receiverTableData);
+
+  Receiver.findById(id)
+    .then((receiver) => {
+      console.log('receiver', receiver);
+      receiver.receiverNum = receiverNum;
+      receiver.status = receiverStatus;
+      receiver.vendorNum = vendor;
+      receiver.vendorInvoiceNum = vendorInvoiceNum;
+      receiver.orderDate = orderDate;
+      receiver.expectedDate = expectedDate;
+      receiver.shippingMethod = shippingMethod;
+      receiver.terms = terms;
+      receiver.createdBy = createdBy;
+      receiver.shipToLocation = shipToLocation;
+      receiver.receiverTableData = receiverTableData;
+      return receiver.save();
+    })
+    .then((result) => {
+      console.log('Updated Receiver');
+      req.flash('updatedMessage', 'Receiver was updated!');
+      res.redirect('/receiver');
+    })
+    .catch((err) => {
+      console.log(err);
+      res.redirect('/500');
     });
 };

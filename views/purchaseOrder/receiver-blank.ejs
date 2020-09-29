@@ -34,10 +34,10 @@
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
-          <h1>Receiver # <%= poDetails.poNum %></h1>
-          <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
+          <h1>Receiver #</h1>
+          <input type="hidden" name="poNum" value="" />
 
-          <a href="/po/previous/<%= poDetails.poNum%>"
+          <a href="/po/previous/empty"
             ><button
               id="backwardsBtn"
               type="button"
@@ -55,11 +55,10 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/<%= poDetails.poNum%>"
-          method="GET"
+          <a href="/po/next/empty" method="GET"
             ><button
               id="forwardsBtn"
-              type="button"              
+              type="button"
               class="poArrowSearchBtnRight"
             >
               <svg height="20" width="20">
@@ -83,42 +82,35 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 class="poStatusText">Receiver Status: **NEW**</h1>
+          <h1 class="poStatusText">Receiver Status:</h1>
           <input type="hidden" name="poStatus" value="NEW" />
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
-          <input
-            type="text"
-            name="vendor"
-            value="<%= poDetails.vendorNum %>"
-            size="30"
-          />
-          <button type="button" id="vendorSelectionBtn" tooltip="test">
+          <input disabled type="text" name="vendor" value="" size="30" />
+          <button disabled type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>
           <div id="vendorInvoiceNum">
             <label for="vendorInvoiceNum">Vendor Invoice # :</label>
-          <input
-            type="text"
-            name="vendorInvoiceNum"
-            size="10"
-          />
+            <input disabled type="text" name="vendorInvoiceNum" size="10" />
           </div>
         </div>
-        
+
         <div>
           <label for="orderDate">Order Date:</label>
           <input
+            disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
             name="orderDate"
             size="8"
-            value="<%= poOrderDate %>"
+            value=""
           />
           <label for="expectedDate">Expected Date:</label>
           <input
+            disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -128,51 +120,28 @@
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
+            disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
           >
-            <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
-            (shippingMethod.name == poDetails.shippingMethod) { %>
-            <option SELECTED value="<%= shippingMethod.name %>">
-              <%= shippingMethod.name %>
-            </option>
-            <% } else { %>
-            <option value="<%= shippingMethod.name %>">
-              <%= shippingMethod.name %>
-            </option>
-            <% } %> <% }); %>
+            <option value="default">Default</option>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
           <select
+            disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
           >
-            <% warehouseList.forEach(function(warehouse) { %> <% if
-            (warehouse.name == poDetails.shipToLocation) { %>
-            <option SELECTED value="<%= warehouse.name %>">
-              <%= warehouse.name %>
-            </option>
-            <% } else { %>
-            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
-            <% } %> <% }); %>
+            <option value="default">Default</option>
           </select>
           <label for="terms">Terms:</label>
-          <select name="terms" id="terms" class="poSelectFields">
-            <% paymentTermList.forEach(function(paymentTerm) { %> <% if
-            (paymentTerm.code == poDetails.terms) { %>
-            <option SELECTED value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
-            </option>
-            <% } else { %>
-            <option value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
-            </option>
-            <% } %> <% }); %>
+          <select disabled name="terms" id="terms" class="poSelectFields">
+            <option value="default">Default</option>
           </select>
-          <h3>Submitted by: <%= createdBy %></h3>
-          <input type="hidden" name="createdBy" value="<%= createdBy %>" />
+          <h3>Submitted by:</h3>
+          <input type="hidden" name="createdBy" value="" />
         </div>
 
         <hr />
@@ -194,13 +163,11 @@
           <table id="poTable">
             <tr>
               <td class="poTableLine">
-                <button id="poTableAddLineBtn" type="button">+</button>
-              </td>
-              <td class="poTableItemNum">
-                <button id="itemSelectionBtn" type="button">
-                  Item lookup (F1)
+                <button disabled id="poTableAddLineBtn" type="button" disabled>
+                  +
                 </button>
               </td>
+              <td class="poTableItemNum"></td>
               <td class="poTableDescription"></td>
               <td class="poTableQuantity"></td>
               <td class="poTableQuantity"></td>
@@ -209,73 +176,20 @@
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
             </tr>
-            <% poDetails.poTableData.forEach(function(line) { %>
-            <tr>
-              <td class="poTableLine"><%= line.line %></td>
-              <td class="poTableItemNum poTableFocus" contenteditable="true">
-                <%= line.itemID %>
-              </td>
-              <td
-                class="poTableDescription poTableFocus"
-                contenteditable="true"
-              >
-                <%= line.itemDescription %>
-              </td>
-              <td
-                class="poTableQuantity poTableFocus"
-                contenteditable="true"
-                onfocusout="poLineUpdateExtCost(this)"
-              >
-                <%= line.qtyOrdered %>
-              </td>
-              <td
-                class="poTableQuantity poTableFocus quantityReceived"
-                contenteditable="true"
-                onfocusout="poLineUpdateExtCost(this)"
-              >
-                0
-              </td>
-              <td
-                class="poTableUOM poTableFocus"
-                onfocusout="poLineUpdateExtCost(this)"
-              >
-                <select>
-                  <option value="1" selected="true">EACH</option>
-                  <option value="12">CS12</option>
-                </select>
-              </td>
-              <td
-                class="poTableCost poTableFocus"
-                contenteditable="true"
-                onfocusout="poLineUpdateExtCost(this)"
-              >
-                <%= line.cost %>
-              </td>
-              <td class="poTableExtended">
-                <%= line.cost * line.qtyOrdered %>
-              </td>
-              <td class="poTableDeleteBtn">
-                <i
-                  id="poLineDeleteBtn"
-                  class="fas fa-minus-circle"
-                  onclick="poLineDeleteBtn(this)"
-                  aria-hidden="true"
-                ></i>
-              </td>
-            </tr>
-            <% }); %>
           </table>
-          <input id="receiverTableData" type="hidden" name="receiverTableData" value="" />
+          <input
+            id="receiverTableData"
+            type="hidden"
+            name="receiverTableData"
+            value=""
+          />
         </div>
         <div class="flex poSumLabel">
-          <% let poSumAmount = 0; poDetails.poTableData.forEach(function(line) {
-          const lineTotal = +line.qtyOrdered * +line.cost; poSumAmount =
-          (+lineTotal + +poSumAmount).toFixed(2); }) %>
           <h4>Subtotal:</h4>
-          <h4 class="poSum"><%= poSumAmount %></h4>
+          <h4 class="poSum"></h4>
         </div>
-        <button id="poUpdateBtn">Save</button>
-        <input type="hidden" name="id" value="<%= poDetails._id %>" />
+        <button disabled id="poUpdateBtn">Save</button>
+        <input type="hidden" name="id" value="" />
       </form>
 
       <!-- The vendorSearchModal -->
@@ -390,20 +304,28 @@
           <table id="poSelectionTable">
             <tr>
               <th>Order Date</th>
-              <th>Expected Date</th>
+              <th>Received Date</th>
               <th>PO Num</th>
               <th>Status</th>
               <th>Vendor</th>
             </tr>
-            <% poList.forEach(function(po) { %>
+            <% receiverList.forEach(function(receiver) { %>
             <tr>
-              <td><%= po.orderDate.getMonth() %>/<%= po.orderDate.getDate() %>/<%= po.orderDate.getFullYear() %></td>
-              <td><%= po.expectedDate.getMonth() %>/<%= po.expectedDate.getDate() %>/<%= po.expectedDate.getFullYear() %></td>
-              <td><%= po.poNum %></td>
-              <td><%= po.status %></td>
-              <td><%= po.vendorNum %></td>
               <td>
-                <button id="poSelectBtn" onclick="selectPO(this)">
+                <%= receiver.orderDate.getMonth() %>/<%=
+                receiver.orderDate.getDate() %>/<%=
+                receiver.orderDate.getFullYear() %>
+              </td>
+              <td>
+                <%= receiver.receivedDate.getMonth() %>/<%=
+                receiver.receivedDate.getDate() %>/<%=
+                receiver.receivedDate.getFullYear() %>
+              </td>
+              <td><%= receiver.receiverNum %></td>
+              <td><%= receiver.status %></td>
+              <td><%= receiver.vendorNum %></td>
+              <td>
+                <button id="receiverSelectBtn" onclick="selectReceiver(this)">
                   Select
                 </button>
               </td>
@@ -413,13 +335,13 @@
         </div>
       </div>
     </div>
-    <div class="poActionBtns">
+    <div class="receiverActionBtns">
       <button>Print</button>
       <button>Delete</button>
       <button>Post</button>
     </div>
 
     <script src="/js/purchaseOrder.js"></script>
-    <script src="/js/receiverNewDate.js"></script> 
+    <script src="/js/receiverNewDate.js"></script>
   </body>
 </html>

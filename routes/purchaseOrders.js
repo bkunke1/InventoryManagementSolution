@@ -51,7 +51,11 @@ router.post('/po/options/deletePaymentTerm', purchasingAuth, purchaseOrderContro
 // receiver //
 //////////////
 
-router.get('/po/receiver/view/:receiverNum', purchasingAuth, purchaseOrderController.getReciever);
+router.get('/po/receiver/new/:receiverNum', purchasingAuth, purchaseOrderController.getLoadNewReciever);
+router.post('/po/createReceiver', purchasingAuth, purchaseOrderController.postCreateReceiver);
+router.get('/po/receiver/view/', purchasingAuth, purchaseOrderController.getBlankReciever);
+router.get('/po/receiver/view/:receiverNum', purchasingAuth, purchaseOrderController.getExistingReceiver);
+// router.post('/po/updateReceiver/', purchasingAuth, purchaseOrderController.postUpdateReceiver);
 
 
 

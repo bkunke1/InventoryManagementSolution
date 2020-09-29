@@ -101,6 +101,44 @@ const sendTableData = () => {
   return true;
 };
 
+const receiverOrganizeTableData = () => {
+  const receiverTableDataArray = [];
+
+  const receiverTable = document.getElementById('poTable');
+  const rows = receiverTable.getElementsByTagName('tr');
+  //start at i = 1 to skip header row
+  for (let i = 1; i < rows.length; i++) {
+    // const line = {}
+
+    const data = rows[i].getElementsByTagName('td');
+    // console.log(data);
+    // for (let i = 0; i < data.length - 1; i++) {
+    //     // console.log(data[i].textContent);
+    //     // line.push(data[i].textContent);
+    const line = {
+      line: data[0].textContent.trim(),
+      itemID: data[1].textContent.trim(),
+      itemDescription: data[2].textContent.trim(),
+      qtyOrdered: data[3].textContent.trim(),
+      qtyReceived: data[4].textContent.trim(),
+      uom: data[5].firstElementChild.firstElementChild.textContent.trim(),
+      cost: data[6].textContent.trim()      
+    };
+
+    console.log('line', line);
+    if (line.itemID !== '') {
+      receiverTableDataArray.push(line);
+    }
+  }
+  return receiverTableDataArray;
+};
+
+const sendReceiverTableData = () => {
+  const receiverTableData = document.getElementById('receiverTableData');
+  receiverTableData.value = JSON.stringify(receiverOrganizeTableData());
+  return true;
+};
+
 // deletes po Line and udpates line #s
 // const poLineDeleteBtn = document.getElementById('poLineDeleteBtn');
 const poLineDeleteBtn = (lineBtn) => {
@@ -119,9 +157,9 @@ const poLineDeleteBtn = (lineBtn) => {
 };
 
 // updates extended cost
-const poLineUpdateExtCost = (element) => {
-  const qty = element.parentElement.querySelector('.poTableQuantity')
-    .textContent;
+const poLineUpdateExtCost = (element) => {  
+  const qty = (document.querySelector('.quantityReceived')) ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
+    .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
   const cost = element.parentElement.querySelector('.poTableCost').textContent;
   const poSum = document.querySelector('.poSum');

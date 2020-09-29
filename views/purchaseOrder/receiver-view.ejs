@@ -27,17 +27,17 @@
 
     <div id="workspace">
       <form
-        action="/po/createReceiver"
+        action="/po/updateReceiver"
         method="POST"
         autocomplete="off"
         onsubmit="return sendReceiverTableData()"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
-          <h1>Receiver # <%= poDetails.poNum %></h1>
-          <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
+          <h1>Receiver # <%= receiverDetails.receiverNum %></h1>
+          <input type="hidden" name="receiverNum" value="<%= receiverDetails.receiverNum %>" />
 
-          <a href="/po/previous/<%= poDetails.poNum%>"
+          <a href="/po/previous/<%= receiverDetails.receiverNum%>"
             ><button
               id="backwardsBtn"
               type="button"
@@ -55,7 +55,7 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/<%= poDetails.poNum%>"
+          <a href="/po/next/<%= receiverDetails.receiverNum%>"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -83,15 +83,15 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 class="poStatusText">Receiver Status: **NEW**</h1>
-          <input type="hidden" name="poStatus" value="NEW" />
+          <h1 class="poStatusText">Receiver Status: *<%= receiverDetails.status %>*</h1>
+          <input type="hidden" name="receiverStatus" value="NEW" />
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
           <input
             type="text"
             name="vendor"
-            value="<%= poDetails.vendorNum %>"
+            value="<%= receiverDetails.vendorNum %>"
             size="30"
           />
           <button type="button" id="vendorSelectionBtn" tooltip="test">
@@ -115,7 +115,7 @@
             type="date"
             name="orderDate"
             size="8"
-            value="<%= poOrderDate %>"
+            value="<%= receiverOrderDate %>"
           />
           <label for="expectedDate">Expected Date:</label>
           <input
@@ -124,7 +124,7 @@
             type="date"
             name="expectedDate"
             size="8"
-            value=""
+            value="<%= receiverReceivedDate %>"
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
@@ -133,7 +133,7 @@
             class="poSelectFields"
           >
             <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
-            (shippingMethod.name == poDetails.shippingMethod) { %>
+            (shippingMethod.name == receiverDetails.shippingMethod) { %>
             <option SELECTED value="<%= shippingMethod.name %>">
               <%= shippingMethod.name %>
             </option>
@@ -150,7 +150,7 @@
             class="poSelectFields"
           >
             <% warehouseList.forEach(function(warehouse) { %> <% if
-            (warehouse.name == poDetails.shipToLocation) { %>
+            (warehouse.name == receiverDetails.shipToLocation) { %>
             <option SELECTED value="<%= warehouse.name %>">
               <%= warehouse.name %>
             </option>
@@ -161,7 +161,7 @@
           <label for="terms">Terms:</label>
           <select name="terms" id="terms" class="poSelectFields">
             <% paymentTermList.forEach(function(paymentTerm) { %> <% if
-            (paymentTerm.code == poDetails.terms) { %>
+            (paymentTerm.code == receiverDetails.terms) { %>
             <option SELECTED value="<%= paymentTerm.code %>">
               <%= paymentTerm.code %>
             </option>
@@ -209,7 +209,7 @@
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
             </tr>
-            <% poDetails.poTableData.forEach(function(line) { %>
+            <% receiverDetails.receiverTableData.forEach(function(line) { %>
             <tr>
               <td class="poTableLine"><%= line.line %></td>
               <td class="poTableItemNum poTableFocus" contenteditable="true">
@@ -268,14 +268,14 @@
           <input id="receiverTableData" type="hidden" name="receiverTableData" value="" />
         </div>
         <div class="flex poSumLabel">
-          <% let poSumAmount = 0; poDetails.poTableData.forEach(function(line) {
-          const lineTotal = +line.qtyOrdered * +line.cost; poSumAmount =
-          (+lineTotal + +poSumAmount).toFixed(2); }) %>
+          <% let receiverSumAmount = 0; receiverDetails.receiverTableData.forEach(function(line) {
+          const lineTotal = +line.qtyOrdered * +line.cost; receiverSumAmount =
+          (+lineTotal + +receiverSumAmount).toFixed(2); }) %>
           <h4>Subtotal:</h4>
-          <h4 class="poSum"><%= poSumAmount %></h4>
+          <h4 class="poSum"><%= receiverSumAmount %></h4>
         </div>
         <button id="poUpdateBtn">Save</button>
-        <input type="hidden" name="id" value="<%= poDetails._id %>" />
+        <input type="hidden" name="id" value="<%= receiverDetails._id %>" />
       </form>
 
       <!-- The vendorSearchModal -->
@@ -390,18 +390,18 @@
           <table id="poSelectionTable">
             <tr>
               <th>Order Date</th>
-              <th>Expected Date</th>
+              <th>Received Date</th>
               <th>PO Num</th>
               <th>Status</th>
               <th>Vendor</th>
             </tr>
-            <% poList.forEach(function(po) { %>
+            <% receiverList.forEach(function(receiver) { %>
             <tr>
-              <td><%= po.orderDate.getMonth() %>/<%= po.orderDate.getDate() %>/<%= po.orderDate.getFullYear() %></td>
-              <td><%= po.expectedDate.getMonth() %>/<%= po.expectedDate.getDate() %>/<%= po.expectedDate.getFullYear() %></td>
-              <td><%= po.poNum %></td>
-              <td><%= po.status %></td>
-              <td><%= po.vendorNum %></td>
+              <td><%= receiverDetails.orderDate.getMonth() %>/<%= receiverDetails.orderDate.getDate() %>/<%= receiverDetails.orderDate.getFullYear() %></td>
+              <td><%= receiverDetails.receivedDate.getMonth() %>/<%= receiverDetails.receivedDate.getDate() %>/<%= receiverDetails.receivedDate.getFullYear() %></td>
+              <td><%= receiverDetails.receiverDetailsNum %></td>
+              <td><%= receiverDetails.status %></td>
+              <td><%= receiverDetails.vendorNum %></td>
               <td>
                 <button id="poSelectBtn" onclick="selectPO(this)">
                   Select
