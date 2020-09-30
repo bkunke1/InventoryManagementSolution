@@ -115,10 +115,10 @@ td {
   color: red;
 }
 
-#poSaveBtn {
+/* #poSaveBtn {
   margin-left: 89%;
   margin-bottom: 3rem;
-}
+} */
 
 .fixed_header tbody {
   display: block;
@@ -219,10 +219,10 @@ td {
   margin-bottom: 2rem;
 }
 
-.poActionBtns {
+/* .poActionBtns {
   text-align: right;
   margin: 1rem 3rem;
-}
+} */
 
 /* The itemModal (background) */
 .itemSearchModal {
@@ -369,10 +369,10 @@ td {
   margin-left: 5px;
 }
 
-#poUpdateBtn {
+/* #poUpdateBtn {
   margin-left: 89%;
   margin-bottom: 3rem;
-}
+} */
 
 #vendorInvoiceNum {
   margin-top: 1rem;

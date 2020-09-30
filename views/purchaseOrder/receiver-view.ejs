@@ -37,7 +37,7 @@
           <h1>Receiver # <%= receiverDetails.receiverNum %></h1>
           <input type="hidden" name="receiverNum" value="<%= receiverDetails.receiverNum %>" />
 
-          <a href="/po/previous/<%= receiverDetails.receiverNum%>"
+          <a href="/po/receiver/previous/<%= receiverDetails.receiverNum%>"
             ><button
               id="backwardsBtn"
               type="button"
@@ -55,7 +55,7 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/<%= receiverDetails.receiverNum%>"
+          <a href="/po/receiver/next/<%= receiverDetails.receiverNum%>"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -84,7 +84,7 @@
             <option value="CLOSED">CLOSED</option>
           </select> -->
           <h1 class="poStatusText">Receiver Status: *<%= receiverDetails.status %>*</h1>
-          <input type="hidden" name="receiverStatus" value="NEW" />
+          <input type="hidden" name="receiverStatus" value=<%= receiverDetails.status %> />
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
@@ -103,6 +103,7 @@
             type="text"
             name="vendorInvoiceNum"
             size="10"
+            value="<%= receiverDetails.vendorInvoiceNum %>"
           />
           </div>
         </div>
@@ -117,12 +118,12 @@
             size="8"
             value="<%= receiverOrderDate %>"
           />
-          <label for="expectedDate">Expected Date:</label>
+          <label for="receivedDate">Received Date:</label>
           <input
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
-            name="expectedDate"
+            name="receivedDate"
             size="8"
             value="<%= receiverReceivedDate %>"
           />
@@ -192,12 +193,13 @@
         </table>
         <div class="poLineScroll">
           <table id="poTable">
+            <!-- Following table row removed to prevent additional lines from being added after po is convereted but could be added later -->
             <tr>
               <td class="poTableLine">
-                <button id="poTableAddLineBtn" type="button">+</button>
+                <button disabled id="poTableAddLineBtn" type="button">+</button>
               </td>
               <td class="poTableItemNum">
-                <button id="itemSelectionBtn" type="button">
+                <button disabled id="itemSelectionBtn" type="button">
                   Item lookup (F1)
                 </button>
               </td>
@@ -233,7 +235,7 @@
                 contenteditable="true"
                 onfocusout="poLineUpdateExtCost(this)"
               >
-                0
+              <%= line.qtyReceived%>
               </td>
               <td
                 class="poTableUOM poTableFocus"
@@ -252,7 +254,7 @@
                 <%= line.cost %>
               </td>
               <td class="poTableExtended">
-                <%= line.cost * line.qtyOrdered %>
+                <%= line.cost * line.qtyReceived %>
               </td>
               <td class="poTableDeleteBtn">
                 <i
@@ -274,7 +276,13 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= receiverSumAmount %></h4>
         </div>
-        <button id="poUpdateBtn">Save</button>
+        <hr>        
+        <div class="poActionBtns">
+          <button id="poUpdateBtn">Update</button>
+          <button formaction="/po/receiver/delete">Delete</button>
+          <button type="button">Print</button>
+          <button type="button">Post</button>
+        </div>
         <input type="hidden" name="id" value="<%= receiverDetails._id %>" />
       </form>
 
@@ -412,14 +420,8 @@
           </table>
         </div>
       </div>
-    </div>
-    <div class="poActionBtns">
-      <button>Print</button>
-      <button>Delete</button>
-      <button>Post</button>
-    </div>
+    </div>    
 
     <script src="/js/purchaseOrder.js"></script>
-    <script src="/js/receiverNewDate.js"></script> 
   </body>
 </html>

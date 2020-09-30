@@ -12,6 +12,7 @@ const Vendor = require('../models/vendor');
 const purchaseOrder = require('../models/purchaseOrder');
 const { search } = require('../routes/purchaseOrders');
 const Receiver = require('../models/receiver');
+const receiver = require('../models/receiver');
 
 exports.getPurchaseOrder = (req, res, next) => {
   purchaseOrder
@@ -37,12 +38,13 @@ exports.getNewPurchaseOrder = (req, res, next) => {
           PaymentTerm.find().then((paymentTermList) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.find().then((poList) => {
-                // console.log(shippingMethodList);
+                const lastPoNum = poList[poList.length - 1].poNum;
+                console.log(poList[poList.length - 1].poNum);
                 res.render('purchaseOrder/purchase-order-new', {
                   pageTitle: 'New Purchase Orders',
                   mainMenuPath: 'purchaseOrders',
                   subMenuPath: '',
-                  newPONumber: ++poList.length,
+                  newPONumber: +lastPoNum + 1,
                   createdBy: req.session.user.email,
                   shippingMethodList: shippingMethodList,
                   paymentTermList: paymentTermList,
@@ -96,7 +98,7 @@ exports.postCreatePO = (req, res, next) => {
     .then((result) => {
       console.log('Created Purchase Order');
       req.flash('createdMessage', 'PO was created!');
-      res.redirect('/po');
+      res.redirect(`/po/view/${poNum}`);
     })
     .catch((err) => {
       console.log(err);
@@ -462,7 +464,7 @@ exports.postUpdatePO = (req, res, next) => {
     .then((result) => {
       console.log('Updated Purchase Order');
       req.flash('updatedMessage', 'PO was updated!');
-      res.redirect('/po');
+      res.redirect(`/po/view/${poNum}`);
     })
     .catch((err) => {
       console.log(err);
@@ -479,29 +481,30 @@ exports.getNextPurchaseOrder = (req, res, next) => {
       .catch((err) => {
         console.log(err);
       });
+  } else {
+    let poList = [];
+    PurchaseOrder.find()
+      .then((pos) => {
+        for (po of pos) {
+          poList.push(po.poNum);
+        }
+        poNum = req.params.poNum;
+        const currentPOIndex = poList.indexOf(poNum);
+        const nextPOIndex = currentPOIndex + 1;
+        const lastPOIndex = poList.length - 1;
+        if (currentPOIndex === lastPOIndex) {
+          return poList[0];
+        } else {
+          return poList[nextPOIndex];
+        }
+      })
+      .then((result) => {
+        res.redirect(`/po/view/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
-  let poList = [];
-  PurchaseOrder.find()
-    .then((pos) => {
-      for (po of pos) {
-        poList.push(po.poNum);
-      }
-      poNum = req.params.poNum;
-      const currentPOIndex = poList.indexOf(poNum);
-      const nextPOIndex = currentPOIndex + 1;
-      const lastPOIndex = poList.length - 1;
-      if (currentPOIndex === lastPOIndex) {
-        return poList[0];
-      } else {
-        return poList[nextPOIndex];
-      }
-    })
-    .then((result) => {
-      res.redirect(`/po/view/${result}`);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 exports.getPreviousPurchaseOrder = (req, res, next) => {
@@ -532,13 +535,36 @@ exports.getPreviousPurchaseOrder = (req, res, next) => {
         }
       })
       .then((result) => {
-        console.log('res', result);
         res.redirect(`/po/view/${result}`);
       })
       .catch((err) => {
         console.log(err);
       });
   }
+};
+
+exports.postDeletePurchaseOrder = (req, res, next) => {
+  const poNum = req.body.poNum;
+  const ID = req.body.id;
+
+  Receiver.find()
+    .then((receiverList) => {
+      const receiverNums = receiverList.map((receiver) => receiver.receiverNum);
+      if (receiverNums.includes(poNum)) {
+        console.log('receiver exists');
+        res.redirect(`/po/view/${poNum}`);
+      } else {
+        PurchaseOrder.deleteOne({ _id: ID })
+          .then(() => {
+            console.log('DESTROYED PO', poNum);
+            return res.redirect('/po');
+          })
+          .catch((err) => console.log(err));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // loads blank receiver
@@ -575,64 +601,74 @@ exports.getBlankReciever = (req, res, next) => {
 // loads unsaved receiver with current PO data
 exports.getLoadNewReciever = (req, res, next) => {
   const poNum = req.params.receiverNum;
-  Item.find()
-    .then((itemList) => {
-      Vendor.find().then((vendorList) => {
-        Warehouse.find().then((warehouseList) => {
-          PaymentTerm.find().then((paymentTermList) => {
-            ShippingMethod.find().then((shippingMethodList) => {
-              PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
-                PurchaseOrder.find().then((poList) => {
-                  const formatOrderDate = new Date(po.orderDate);
-                  formatOrderDate.setMinutes(
-                    formatOrderDate.getMinutes() + 240
-                  );
-                  const orderDate = `${formatOrderDate.getFullYear()}-${(
-                    +formatOrderDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
-                  const formatExpectedDate = new Date(po.expectedDate);
-                  formatExpectedDate.setMinutes(
-                    formatExpectedDate.getMinutes() + 240
-                  );
-                  const expectedDate = `${formatExpectedDate.getFullYear()}-${(
-                    +formatExpectedDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
+  Receiver.find()
+    .then((receiverList) => {
+      const receiverNums = receiverList.map((receiver) => receiver.receiverNum);
+      if (receiverNums.includes(poNum)) {
+        res.redirect(`/po/receiver/view/${poNum}`);
+      } else {
+        console.log('created a new receiver!');
+        Item.find().then((itemList) => {
+          Vendor.find().then((vendorList) => {
+            Warehouse.find().then((warehouseList) => {
+              PaymentTerm.find().then((paymentTermList) => {
+                ShippingMethod.find().then((shippingMethodList) => {
+                  PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
+                    PurchaseOrder.find().then((poList) => {
+                      const formatOrderDate = new Date(po.orderDate);
+                      formatOrderDate.setMinutes(
+                        formatOrderDate.getMinutes() + 240
+                      );
+                      const orderDate = `${formatOrderDate.getFullYear()}-${(
+                        +formatOrderDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}`;
+                      const formatExpectedDate = new Date(po.expectedDate);
+                      formatExpectedDate.setMinutes(
+                        formatExpectedDate.getMinutes() + 240
+                      );
+                      const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                        +formatExpectedDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatExpectedDate
+                        .getDate()
+                        .toLocaleString('en-US', {
+                          minimumIntegerDigits: 2,
+                          useGrouping: false,
+                        })}`;
 
-                  res.render('purchaseOrder/receiver-new', {
-                    pageTitle: 'View Receiver',
-                    mainMenuPath: 'purchaseOrders',
-                    subMenuPath: 'viewReceiver',
-                    newPONumber: po.poNum,
-                    createdBy: po.createdBy,
-                    shippingMethodList: shippingMethodList,
-                    paymentTermList: paymentTermList,
-                    warehouseList: warehouseList,
-                    vendorList: vendorList,
-                    itemList: itemList,
-                    poDetails: po,
-                    poList: poList,
-                    poOrderDate: orderDate,
-                    poExpectedDate: expectedDate,
-                    receiverStatus: 'new',
+                      res.render('purchaseOrder/receiver-new', {
+                        pageTitle: 'View Receiver',
+                        mainMenuPath: 'purchaseOrders',
+                        subMenuPath: 'viewReceiver',
+                        newPONumber: po.poNum,
+                        createdBy: po.createdBy,
+                        shippingMethodList: shippingMethodList,
+                        paymentTermList: paymentTermList,
+                        warehouseList: warehouseList,
+                        vendorList: vendorList,
+                        itemList: itemList,
+                        poDetails: po,
+                        poList: poList,
+                        poOrderDate: orderDate,
+                        poExpectedDate: expectedDate,
+                        receiverStatus: 'new',
+                      });
+                    });
                   });
                 });
               });
             });
           });
         });
-      });
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -646,8 +682,8 @@ exports.postCreateReceiver = (req, res, next) => {
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
   const orderDate = req.body.orderDate;
   console.log('saved orderdate', orderDate);
-  const expectedDate = req.body.expectedDate;
-  console.log('saved expected date', expectedDate);
+  const receivedDate = req.body.receivedDate;
+  console.log('saved received date', receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -662,7 +698,7 @@ exports.postCreateReceiver = (req, res, next) => {
     vendorNum: vendor,
     vendorInvoiceNum: vendorInvoiceNum,
     orderDate: orderDate,
-    receivedDate: expectedDate,
+    receivedDate: receivedDate,
     shippingMethod: shippingMethod,
     terms: terms,
     createdBy: createdBy,
@@ -690,53 +726,55 @@ exports.getExistingReceiver = (req, res, next) => {
         Warehouse.find().then((warehouseList) => {
           PaymentTerm.find().then((paymentTermList) => {
             ShippingMethod.find().then((shippingMethodList) => {
-              Receiver.findOne({ receiverNum: receiverNum }).then((receiver) => {
-                Receiver.find().then((receiverList) => {
-                  const formatOrderDate = new Date(receiver.orderDate);
-                  formatOrderDate.setMinutes(
-                    formatOrderDate.getMinutes() + 240
-                  );
-                  const orderDate = `${formatOrderDate.getFullYear()}-${(
-                    +formatOrderDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
-                  const formatReceivedDate = new Date(receiver.receivedDate);
-                  formatReceivedDate.setMinutes(
-                    formatReceivedDate.getMinutes() + 240
-                  );
-                  const receivedDate = `${formatReceivedDate.getFullYear()}-${(
-                    +formatReceivedDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatReceivedDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
+              Receiver.findOne({ receiverNum: receiverNum }).then(
+                (receiver) => {
+                  Receiver.find().then((receiverList) => {
+                    const formatOrderDate = new Date(receiver.orderDate);
+                    formatOrderDate.setMinutes(
+                      formatOrderDate.getMinutes() + 240
+                    );
+                    const orderDate = `${formatOrderDate.getFullYear()}-${(
+                      +formatOrderDate.getMonth() + 1
+                    ).toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}`;
+                    const formatReceivedDate = new Date(receiver.receivedDate);
+                    formatReceivedDate.setMinutes(
+                      formatReceivedDate.getMinutes() + 240
+                    );
+                    const receivedDate = `${formatReceivedDate.getFullYear()}-${(
+                      +formatReceivedDate.getMonth() + 1
+                    ).toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}-${formatReceivedDate.getDate().toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}`;
 
-                  res.render('purchaseOrder/receiver-view', {
-                    pageTitle: 'View Receiver',
-                    mainMenuPath: 'purchaseOrders',
-                    subMenuPath: 'viewReceiver',
-                    newReceiverNumber: receiver.receiverNum,
-                    createdBy: receiver.createdBy,
-                    shippingMethodList: shippingMethodList,
-                    paymentTermList: paymentTermList,
-                    warehouseList: warehouseList,
-                    vendorList: vendorList,
-                    itemList: itemList,
-                    receiverDetails: receiver,
-                    receiverList: receiverList,
-                    receiverOrderDate: orderDate,
-                    receiverReceivedDate: receivedDate,
+                    res.render('purchaseOrder/receiver-view', {
+                      pageTitle: 'View Receiver',
+                      mainMenuPath: 'purchaseOrders',
+                      subMenuPath: 'viewReceiver',
+                      newReceiverNumber: receiver.receiverNum,
+                      createdBy: receiver.createdBy,
+                      shippingMethodList: shippingMethodList,
+                      paymentTermList: paymentTermList,
+                      warehouseList: warehouseList,
+                      vendorList: vendorList,
+                      itemList: itemList,
+                      receiverDetails: receiver,
+                      receiverList: receiverList,
+                      receiverOrderDate: orderDate,
+                      receiverReceivedDate: receivedDate,
+                    });
                   });
-                });
-              });
+                }
+              );
             });
           });
         });
@@ -747,14 +785,16 @@ exports.getExistingReceiver = (req, res, next) => {
     });
 };
 
-exports.postUpdatedReceiver = (req, res, next) => {
+exports.postUpdateReceiver = (req, res, next) => {
+  console.log(req.body);
   const id = req.body.id;
   const receiverNum = req.body.receiverNum;
   const receiverStatus = req.body.receiverStatus;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
   const orderDate = req.body.orderDate;
-  const expectedDate = req.body.expectedDate;
+  const receivedDate = req.body.receivedDate;
+  console.log(receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -769,7 +809,7 @@ exports.postUpdatedReceiver = (req, res, next) => {
       receiver.vendorNum = vendor;
       receiver.vendorInvoiceNum = vendorInvoiceNum;
       receiver.orderDate = orderDate;
-      receiver.expectedDate = expectedDate;
+      receiver.receivedDate = receivedDate;
       receiver.shippingMethod = shippingMethod;
       receiver.terms = terms;
       receiver.createdBy = createdBy;
@@ -780,10 +820,28 @@ exports.postUpdatedReceiver = (req, res, next) => {
     .then((result) => {
       console.log('Updated Receiver');
       req.flash('updatedMessage', 'Receiver was updated!');
-      res.redirect('/receiver');
+      res.redirect(`/po/receiver/view/${receiverNum}`);
     })
     .catch((err) => {
       console.log(err);
       res.redirect('/500');
     });
+};
+
+exports.postDeleteReceiver = (req, res, next) => {
+  const receiverNum = req.body.receiverNum;
+  const ID = req.body.id;
+  const status = req.body.receiverStatus;
+
+  if (status === 'POSTED') {
+    console.log('cannot delete posted purchase order!');
+    res.redirect(`/po/receiver/view/${receiverNum}`);
+  } else {
+    Receiver.deleteOne({ _id: ID })
+      .then(() => {
+        console.log('DESTROYED RECEIVER', receiverNum);
+        return res.redirect('/po/receiver/view/');
+      })
+      .catch((err) => console.log(err));
+  }
 };

@@ -78,12 +78,12 @@ const poOrganizeTableData = () => {
     //     // console.log(data[i].textContent);
     //     // line.push(data[i].textContent);
     const line = {
-      line: data[0].textContent,
-      itemID: data[1].textContent,
-      itemDescription: data[2].textContent,
-      qtyOrdered: data[3].textContent,
-      uom: data[4].textContent,
-      cost: data[5].textContent,
+      line: data[0].textContent.trim(),
+      itemID: data[1].textContent.trim(),
+      itemDescription: data[2].textContent.trim(),
+      qtyOrdered: data[3].textContent.trim(),
+      uom: data[4].firstElementChild.firstElementChild.textContent.trim(),
+      cost: data[5].textContent.trim(),
     };
 
     console.log('line', line);

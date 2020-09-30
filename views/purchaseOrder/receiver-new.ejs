@@ -117,12 +117,12 @@
             size="8"
             value="<%= poOrderDate %>"
           />
-          <label for="expectedDate">Expected Date:</label>
+          <label for="receivedDate">Received Date:</label>
           <input
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
-            name="expectedDate"
+            name="receivedDate"
             size="8"
             value=""
           />
@@ -252,7 +252,7 @@
                 <%= line.cost %>
               </td>
               <td class="poTableExtended">
-                <%= line.cost * line.qtyOrdered %>
+                0.00
               </td>
               <td class="poTableDeleteBtn">
                 <i
@@ -274,7 +274,12 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= poSumAmount %></h4>
         </div>
-        <button id="poUpdateBtn">Save</button>
+        <div class="poActionBtns">
+          <button id="poUpdateBtn">Save</button>
+          <a href="/po/receiver/view"><button type="button">Cancel</button></a>
+          <button type="button">Print</button>
+          <button type="button">Post</button>
+        </div>
         <input type="hidden" name="id" value="<%= poDetails._id %>" />
       </form>
 
@@ -412,11 +417,6 @@
           </table>
         </div>
       </div>
-    </div>
-    <div class="poActionBtns">
-      <button>Print</button>
-      <button>Delete</button>
-      <button>Post</button>
     </div>
 
     <script src="/js/purchaseOrder.js"></script>

@@ -255,8 +255,14 @@
           (+lineTotal + +poSumAmount).toFixed(2); }) %>
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= poSumAmount %></h4>
+        </div>        
+        <div class="poActionBtns">
+          <a href="/po/new"><button type="button">New</button></a>
+          <button id="poUpdateBtn">Update</button>
+          <button formaction="/po/delete">Delete</button>
+          <button type="button">Print PO</button>
+          <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button type="button">Receive PO</button></a>
         </div>
-        <button id="poUpdateBtn">Update</button>
         <input type="hidden" name="id" value="<%= poDetails._id %>" />
       </form>
 
@@ -395,14 +401,7 @@
         </div>
       </div>
     </div>
-    <div class="poActionBtns">
-      <button>New</button>
-      <button>Delete</button>
-      <button>Print PO</button>
-      <button>Print Receiver</button>
-      <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button>Receive PO</button></a>
-    </div>
-
+    
     <script src="/js/purchaseOrder.js"></script> 
   </body>
 </html>

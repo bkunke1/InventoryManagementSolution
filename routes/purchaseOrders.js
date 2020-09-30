@@ -28,6 +28,8 @@ router.get('/po/next/:poNum', purchasingAuth, purchaseOrderController.getNextPur
 
 router.get('/po/previous/:poNum', purchasingAuth, purchaseOrderController.getPreviousPurchaseOrder);
 
+router.post('/po/delete', purchasingAuth, purchaseOrderController.postDeletePurchaseOrder);
+
 
 // router.post('/po/itemSelectionFilter/:filterType/:filterOperator', purchasingAuth, purchaseOrderController.postFilterItemSelectionList); might do this front side
 
@@ -55,7 +57,10 @@ router.get('/po/receiver/new/:receiverNum', purchasingAuth, purchaseOrderControl
 router.post('/po/createReceiver', purchasingAuth, purchaseOrderController.postCreateReceiver);
 router.get('/po/receiver/view/', purchasingAuth, purchaseOrderController.getBlankReciever);
 router.get('/po/receiver/view/:receiverNum', purchasingAuth, purchaseOrderController.getExistingReceiver);
-// router.post('/po/updateReceiver/', purchasingAuth, purchaseOrderController.postUpdateReceiver);
+router.post('/po/updateReceiver/', purchasingAuth, purchaseOrderController.postUpdateReceiver);
+router.post('/po/receiver/delete', purchasingAuth, purchaseOrderController.postDeleteReceiver);
+
+
 
 
 
