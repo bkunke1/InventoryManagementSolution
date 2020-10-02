@@ -37,7 +37,7 @@
           <h1>Receiver # <%= poDetails.poNum %></h1>
           <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
 
-          <a href="/po/previous/<%= poDetails.poNum%>"
+          <a href="/po/receiver/previous/empty"
             ><button
               id="backwardsBtn"
               type="button"
@@ -55,7 +55,7 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/<%= poDetails.poNum%>"
+          <a href="/po/receiver/next/empty"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -240,8 +240,16 @@
                 onfocusout="poLineUpdateExtCost(this)"
               >
                 <select>
-                  <option value="1" selected="true">EACH</option>
-                  <option value="12">CS12</option>
+                  <% uomList.forEach(function(uom) { %> <% if
+                    (uom.name == receiverDetails.uom) { %>
+                    <option SELECTED value="<%= uom.name %>">
+                      <%= uom.name %>
+                    </option>
+                    <% } else { %>
+                    <option value="<%= uom.name %>">
+                      <%= uom.name %>
+                    </option>
+                    <% } %> <% }); %>
                 </select>
               </td>
               <td
@@ -278,7 +286,6 @@
           <button id="poUpdateBtn">Save</button>
           <a href="/po/receiver/view"><button type="button">Cancel</button></a>
           <button type="button">Print</button>
-          <button type="button">Post</button>
         </div>
         <input type="hidden" name="id" value="<%= poDetails._id %>" />
       </form>

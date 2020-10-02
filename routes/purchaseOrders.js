@@ -59,6 +59,9 @@ router.get('/po/receiver/view/', purchasingAuth, purchaseOrderController.getBlan
 router.get('/po/receiver/view/:receiverNum', purchasingAuth, purchaseOrderController.getExistingReceiver);
 router.post('/po/updateReceiver/', purchasingAuth, purchaseOrderController.postUpdateReceiver);
 router.post('/po/receiver/delete', purchasingAuth, purchaseOrderController.postDeleteReceiver);
+router.get('/po/receiver/next/:receiverNum', purchasingAuth, purchaseOrderController.getNextReceiver);
+router.get('/po/receiver/previous/:receiverNum', purchasingAuth, purchaseOrderController.getPreviousReceiver);
+router.post('/po/receiver/post', purchasingAuth, purchaseOrderController.postReceiver);
 
 
 

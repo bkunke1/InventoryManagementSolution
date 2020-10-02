@@ -13,6 +13,7 @@ const purchaseOrder = require('../models/purchaseOrder');
 const { search } = require('../routes/purchaseOrders');
 const Receiver = require('../models/receiver');
 const receiver = require('../models/receiver');
+const uom = require('../models/uom');
 
 exports.getPurchaseOrder = (req, res, next) => {
   purchaseOrder
@@ -66,20 +67,16 @@ exports.getNewPurchaseOrder = (req, res, next) => {
 
 exports.postCreatePO = (req, res, next) => {
   const poNum = req.body.poNum;
-  const poSelection = req.body.poSelection;
-  const poStatus = req.body.poStatus;
   const vendor = req.body.vendor;
   const orderDate = req.body.orderDate;
-  console.log('saved orderdate', orderDate);
   const expectedDate = req.body.expectedDate;
-  console.log('saved expected date', expectedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
   const shipToLocation = req.body.shipToLocation;
   const poTableData = JSON.parse(req.body.poTableData);
 
-  console.log(req.body);
+  console.log('poTableData', poTableData);
 
   const purchaseOrder = new PurchaseOrder({
     poNum: poNum,
@@ -121,12 +118,19 @@ exports.postFindItem = (req, res, next) => {
 
 // sends uom table data to front end
 exports.getUOMs = (req, res, next) => {
-  res.status(200).json({
-    uoms: [
-      { name: 'EACH', conversionQty: 1 },
-      { name: 'CS12', conversionQty: 12 },
-    ],
-  });
+  UOM.find().then(uomList => {
+    let uoms = [];
+    for (unit of uomList) {
+      uoms.push({name: unit.name, conversionQty: unit.conversionQty});
+    }
+    return uoms;    
+  })
+  .then(result => {
+    res.status(200).json({
+      uoms: result
+    });
+  })
+  .catch(err => {console.log(err)});  
 };
 
 // sends uom table data to front end
@@ -369,7 +373,8 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 
 exports.getExistingPurchaseOrder = (req, res, next) => {
   const poNum = req.params.poNum;
-  Item.find()
+  UOM.find().then(uomList => {
+    Item.find()
     .then((itemList) => {
       Vendor.find().then((vendorList) => {
         Warehouse.find().then((warehouseList) => {
@@ -419,6 +424,7 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                     poList: poList,
                     poOrderDate: orderDate,
                     poExpectedDate: expectedDate,
+                    uomList: uomList
                   });
                 });
               });
@@ -427,15 +433,12 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
         });
       });
     })
-    .catch((err) => {
-      console.log(err);
-    });
+  }).catch(err => {console.log(err)});  
 };
 
 exports.postUpdatePO = (req, res, next) => {
   const id = req.body.id;
   const poNum = req.body.poNum;
-  const poSelection = req.body.poSelection;
   const poStatus = req.body.poStatus;
   const vendor = req.body.vendor;
   const orderDate = req.body.orderDate;
@@ -448,9 +451,6 @@ exports.postUpdatePO = (req, res, next) => {
 
   PurchaseOrder.findById(id)
     .then((po) => {
-      console.log('po', po);
-      // po.poNum = poNum;
-      // po.status = poStatus;
       po.vendorNum = vendor;
       po.orderDate = orderDate;
       po.expectedDate = expectedDate;
@@ -459,6 +459,7 @@ exports.postUpdatePO = (req, res, next) => {
       po.createdBy = createdBy;
       po.shipToLocation = shipToLocation;
       po.poTableData = poTableData;
+      console.log(poTableData)
       return po.save();
     })
     .then((result) => {
@@ -720,7 +721,8 @@ exports.postCreateReceiver = (req, res, next) => {
 
 exports.getExistingReceiver = (req, res, next) => {
   const receiverNum = req.params.receiverNum;
-  Item.find()
+  UOM.find().then(uomList => {
+    Item.find()
     .then((itemList) => {
       Vendor.find().then((vendorList) => {
         Warehouse.find().then((warehouseList) => {
@@ -771,6 +773,7 @@ exports.getExistingReceiver = (req, res, next) => {
                       receiverList: receiverList,
                       receiverOrderDate: orderDate,
                       receiverReceivedDate: receivedDate,
+                      uomList: uomList
                     });
                   });
                 }
@@ -780,9 +783,7 @@ exports.getExistingReceiver = (req, res, next) => {
         });
       });
     })
-    .catch((err) => {
-      console.log(err);
-    });
+  }).catch(err => {console.log(err)}); 
 };
 
 exports.postUpdateReceiver = (req, res, next) => {
@@ -843,5 +844,147 @@ exports.postDeleteReceiver = (req, res, next) => {
         return res.redirect('/po/receiver/view/');
       })
       .catch((err) => console.log(err));
+  }
+};
+
+exports.getNextReceiver = (req, res, next) => {
+  if (req.params.receiverNum === 'empty') {
+    Receiver.find()
+      .then((receiverList) => {
+        res.redirect(`/po/receiver/view/${receiverList[0].receiverNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    let receiverList = [];
+    Receiver.find()
+      .then((receivers) => {
+        for (rec of receivers) {
+          receiverList.push(rec.receiverNum);
+        }
+        const receiverNum = req.params.receiverNum;
+        const currentReceiverIndex = receiverList.indexOf(receiverNum);
+        const nextReceiverIndex = currentReceiverIndex + 1;
+        const lastReceiverIndex = receiverList.length - 1;
+        if (currentReceiverIndex === lastReceiverIndex) {
+          return receiverList[0];
+        } else {
+          return receiverList[nextReceiverIndex];
+        }
+      })
+      .then((result) => {
+        res.redirect(`/po/receiver/view/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+};
+
+exports.getPreviousReceiver = (req, res, next) => {
+  if (req.params.receiverNum === 'empty') {
+    Receiver.find()
+      .then((receiverList) => {
+        const lastIndexReceiver = receiverList.length;
+        res.redirect(
+          `/po/receiver/view/${receiverList[lastIndexReceiver - 1].receiverNum}`
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    let receiverList = [];
+    Receiver.find()
+      .then((receivers) => {
+        for (rec of receivers) {
+          receiverList.push(rec.receiverNum);
+        }
+        receiverNum = req.params.receiverNum;
+        const currentReceiverIndex = receiverList.indexOf(receiverNum);
+        const previousReceiverIndex = currentReceiverIndex - 1;
+        const lastReceiverIndex = receiverList.length - 1;
+        if (currentReceiverIndex === 0) {
+          return receiverList[lastReceiverIndex];
+        } else {
+          return receiverList[previousReceiverIndex];
+        }
+      })
+      .then((result) => {
+        res.redirect(`/po/receiver/view/${result}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+};
+
+exports.postReceiver = (req, res, next) => {
+  const receiverNum = req.body.receiverNum;
+  if (req.body.receiverStatus !== 'POSTED') {
+    console.log('Receiver is already posted!');
+    req.flash('updatedMessage', 'Receiver is already posted!');
+    res.redirect(`/po/receiver/view/${receiverNum}`);
+  } else {
+    const id = req.body.id;
+    const receiverStatus = 'POSTED';
+    const vendor = req.body.vendor;
+    const vendorInvoiceNum = req.body.vendorInvoiceNum;
+    const orderDate = req.body.orderDate;
+    const receivedDate = req.body.receivedDate;
+    const shippingMethod = req.body.shippingMethod;
+    const terms = req.body.terms;
+    const createdBy = req.body.createdBy;
+    const shipToLocation = req.body.shipToLocation;
+    const receiverTableData = JSON.parse(req.body.receiverTableData);
+
+    Receiver.findById(id)
+      .then((receiver) => {
+        console.log('receiver', receiver);
+        receiver.receiverNum = receiverNum;
+        receiver.status = receiverStatus;
+        receiver.vendorNum = vendor;
+        receiver.vendorInvoiceNum = vendorInvoiceNum;
+        receiver.orderDate = orderDate;
+        receiver.receivedDate = receivedDate;
+        receiver.shippingMethod = shippingMethod;
+        receiver.terms = terms;
+        receiver.createdBy = createdBy;
+        receiver.shipToLocation = shipToLocation;
+        receiver.receiverTableData = receiverTableData;
+        return receiver.save();
+      })
+      .then((result) => {
+        for (line of result.receiverTableData) {
+          const itemID = line.itemID;
+          UOM.find()
+            .then((uoms) => {
+              Item.findOne({ itemID: itemID })
+                .then((item) => {
+                  item.totalQtyOnHand = +item.totalQtyOnHand + +line.qtyReceived;
+                  item.qtyOnOrder = +item.totalQtyOnHand - +line.qtyReceived;
+                  const conversionQty = uoms.find( ({ name }) => name === line.uom);
+                  console.log(conversionQty);
+
+                  return item.save();
+                })
+                .then((result) => {
+                  console.log(result);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } // end for loop
+      })
+      .then((result) => {
+        console.log('POSTED Receiver');
+        req.flash('updatedMessage', 'Receiver was posted!');
+        res.redirect(`/po/receiver/view/${receiverNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 };

@@ -82,11 +82,10 @@ const poOrganizeTableData = () => {
       itemID: data[1].textContent.trim(),
       itemDescription: data[2].textContent.trim(),
       qtyOrdered: data[3].textContent.trim(),
-      uom: data[4].firstElementChild.firstElementChild.textContent.trim(),
+      uom: data[4].firstElementChild.value,
       cost: data[5].textContent.trim(),
     };
-
-    console.log('line', line);
+    
     if (line.itemID !== '') {
       poTableDataArray.push(line);
     }
@@ -121,11 +120,10 @@ const receiverOrganizeTableData = () => {
       itemDescription: data[2].textContent.trim(),
       qtyOrdered: data[3].textContent.trim(),
       qtyReceived: data[4].textContent.trim(),
-      uom: data[5].firstElementChild.firstElementChild.textContent.trim(),
+      uom: data[5].firstElementChild.value,
       cost: data[6].textContent.trim()      
     };
 
-    console.log('line', line);
     if (line.itemID !== '') {
       receiverTableDataArray.push(line);
     }
@@ -149,7 +147,6 @@ const poLineDeleteBtn = (lineBtn) => {
   const updateLineNums = () => {
     const lines = poTable.getElementsByClassName('poTableLine');
     for (let i = 1; i <= lines.length - 1; i++) {
-      console.log(lines[i].textContent);
       lines[i].textContent = i;
     }
   };
@@ -208,7 +205,7 @@ const poAddNewLine = function () {
 
   for (uom of UOMs) {
     newPOTableUOM.firstElementChild.add(
-      new Option(uom.name, uom.conversionQty)
+      new Option(uom.name, uom.name)
     );
   }
 
@@ -270,7 +267,6 @@ const poAddNewLine = function () {
   if (newPOTableLine.textContent === '1') {
     newPOTableItemNum.focus();
   }
-  console.log(newPOTableItemNum);
 };
 
 poTableAddLineBtn.addEventListener('click', poAddNewLine);
