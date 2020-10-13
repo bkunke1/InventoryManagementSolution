@@ -118,19 +118,22 @@ exports.postFindItem = (req, res, next) => {
 
 // sends uom table data to front end
 exports.getUOMs = (req, res, next) => {
-  UOM.find().then(uomList => {
-    let uoms = [];
-    for (unit of uomList) {
-      uoms.push({name: unit.name, conversionQty: unit.conversionQty});
-    }
-    return uoms;    
-  })
-  .then(result => {
-    res.status(200).json({
-      uoms: result
+  UOM.find()
+    .then((uomList) => {
+      let uoms = [];
+      for (unit of uomList) {
+        uoms.push({ name: unit.name, conversionQty: unit.conversionQty });
+      }
+      return uoms;
+    })
+    .then((result) => {
+      res.status(200).json({
+        uoms: result,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  })
-  .catch(err => {console.log(err)});  
 };
 
 // sends uom table data to front end
@@ -373,58 +376,59 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 
 exports.getExistingPurchaseOrder = (req, res, next) => {
   const poNum = req.params.poNum;
-  UOM.find().then(uomList => {
-    Item.find()
-    .then((itemList) => {
-      Vendor.find().then((vendorList) => {
-        Warehouse.find().then((warehouseList) => {
-          PaymentTerm.find().then((paymentTermList) => {
-            ShippingMethod.find().then((shippingMethodList) => {
-              PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
-                PurchaseOrder.find().then((poList) => {
-                  const formatOrderDate = new Date(po.orderDate);
-                  formatOrderDate.setMinutes(
-                    formatOrderDate.getMinutes() + 240
-                  );
-                  const orderDate = `${formatOrderDate.getFullYear()}-${(
-                    +formatOrderDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatOrderDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
-                  const formatExpectedDate = new Date(po.expectedDate);
-                  formatExpectedDate.setMinutes(
-                    formatExpectedDate.getMinutes() + 240
-                  );
-                  const expectedDate = `${formatExpectedDate.getFullYear()}-${(
-                    +formatExpectedDate.getMonth() + 1
-                  ).toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
-                    minimumIntegerDigits: 2,
-                    useGrouping: false,
-                  })}`;
+  UOM.find()
+    .then((uomList) => {
+      Item.find().then((itemList) => {
+        Vendor.find().then((vendorList) => {
+          Warehouse.find().then((warehouseList) => {
+            PaymentTerm.find().then((paymentTermList) => {
+              ShippingMethod.find().then((shippingMethodList) => {
+                PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
+                  PurchaseOrder.find().then((poList) => {
+                    const formatOrderDate = new Date(po.orderDate);
+                    formatOrderDate.setMinutes(
+                      formatOrderDate.getMinutes() + 240
+                    );
+                    const orderDate = `${formatOrderDate.getFullYear()}-${(
+                      +formatOrderDate.getMonth() + 1
+                    ).toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}`;
+                    const formatExpectedDate = new Date(po.expectedDate);
+                    formatExpectedDate.setMinutes(
+                      formatExpectedDate.getMinutes() + 240
+                    );
+                    const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                      +formatExpectedDate.getMonth() + 1
+                    ).toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
+                      minimumIntegerDigits: 2,
+                      useGrouping: false,
+                    })}`;
 
-                  res.render('purchaseOrder/purchase-order-view', {
-                    pageTitle: 'View Purchase Orders',
-                    mainMenuPath: 'purchaseOrders',
-                    subMenuPath: 'viewPO',
-                    newPONumber: po.poNum,
-                    createdBy: po.createdBy,
-                    shippingMethodList: shippingMethodList,
-                    paymentTermList: paymentTermList,
-                    warehouseList: warehouseList,
-                    vendorList: vendorList,
-                    itemList: itemList,
-                    poDetails: po,
-                    poList: poList,
-                    poOrderDate: orderDate,
-                    poExpectedDate: expectedDate,
-                    uomList: uomList
+                    res.render('purchaseOrder/purchase-order-view', {
+                      pageTitle: 'View Purchase Orders',
+                      mainMenuPath: 'purchaseOrders',
+                      subMenuPath: 'viewPO',
+                      newPONumber: po.poNum,
+                      createdBy: po.createdBy,
+                      shippingMethodList: shippingMethodList,
+                      paymentTermList: paymentTermList,
+                      warehouseList: warehouseList,
+                      vendorList: vendorList,
+                      itemList: itemList,
+                      poDetails: po,
+                      poList: poList,
+                      poOrderDate: orderDate,
+                      poExpectedDate: expectedDate,
+                      uomList: uomList,
+                    });
                   });
                 });
               });
@@ -433,7 +437,9 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
         });
       });
     })
-  }).catch(err => {console.log(err)});  
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postUpdatePO = (req, res, next) => {
@@ -459,7 +465,7 @@ exports.postUpdatePO = (req, res, next) => {
       po.createdBy = createdBy;
       po.shipToLocation = shipToLocation;
       po.poTableData = poTableData;
-      console.log(poTableData)
+      console.log(poTableData);
       return po.save();
     })
     .then((result) => {
@@ -609,58 +615,63 @@ exports.getLoadNewReciever = (req, res, next) => {
         res.redirect(`/po/receiver/view/${poNum}`);
       } else {
         console.log('created a new receiver!');
-        Item.find().then((itemList) => {
-          Vendor.find().then((vendorList) => {
-            Warehouse.find().then((warehouseList) => {
-              PaymentTerm.find().then((paymentTermList) => {
-                ShippingMethod.find().then((shippingMethodList) => {
-                  PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
-                    PurchaseOrder.find().then((poList) => {
-                      const formatOrderDate = new Date(po.orderDate);
-                      formatOrderDate.setMinutes(
-                        formatOrderDate.getMinutes() + 240
-                      );
-                      const orderDate = `${formatOrderDate.getFullYear()}-${(
-                        +formatOrderDate.getMonth() + 1
-                      ).toLocaleString('en-US', {
-                        minimumIntegerDigits: 2,
-                        useGrouping: false,
-                      })}-${formatOrderDate.getDate().toLocaleString('en-US', {
-                        minimumIntegerDigits: 2,
-                        useGrouping: false,
-                      })}`;
-                      const formatExpectedDate = new Date(po.expectedDate);
-                      formatExpectedDate.setMinutes(
-                        formatExpectedDate.getMinutes() + 240
-                      );
-                      const expectedDate = `${formatExpectedDate.getFullYear()}-${(
-                        +formatExpectedDate.getMonth() + 1
-                      ).toLocaleString('en-US', {
-                        minimumIntegerDigits: 2,
-                        useGrouping: false,
-                      })}-${formatExpectedDate
-                        .getDate()
-                        .toLocaleString('en-US', {
+        UOM.find().then((uomList) => {
+          Item.find().then((itemList) => {
+            Vendor.find().then((vendorList) => {
+              Warehouse.find().then((warehouseList) => {
+                PaymentTerm.find().then((paymentTermList) => {
+                  ShippingMethod.find().then((shippingMethodList) => {
+                    PurchaseOrder.findOne({ poNum: poNum }).then((po) => {
+                      PurchaseOrder.find().then((poList) => {
+                        const formatOrderDate = new Date(po.orderDate);
+                        formatOrderDate.setMinutes(
+                          formatOrderDate.getMinutes() + 240
+                        );
+                        const orderDate = `${formatOrderDate.getFullYear()}-${(
+                          +formatOrderDate.getMonth() + 1
+                        ).toLocaleString('en-US', {
                           minimumIntegerDigits: 2,
                           useGrouping: false,
-                        })}`;
+                        })}-${formatOrderDate
+                          .getDate()
+                          .toLocaleString('en-US', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false,
+                          })}`;
+                        const formatExpectedDate = new Date(po.expectedDate);
+                        formatExpectedDate.setMinutes(
+                          formatExpectedDate.getMinutes() + 240
+                        );
+                        const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                          +formatExpectedDate.getMonth() + 1
+                        ).toLocaleString('en-US', {
+                          minimumIntegerDigits: 2,
+                          useGrouping: false,
+                        })}-${formatExpectedDate
+                          .getDate()
+                          .toLocaleString('en-US', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false,
+                          })}`;
 
-                      res.render('purchaseOrder/receiver-new', {
-                        pageTitle: 'View Receiver',
-                        mainMenuPath: 'purchaseOrders',
-                        subMenuPath: 'viewReceiver',
-                        newPONumber: po.poNum,
-                        createdBy: po.createdBy,
-                        shippingMethodList: shippingMethodList,
-                        paymentTermList: paymentTermList,
-                        warehouseList: warehouseList,
-                        vendorList: vendorList,
-                        itemList: itemList,
-                        poDetails: po,
-                        poList: poList,
-                        poOrderDate: orderDate,
-                        poExpectedDate: expectedDate,
-                        receiverStatus: 'new',
+                        res.render('purchaseOrder/receiver-new', {
+                          pageTitle: 'View Receiver',
+                          mainMenuPath: 'purchaseOrders',
+                          subMenuPath: 'viewReceiver',
+                          newPONumber: po.poNum,
+                          createdBy: po.createdBy,
+                          shippingMethodList: shippingMethodList,
+                          paymentTermList: paymentTermList,
+                          warehouseList: warehouseList,
+                          vendorList: vendorList,
+                          itemList: itemList,
+                          poDetails: po,
+                          poList: poList,
+                          poOrderDate: orderDate,
+                          poExpectedDate: expectedDate,
+                          receiverStatus: 'new',
+                          uomList: uomList,
+                        });
                       });
                     });
                   });
@@ -691,7 +702,7 @@ exports.postCreateReceiver = (req, res, next) => {
   const shipToLocation = req.body.shipToLocation;
   const receiverTableData = JSON.parse(req.body.receiverTableData);
 
-  console.log(req.body);
+  console.log('receiverTableData', receiverTableData);
 
   const receiver = new Receiver({
     receiverNum: receiverNum,
@@ -721,69 +732,76 @@ exports.postCreateReceiver = (req, res, next) => {
 
 exports.getExistingReceiver = (req, res, next) => {
   const receiverNum = req.params.receiverNum;
-  UOM.find().then(uomList => {
-    Item.find()
-    .then((itemList) => {
-      Vendor.find().then((vendorList) => {
-        Warehouse.find().then((warehouseList) => {
-          PaymentTerm.find().then((paymentTermList) => {
-            ShippingMethod.find().then((shippingMethodList) => {
-              Receiver.findOne({ receiverNum: receiverNum }).then(
-                (receiver) => {
-                  Receiver.find().then((receiverList) => {
-                    const formatOrderDate = new Date(receiver.orderDate);
-                    formatOrderDate.setMinutes(
-                      formatOrderDate.getMinutes() + 240
-                    );
-                    const orderDate = `${formatOrderDate.getFullYear()}-${(
-                      +formatOrderDate.getMonth() + 1
-                    ).toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    })}-${formatOrderDate.getDate().toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    })}`;
-                    const formatReceivedDate = new Date(receiver.receivedDate);
-                    formatReceivedDate.setMinutes(
-                      formatReceivedDate.getMinutes() + 240
-                    );
-                    const receivedDate = `${formatReceivedDate.getFullYear()}-${(
-                      +formatReceivedDate.getMonth() + 1
-                    ).toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    })}-${formatReceivedDate.getDate().toLocaleString('en-US', {
-                      minimumIntegerDigits: 2,
-                      useGrouping: false,
-                    })}`;
+  UOM.find()
+    .then((uomList) => {
+      Item.find().then((itemList) => {
+        Vendor.find().then((vendorList) => {
+          Warehouse.find().then((warehouseList) => {
+            PaymentTerm.find().then((paymentTermList) => {
+              ShippingMethod.find().then((shippingMethodList) => {
+                Receiver.findOne({ receiverNum: receiverNum }).then(
+                  (receiver) => {
+                    Receiver.find().then((receiverList) => {
+                      const formatOrderDate = new Date(receiver.orderDate);
+                      formatOrderDate.setMinutes(
+                        formatOrderDate.getMinutes() + 240
+                      );
+                      const orderDate = `${formatOrderDate.getFullYear()}-${(
+                        +formatOrderDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}`;
+                      const formatReceivedDate = new Date(
+                        receiver.receivedDate
+                      );
+                      formatReceivedDate.setMinutes(
+                        formatReceivedDate.getMinutes() + 240
+                      );
+                      const receivedDate = `${formatReceivedDate.getFullYear()}-${(
+                        +formatReceivedDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatReceivedDate
+                        .getDate()
+                        .toLocaleString('en-US', {
+                          minimumIntegerDigits: 2,
+                          useGrouping: false,
+                        })}`;
 
-                    res.render('purchaseOrder/receiver-view', {
-                      pageTitle: 'View Receiver',
-                      mainMenuPath: 'purchaseOrders',
-                      subMenuPath: 'viewReceiver',
-                      newReceiverNumber: receiver.receiverNum,
-                      createdBy: receiver.createdBy,
-                      shippingMethodList: shippingMethodList,
-                      paymentTermList: paymentTermList,
-                      warehouseList: warehouseList,
-                      vendorList: vendorList,
-                      itemList: itemList,
-                      receiverDetails: receiver,
-                      receiverList: receiverList,
-                      receiverOrderDate: orderDate,
-                      receiverReceivedDate: receivedDate,
-                      uomList: uomList
+                      res.render('purchaseOrder/receiver-view', {
+                        pageTitle: 'View Receiver',
+                        mainMenuPath: 'purchaseOrders',
+                        subMenuPath: 'viewReceiver',
+                        newReceiverNumber: receiver.receiverNum,
+                        createdBy: receiver.createdBy,
+                        shippingMethodList: shippingMethodList,
+                        paymentTermList: paymentTermList,
+                        warehouseList: warehouseList,
+                        vendorList: vendorList,
+                        itemList: itemList,
+                        receiverDetails: receiver,
+                        receiverList: receiverList,
+                        receiverOrderDate: orderDate,
+                        receiverReceivedDate: receivedDate,
+                        uomList: uomList,
+                      });
                     });
-                  });
-                }
-              );
+                  }
+                );
+              });
             });
           });
         });
       });
     })
-  }).catch(err => {console.log(err)}); 
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postUpdateReceiver = (req, res, next) => {
@@ -920,6 +938,89 @@ exports.getPreviousReceiver = (req, res, next) => {
   }
 };
 
+// exports.postReceiver = (req, res, next) => {
+//   const receiverNum = req.body.receiverNum;
+//   if (req.body.receiverStatus !== 'POSTED') {
+//     console.log('Receiver is already posted!');
+//     req.flash('updatedMessage', 'Receiver is already posted!');
+//     res.redirect(`/po/receiver/view/${receiverNum}`);
+//   } else {
+//     const id = req.body.id;
+//     const receiverStatus = 'POSTED';
+//     const vendor = req.body.vendor;
+//     const vendorInvoiceNum = req.body.vendorInvoiceNum;
+//     const orderDate = req.body.orderDate;
+//     const receivedDate = req.body.receivedDate;
+//     const shippingMethod = req.body.shippingMethod;
+//     const terms = req.body.terms;
+//     const createdBy = req.body.createdBy;
+//     const shipToLocation = req.body.shipToLocation;
+//     const receiverTableData = JSON.parse(req.body.receiverTableData);
+
+//     UOM.find()
+//       .then((uoms) => {
+//         Receiver.findById(id)
+//           .then((receiver) => {
+//             receiver.receiverNum = receiverNum;
+//             receiver.status = receiverStatus;
+//             receiver.vendorNum = vendor;
+//             receiver.vendorInvoiceNum = vendorInvoiceNum;
+//             receiver.orderDate = orderDate;
+//             receiver.receivedDate = receivedDate;
+//             receiver.shippingMethod = shippingMethod;
+//             receiver.terms = terms;
+//             receiver.createdBy = createdBy;
+//             receiver.shipToLocation = shipToLocation;
+//             receiver.receiverTableData = receiverTableData;
+//             console.log('receiver', receiver);
+//             return receiver.save();
+//           })
+//           .then((result) => {
+//             for (line of result.receiverTableData) {
+//               console.log('line', line.line);
+//               const itemID = line.itemID;              
+//               Item.findOne({ itemID: itemID })
+//                 .then((item) => {
+//                   console.log('line3', line.line);
+//                   const selectedUOM = uoms.find(
+//                     ({ name }) => name === line.uom
+//                   );
+//                   console.log(line.line, 'item qty', item.totalQtyOnHand);
+//                   console.log(
+//                     line.line,
+//                     'qty rec',
+//                     +line.qtyReceived * selectedUOM.conversionQty
+//                   );
+//                   item.totalQtyOnHand =
+//                     +item.totalQtyOnHand +
+//                     +line.qtyReceived * selectedUOM.conversionQty;
+//                   item.qtyOnOrder =
+//                     +item.totalQtyOnHand -
+//                     +line.qtyReceived * selectedUOM.conversionQty;
+
+//                   return item.save();
+//                 })
+//                 .then((result) => {
+//                   console.log(result);
+//                 })
+//                 .catch((err) => {
+//                   console.log(err);
+//                 });
+//             } // end for loop
+//           })
+//           .then((result) => {
+//             console.log('POSTED Receiver');
+//             req.flash('updatedMessage', 'Receiver was posted!');
+//             res.redirect(`/po/receiver/view/${receiverNum}`);
+//           });
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+//   }
+// };
+
+//v2
 exports.postReceiver = (req, res, next) => {
   const receiverNum = req.body.receiverNum;
   if (req.body.receiverStatus !== 'POSTED') {
@@ -939,45 +1040,51 @@ exports.postReceiver = (req, res, next) => {
     const shipToLocation = req.body.shipToLocation;
     const receiverTableData = JSON.parse(req.body.receiverTableData);
 
-    Receiver.findById(id)
-      .then((receiver) => {
-        console.log('receiver', receiver);
-        receiver.receiverNum = receiverNum;
-        receiver.status = receiverStatus;
-        receiver.vendorNum = vendor;
-        receiver.vendorInvoiceNum = vendorInvoiceNum;
-        receiver.orderDate = orderDate;
-        receiver.receivedDate = receivedDate;
-        receiver.shippingMethod = shippingMethod;
-        receiver.terms = terms;
-        receiver.createdBy = createdBy;
-        receiver.shipToLocation = shipToLocation;
-        receiver.receiverTableData = receiverTableData;
-        return receiver.save();
-      })
-      .then((result) => {
-        for (line of result.receiverTableData) {
-          const itemID = line.itemID;
-          UOM.find()
-            .then((uoms) => {
-              Item.findOne({ itemID: itemID })
-                .then((item) => {
-                  item.totalQtyOnHand = +item.totalQtyOnHand + +line.qtyReceived;
-                  item.qtyOnOrder = +item.totalQtyOnHand - +line.qtyReceived;
-                  const conversionQty = uoms.find( ({ name }) => name === line.uom);
-                  console.log(conversionQty);
+    UOM.find()
+      .then((uoms) => {
+        Receiver.findById(id)
+          .then((receiver) => {
+            receiver.receiverNum = receiverNum;
+            receiver.status = receiverStatus;
+            receiver.vendorNum = vendor;
+            receiver.vendorInvoiceNum = vendorInvoiceNum;
+            receiver.orderDate = orderDate;
+            receiver.receivedDate = receivedDate;
+            receiver.shippingMethod = shippingMethod;
+            receiver.terms = terms;
+            receiver.createdBy = createdBy;
+            receiver.shipToLocation = shipToLocation;
+            receiver.receiverTableData = receiverTableData;
+            return receiver.save();
+          })
+          .then((result) => {
+            for (let i = 0; i < receiverTableData.length; i++) {
+              const itemID = receiverTableData[i].itemID;
+              Item.findOne({ itemID: itemID }).then(item => {
+                const selectedUOM = uoms.find(
+                  ({ name }) => name === receiverTableData[i].uom
+                );
+                console.log(receiverTableData[i].line, 'item qty', item.totalQtyOnHand);
+                console.log(
+                  receiverTableData[i].line,
+                  'qty rec',
+                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty
+                );
+                item.totalQtyOnHand =
+                  +item.totalQtyOnHand +
+                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
+                item.qtyOnOrder =
+                  +item.totalQtyOnHand -
+                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
 
-                  return item.save();
-                })
-                .then((result) => {
-                  console.log(result);
-                });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } // end for loop
-      })
+                return item.save();
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            }
+          })
+      })      
       .then((result) => {
         console.log('POSTED Receiver');
         req.flash('updatedMessage', 'Receiver was posted!');

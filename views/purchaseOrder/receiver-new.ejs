@@ -241,7 +241,7 @@
               >
                 <select>
                   <% uomList.forEach(function(uom) { %> <% if
-                    (uom.name == receiverDetails.uom) { %>
+                    (uom.name == line.uom) { %>                      
                     <option SELECTED value="<%= uom.name %>">
                       <%= uom.name %>
                     </option>
