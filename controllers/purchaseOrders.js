@@ -14,6 +14,8 @@ const { search } = require('../routes/purchaseOrders');
 const Receiver = require('../models/receiver');
 const receiver = require('../models/receiver');
 const uom = require('../models/uom');
+const { aggregate } = require('../models/item');
+const { forEach } = require('lodash');
 
 exports.getPurchaseOrder = (req, res, next) => {
   purchaseOrder
@@ -978,7 +980,7 @@ exports.getPreviousReceiver = (req, res, next) => {
 //           .then((result) => {
 //             for (line of result.receiverTableData) {
 //               console.log('line', line.line);
-//               const itemID = line.itemID;              
+//               const itemID = line.itemID;
 //               Item.findOne({ itemID: itemID })
 //                 .then((item) => {
 //                   console.log('line3', line.line);
@@ -1058,33 +1060,77 @@ exports.postReceiver = (req, res, next) => {
             return receiver.save();
           })
           .then((result) => {
-            for (let i = 0; i < receiverTableData.length; i++) {
-              const itemID = receiverTableData[i].itemID;
-              Item.findOne({ itemID: itemID }).then(item => {
-                const selectedUOM = uoms.find(
-                  ({ name }) => name === receiverTableData[i].uom
-                );
-                console.log(receiverTableData[i].line, 'item qty', item.totalQtyOnHand);
-                console.log(
-                  receiverTableData[i].line,
-                  'qty rec',
-                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty
-                );
-                item.totalQtyOnHand =
-                  +item.totalQtyOnHand +
-                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
-                item.qtyOnOrder =
-                  +item.totalQtyOnHand -
-                  +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
+            // for (let i = 0; i < receiverTableData.length; i++) {     original loop that only only updated duplicate item ids once...
+            //   const itemID = receiverTableData[i].itemID;
+            //   Item.findOne({ itemID: itemID }).then(item => {
+            //     const selectedUOM = uoms.find(
+            //       ({ name }) => name === receiverTableData[i].uom
+            //     );
+            //     console.log('line',receiverTableData[i].line, 'item qty', item.totalQtyOnHand);
+            //     console.log('line',
+            //       receiverTableData[i].line,
+            //       'qty rec',
+            //       +receiverTableData[i].qtyReceived * selectedUOM.conversionQty
+            //     );
+            //     // item.totalQtyOnHand =
+            //     //   +item.totalQtyOnHand +
+            //     //   +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
+            //     // item.qtyOnOrder =
+            //     //   +item.totalQtyOnHand -
+            //     //   +receiverTableData[i].qtyReceived * selectedUOM.conversionQty;
+            //       item.totalQtyOnHand = item.totalQtyOnHand + 1;
+            //       item.qtyOnOrder = item.qtyOnOrder - 1;
+            //     return item.save();
+            //   })
+            //   .catch((err) => {
+            //     console.log(err);
+            //   });
+            // }
 
-                return item.save();
-              })
-              .catch((err) => {
-                console.log(err);
+            // console.log(receiverTableData);
+            const consolidatedLines = receiverTableData.map((item) => {
+              const selectedUOM = uoms.find(
+                ({ name }) => name === item.uom
+                );
+              const line = {};
+              line.itemID = item.itemID;
+              line.qtyReceived = item.qtyReceived * selectedUOM.conversionQty;
+              line.cost = item.cost * item.qtyReceived;
+              return line;
+            });
+
+            console.log(consolidatedLines);
+
+            const consolLine2 = Object.values(
+              consolidatedLines.reduce((acc, { itemID, qtyReceived, cost }) => {
+                acc[itemID] = acc[itemID] || { itemID, qtysReceived: [], costs: [] };
+                acc[itemID].qtysReceived.push(qtyReceived);
+                acc[itemID].costs.push(cost);
+                return acc;
+              }, {})
+            );
+            console.log(consolLine2);
+
+              const finalLines = consolLine2.map(item => {
+                const line = {};
+                line.itemID = item.itemID;
+                line.qtyReceived = item.qtysReceived.reduce((total, num) => {return +total + +num;}).toString();
+                line.totalCost = item.costs.reduce((total, num) => {return +total + +num;}).toString();
+                return line;
               });
-            }
-          })
-      })      
+              console.log(finalLines);
+              finalLines.forEach((line) => {
+                Item.findOne({ itemID: line.itemID }).then(item => {
+                  console.log('itemID', item.itemID, 'qty on hand', item.totalQtyOnHand);
+                  console.log(line.qtyReceived)
+                  item.avgCost = (+item.totalQtyOnHand * +item.avgCost) + (+line.totalCost) / (+item.totalQtyOnHand + +line.qtyReceived)
+                  item.totalQtyOnHand = (+item.totalQtyOnHand + +line.qtyReceived).toString();
+                  item.qtyOnOrder = (+item.qtyOnOrder - +line.qtyReceived).toString();
+                  return item.save();
+                })
+              })
+          });
+      })
       .then((result) => {
         console.log('POSTED Receiver');
         req.flash('updatedMessage', 'Receiver was posted!');
