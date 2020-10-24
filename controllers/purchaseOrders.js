@@ -1123,7 +1123,8 @@ exports.postReceiver = (req, res, next) => {
                 Item.findOne({ itemID: line.itemID }).then(item => {
                   console.log('itemID', item.itemID, 'qty on hand', item.totalQtyOnHand);
                   console.log(line.qtyReceived)
-                  item.avgCost = (+item.totalQtyOnHand * +item.avgCost) + (+line.totalCost) / (+item.totalQtyOnHand + +line.qtyReceived)
+                  // console.log('avg cost eq', '((', +item.totalQtyOnHand, '*', +item.avgCost,') + (',+line.totalCost,')) / (',+item.totalQtyOnHand, '+', +line.qtyReceived,')')
+                  item.avgCost = ((+item.totalQtyOnHand * +item.avgCost) + (+line.totalCost)) / (+item.totalQtyOnHand + +line.qtyReceived).toFixed(2);
                   item.totalQtyOnHand = (+item.totalQtyOnHand + +line.qtyReceived).toString();
                   item.qtyOnOrder = (+item.qtyOnOrder - +line.qtyReceived).toString();
                   return item.save();
