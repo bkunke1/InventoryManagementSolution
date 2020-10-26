@@ -41,7 +41,25 @@ exports.getNewPurchaseOrder = (req, res, next) => {
           PaymentTerm.find().then((paymentTermList) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.find().then((poList) => {
-                const lastPoNum = poList[poList.length - 1].poNum;
+                console.log(poList);
+                let lastPoNum;
+                if (poList.length < 1) {
+                  lastPoNum = 0;
+                res.render('purchaseOrder/purchase-order-new', {
+                  pageTitle: 'New Purchase Orders',
+                  mainMenuPath: 'purchaseOrders',
+                  subMenuPath: '',
+                  newPONumber: +lastPoNum + 1,
+                  createdBy: req.session.user.email,
+                  shippingMethodList: shippingMethodList,
+                  paymentTermList: paymentTermList,
+                  warehouseList: warehouseList,
+                  vendorList: vendorList,
+                  itemList: itemList,
+                  poList: poList,
+                });
+                } else {
+                  lastPoNum = poList[poList.length - 1].poNum;
                 console.log(poList[poList.length - 1].poNum);
                 res.render('purchaseOrder/purchase-order-new', {
                   pageTitle: 'New Purchase Orders',
@@ -56,6 +74,8 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                   itemList: itemList,
                   poList: poList,
                 });
+                }
+                
               });
             });
           });
@@ -77,6 +97,16 @@ exports.postCreatePO = (req, res, next) => {
   const createdBy = req.body.createdBy;
   const shipToLocation = req.body.shipToLocation;
   const poTableData = JSON.parse(req.body.poTableData);
+  let UOMLIST;
+
+  UOM.find().then(uomList => {
+    UOMLIST = uomList;
+  });
+
+  function UOMQty(uomName) {
+    const match = UOMLIST.find(x => x.name === uomName);
+    return match.conversionQty;
+  }
 
   console.log('poTableData', poTableData);
 
@@ -94,6 +124,14 @@ exports.postCreatePO = (req, res, next) => {
   });
   purchaseOrder
     .save()
+    .then((result) => {
+      poTableData.forEach((line) => {
+        Item.findOne({ itemID: line.itemID }).then((item) => {
+          item.qtyOnOrder = +item.qtyOnOrder + +line.qtyOrdered * UOMQty(line.uom);  
+          return item.save();
+        })
+      })
+    })
     .then((result) => {
       console.log('Created Purchase Order');
       req.flash('createdMessage', 'PO was created!');
@@ -1025,7 +1063,7 @@ exports.getPreviousReceiver = (req, res, next) => {
 //v2
 exports.postReceiver = (req, res, next) => {
   const receiverNum = req.body.receiverNum;
-  if (req.body.receiverStatus !== 'POSTED') {
+  if (req.body.receiverStatus === 'POSTED') {
     console.log('Receiver is already posted!');
     req.flash('updatedMessage', 'Receiver is already posted!');
     res.redirect(`/po/receiver/view/${receiverNum}`);

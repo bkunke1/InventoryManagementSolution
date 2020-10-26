@@ -159,13 +159,23 @@ const poLineUpdateExtCost = (element) => {
     .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
   const cost = element.parentElement.querySelector('.poTableCost').textContent;
+  const updatedCost = element.parentElement.querySelector('.poTableCost');
+  
   const poSum = document.querySelector('.poSum');
   let extCost = element.parentElement.querySelector('.poTableExtended');
   let extCostTotal = (+qty * 1 * +cost).toFixed(2);
   extCost.innerText = extCostTotal;
+  updatedCost.textContent = parseFloat(cost).toFixed(2);
 
   poSum.textContent = poSumUpdate();
 };
+
+// updates costs to two decimals
+function poLineCostDecimalFormat(element) {
+  console.log(element);
+  element.value = parseFloat(element.value).toFixed(2);
+}
+
 
 // updated po sum
 const poSumUpdate = () => {
@@ -234,6 +244,7 @@ const poAddNewLine = function () {
   newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
   newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
   newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
+  newPOTableCost.setAttribute('onchange', 'poLineCostDecimalFormat(this)')
 
   // commented out, was used to fill lines with fake data during testing
   newPOTableLine.innerText = newPOTableItemNumCalc();

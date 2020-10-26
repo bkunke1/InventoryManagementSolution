@@ -243,7 +243,9 @@
                 <%= line.cost %>
               </td>
               <td class="poTableExtended">
-                <%= line.cost * line.qtyOrdered %>
+                <!-- <%= line.cost * line.qtyOrdered %> -->
+                <% let lineCost2Dec = (line.cost * line.qtyOrdered).toFixed(2); %>
+                <%= lineCost2Dec %>
               </td>
               <td class="poTableDeleteBtn">
                 <i
