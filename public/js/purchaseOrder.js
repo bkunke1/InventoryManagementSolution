@@ -377,14 +377,20 @@ const itemSelectionBtn = document.getElementById('itemSelectionBtn');
 const itemSpan = document.getElementsByClassName('close')[1];
 
 // When the user clicks the button, open the modal
-itemSelectionBtn.onclick = function () {
-  itemModal.style.display = 'block';
-};
+if (itemSelectionBtn) {
+  itemSelectionBtn.onclick = function () {
+    itemModal.style.display = 'block';
+  };
+}
+
 
 // When the user clicks on <span> (x), close the modal
-itemSpan.onclick = function () {
-  itemModal.style.display = 'none';
-};
+if (itemSpan) {
+  itemSpan.onclick = function () {
+    itemModal.style.display = 'none';
+  };
+}
+
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -510,14 +516,16 @@ const poSearchSpan = document.getElementsByClassName('close')[2];
 
 // When the user clicks the button, open the modal
 poSelectionBtn.onclick = function () {
-  console.log('modal');
   poSelectionModal.style.display = 'block';
 };
 
 // When the user clicks on <span> (x), close the modal
-poSearchSpan.onclick = function () {
-  poSelectionModal.style.display = 'none';
-};
+if (poSearchSpan) {
+  poSearchSpan.onclick = function () {
+    poSelectionModal.style.display = 'none';
+  };
+}
+
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -533,7 +541,7 @@ const poSelectBtn = document.getElementById('poSelectBtn');
 const selectPO = function (poEle) {
   console.log('poEle', poEle);
   const poNum =
-    poEle.parentElement.previousElementSibling.previousElementSibling
+    poEle.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
       .textContent;
   '1'.trim();
   console.log(poNum);

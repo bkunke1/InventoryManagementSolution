@@ -222,7 +222,6 @@
                 onfocusout="poLineUpdateExtCost(this)"
               >
                 <select>
-                  <% console.log(line.uom)  %>
                   <% uomList.forEach(function(uom) { %> <% if                    
                     (uom.name == line.uom) { %>
                     <option SELECTED value="<%= uom.name %>">

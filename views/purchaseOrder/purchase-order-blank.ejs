@@ -172,11 +172,13 @@
         </div>
       </form>
 
+      
+
       <!-- The poSearchModal -->
       <div id="poSelectionModal" class="poSearchModal">
         <!-- poSearchModal content -->
         <div class="poSearchModal-content">
-          <span class="close">&times;</span>
+          <span class="close"></span>
           <h2 class="poSelectHeading">Select a Purchase Order</h2>
           <div class="poSearchFilter">
             <h5>Filter:</h5>
@@ -184,6 +186,7 @@
               <option value="orderDate">Order Date</option>
               <option value="expectedDate">Expected Date</option>
               <option value="poNum">PO Num</option>
+              <option value="status">Status</option>
               <option value="vendor">Vendor</option>
             </select>
             <select name="poSearchFilterOperator" id="poSearchFilterOperator">
@@ -203,16 +206,18 @@
               <th>Order Date</th>
               <th>Expected Date</th>
               <th>PO Num</th>
+              <th>Status</th>
               <th>Vendor</th>
             </tr>
             <% poList.forEach(function(po) { %>
             <tr>
-              <td><%= po.orderDate %></td>
-              <td><%= po.expectedDate %></td>
-              <td><%=  %></td>
+              <td><%= po.orderDate.getMonth() %>/<%= po.orderDate.getDate() %>/<%= po.orderDate.getFullYear() %></td>
+              <td><%= po.expectedDate.getMonth() %>/<%= po.expectedDate.getDate() %>/<%= po.expectedDate.getFullYear() %></td>
+              <td><%= po.poNum %></td>
+              <td><%= po.status %></td>
               <td><%= po.vendorNum %></td>
               <td>
-                <button id="poSelectBtn" onclick="selectPo(this)">
+                <button id="poSelectBtn" onclick="selectPO(this)">
                   Select
                 </button>
               </td>

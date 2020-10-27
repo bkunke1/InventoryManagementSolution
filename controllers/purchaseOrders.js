@@ -41,7 +41,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
           PaymentTerm.find().then((paymentTermList) => {
             ShippingMethod.find().then((shippingMethodList) => {
               PurchaseOrder.find().then((poList) => {
-                console.log(poList);
+                // console.log(poList);
                 let lastPoNum;
                 if (poList.length < 1) {
                   lastPoNum = 0;
@@ -60,7 +60,7 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                 });
                 } else {
                   lastPoNum = poList[poList.length - 1].poNum;
-                console.log(poList[poList.length - 1].poNum);
+                // console.log(poList[poList.length - 1].poNum);
                 res.render('purchaseOrder/purchase-order-new', {
                   pageTitle: 'New Purchase Orders',
                   mainMenuPath: 'purchaseOrders',
@@ -108,7 +108,7 @@ exports.postCreatePO = (req, res, next) => {
     return match.conversionQty;
   }
 
-  console.log('poTableData', poTableData);
+  // console.log('poTableData', poTableData);
 
   const purchaseOrder = new PurchaseOrder({
     poNum: poNum,
@@ -126,7 +126,7 @@ exports.postCreatePO = (req, res, next) => {
     .save()
     .then((result) => {
       poTableData.forEach((line) => {
-        Item.findOne({ itemID: line.itemID }).then((item) => {
+        Item.findOne({ itemID: line.itemID }).then((item) => {          
           item.qtyOnOrder = +item.qtyOnOrder + +line.qtyOrdered * UOMQty(line.uom);  
           return item.save();
         })
@@ -148,7 +148,7 @@ exports.postFindItem = (req, res, next) => {
   const itemId = req.params.itemId;
   Item.findOne({ itemID: itemId })
     .then((item) => {
-      console.log('item', item);
+      // console.log('item', item);
       res.status(200).json(item);
     })
     .catch((err) => {
@@ -188,7 +188,7 @@ exports.getOptions = (req, res, next) => {
     .then((paymentTermList) => {
       ShippingMethod.find()
         .then((shippingMethodList) => {
-          console.log(shippingMethodList);
+          // console.log(shippingMethodList);
           res.render('purchaseOrder/options', {
             pageTitle: 'Purchasing Options',
             mainMenuPath: 'purchaseOptions',
@@ -211,7 +211,7 @@ exports.postAddShippingMethod = (req, res, next) => {
   const name = req.body.shippingMethodName;
 
   const errors = validationResult(req);
-  console.log('postAddShippingMethod Errors', errors);
+  // console.log('postAddShippingMethod Errors', errors);
   ShippingMethod.find()
     .then((shippingMethodList) => {
       if (!errors.isEmpty()) {
@@ -259,7 +259,7 @@ exports.postEditShippingMethod = (req, res, next) => {
   const name = req.body.editShippingMethodName;
 
   const errors = validationResult(req);
-  console.log('postEditShippingMethod Errors', errors);
+  // console.log('postEditShippingMethod Errors', errors);
   ShippingMethod.find()
     .then((shippingMethodList) => {
       if (!errors.isEmpty()) {
@@ -297,7 +297,7 @@ exports.postEditShippingMethod = (req, res, next) => {
 
 exports.postDeleteShippingMethod = (req, res, next) => {
   const ID = req.body.shippingMethodID;
-  console.log(ID);
+  // console.log(ID);
   ShippingMethod.deleteOne({ ID: ID })
     .then(() => {
       console.log('DESTROYED Shipping Method');
@@ -312,7 +312,7 @@ exports.postAddPaymentTerm = (req, res, next) => {
   const days = req.body.paymentTermDays;
 
   const errors = validationResult(req);
-  console.log('postAddPaymentTerm Errors', errors);
+  // console.log('postAddPaymentTerm Errors', errors);
   PaymentTerm.find()
     .then((paymentTermList) => {
       if (!errors.isEmpty()) {
@@ -482,6 +482,16 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
     });
 };
 
+// below are two helper functions to convert the uom converstion qty when updating item info
+UOM.find().then(uomList => {
+  UOMLIST = uomList;
+});
+
+function UOMQty(uomName) {
+  const match = UOMLIST.find(x => x.name === uomName);
+  return match.conversionQty;
+}
+
 exports.postUpdatePO = (req, res, next) => {
   const id = req.body.id;
   const poNum = req.body.poNum;
@@ -494,6 +504,19 @@ exports.postUpdatePO = (req, res, next) => {
   const createdBy = req.body.createdBy;
   const shipToLocation = req.body.shipToLocation;
   const poTableData = JSON.parse(req.body.poTableData);
+  const poTableDataOriginal = JSON.parse(req.body.poTableData);
+  const itemOriginalQty = [];
+  const itemNewQty = [];
+  
+  poTableDataOriginal.forEach(line => {
+    itemOriginalQty.push(
+      { itemID: line.itemID,
+        qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom)
+      }
+    )
+  });
+  console.log('itemOriginalQty', itemOriginalQty);
+
 
   PurchaseOrder.findById(id)
     .then((po) => {
@@ -505,8 +528,41 @@ exports.postUpdatePO = (req, res, next) => {
       po.createdBy = createdBy;
       po.shipToLocation = shipToLocation;
       po.poTableData = poTableData;
-      console.log(poTableData);
+      // console.log(poTableData);
       return po.save();
+    })
+    .then(result => {
+      poTableData.forEach(line => {
+        itemNewQty.push(
+          { itemID: line.itemID,
+            qtyOrdered: line.qtyOrdered * UOMQty(line.uom)
+          }
+        )
+      })
+      console.log('itemNewQty', itemNewQty);
+
+      function updateItemQty(itemID) {
+        for (let i = 0; i < itemOriginalQty.length; i++) {
+          let result= 0;
+          if (itemOriginalQty[i].itemID === itemID) {
+            console.log('match found', itemID, 'qty', itemOriginalQty[i].qtyOriginallyOrdered)
+            result = Number(itemOriginalQty[i].qtyOriginallyOrdered);
+            return result;
+          }
+        }
+      }
+
+      const itemQtyDifference = [];
+      itemNewQty.forEach(item => {
+        itemQtyDifference.push (
+          {
+            itemID: item.itemID,
+            newQty: +item.qtyOrdered,
+            oldQty: updateItemQty(item.itemID)
+          }          
+        )
+      })
+      console.log(itemQtyDifference)
     })
     .then((result) => {
       console.log('Updated Purchase Order');
@@ -594,6 +650,15 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
   const poNum = req.body.poNum;
   const ID = req.body.id;
 
+  UOM.find().then(uomList => {
+    UOMLIST = uomList;
+  });
+
+  function UOMQty(uomName) {
+    const match = UOMLIST.find(x => x.name === uomName);
+    return match.conversionQty;
+  }
+
   Receiver.find()
     .then((receiverList) => {
       const receiverNums = receiverList.map((receiver) => receiver.receiverNum);
@@ -601,12 +666,31 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
         console.log('receiver exists');
         res.redirect(`/po/view/${poNum}`);
       } else {
-        PurchaseOrder.deleteOne({ _id: ID })
-          .then(() => {
-            console.log('DESTROYED PO', poNum);
-            return res.redirect('/po');
+        PurchaseOrder.findOne({ _id: ID }).then((po) => {
+          console.log('po for deletion', po);
+          po.poTableData.forEach(line => {
+            Item.findOne({ itemID: line.itemID }).then(item => {
+              item.qtyOnOrder = +item.qtyOnOrder - +line.qtyOrdered * UOMQty(line.uom);
+              return item.save()
+            }).then(result => {
+              
+            })
+            .catch(err => {console.log(err)});
           })
-          .catch((err) => console.log(err));
+        }).then(result => {
+          PurchaseOrder.deleteOne({ _id: ID })
+              .then(() => {
+                console.log('DESTROYED PO', poNum);
+                return res.redirect('/po');
+              })
+              .catch((err) => console.log(err));
+        }).catch(err => {console.log(err)});
+        // PurchaseOrder.deleteOne({ _id: ID })  // moved into block above to prevent conflict in deletion timing
+        //   .then(() => {
+        //     console.log('DESTROYED PO', poNum);
+        //     return res.redirect('/po');
+        //   })
+        //   .catch((err) => console.log(err));
       }
     })
     .catch((err) => {
@@ -742,7 +826,7 @@ exports.postCreateReceiver = (req, res, next) => {
   const shipToLocation = req.body.shipToLocation;
   const receiverTableData = JSON.parse(req.body.receiverTableData);
 
-  console.log('receiverTableData', receiverTableData);
+  // console.log('receiverTableData', receiverTableData);
 
   const receiver = new Receiver({
     receiverNum: receiverNum,
@@ -845,7 +929,7 @@ exports.getExistingReceiver = (req, res, next) => {
 };
 
 exports.postUpdateReceiver = (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const id = req.body.id;
   const receiverNum = req.body.receiverNum;
   const receiverStatus = req.body.receiverStatus;
@@ -853,7 +937,7 @@ exports.postUpdateReceiver = (req, res, next) => {
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
   const orderDate = req.body.orderDate;
   const receivedDate = req.body.receivedDate;
-  console.log(receivedDate);
+  // console.log(receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -862,7 +946,7 @@ exports.postUpdateReceiver = (req, res, next) => {
 
   Receiver.findById(id)
     .then((receiver) => {
-      console.log('receiver', receiver);
+      // console.log('receiver', receiver);
       receiver.receiverNum = receiverNum;
       receiver.status = receiverStatus;
       receiver.vendorNum = vendor;
