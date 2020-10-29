@@ -134,7 +134,7 @@ exports.postCreatePO = (req, res, next) => {
     })
     .then((result) => {
       console.log('Created Purchase Order');
-      req.flash('createdMessage', 'PO was created!');
+      req.flash('message', 'PO was created!');
       res.redirect(`/po/view/${poNum}`);
     })
     .catch((err) => {
@@ -415,6 +415,20 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 // };
 
 exports.getExistingPurchaseOrder = (req, res, next) => {
+
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+
   const poNum = req.params.poNum;
   UOM.find()
     .then((uomList) => {
@@ -468,6 +482,8 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                       poOrderDate: orderDate,
                       poExpectedDate: expectedDate,
                       uomList: uomList,
+                      errorMessage: error,
+                      message: message
                     });
                   });
                 });
@@ -507,19 +523,35 @@ exports.postUpdatePO = (req, res, next) => {
   const poTableDataOriginal = JSON.parse(req.body.poTableData);
   const itemOriginalQty = [];
   const itemNewQty = [];
+
+  // console.log('poTableDataOriginal', poTableDataOriginal);
   
-  poTableDataOriginal.forEach(line => {
-    itemOriginalQty.push(
-      { itemID: line.itemID,
-        qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom)
-      }
-    )
-  });
-  console.log('itemOriginalQty', itemOriginalQty);
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
 
 
   PurchaseOrder.findById(id)
     .then((po) => {
+
+      po.poTableData.forEach(line => {
+        itemOriginalQty.push(
+          { itemID: line.itemID,
+            qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom)
+          }
+        )
+      });
+      console.log('itemOriginalQty', itemOriginalQty);
+
       po.vendorNum = vendor;
       po.orderDate = orderDate;
       po.expectedDate = expectedDate;
@@ -527,8 +559,9 @@ exports.postUpdatePO = (req, res, next) => {
       po.terms = terms;
       po.createdBy = createdBy;
       po.shipToLocation = shipToLocation;
+      console.log('oldPoTableData', po.poTableData);
       po.poTableData = poTableData;
-      // console.log(poTableData);
+      console.log('newPoTableData', poTableData);
       return po.save();
     })
     .then(result => {
@@ -557,16 +590,27 @@ exports.postUpdatePO = (req, res, next) => {
         itemQtyDifference.push (
           {
             itemID: item.itemID,
+            oldQty: updateItemQty(item.itemID),
             newQty: +item.qtyOrdered,
-            oldQty: updateItemQty(item.itemID)
+            diffQty: +item.qtyOrdered - updateItemQty(item.itemID)
           }          
         )
       })
       console.log(itemQtyDifference)
+
+      itemQtyDifference.forEach(el => {
+        Item.findOne({ itemID: el.itemID}).then(item => {
+          console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+          item.qtyOnOrder = item.qtyOnOrder + el.diffQty;
+          console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+          return item.save();
+        }).catch(err => {console.log(err)});
+      })
+
     })
     .then((result) => {
       console.log('Updated Purchase Order');
-      req.flash('updatedMessage', 'PO was updated!');
+      req.flash('message', 'PO was updated!');
       res.redirect(`/po/view/${poNum}`);
     })
     .catch((err) => {
@@ -579,7 +623,11 @@ exports.getNextPurchaseOrder = (req, res, next) => {
   if (req.params.poNum === 'empty') {
     PurchaseOrder.find()
       .then((poList) => {
-        res.redirect(`/po/view/${poList[0].poNum}`);
+        if (poList[0].poNum) {
+          res.redirect(`/po/view/${poList[0].poNum}`);
+        } else {
+          res.redirect('/po');
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -615,7 +663,11 @@ exports.getPreviousPurchaseOrder = (req, res, next) => {
     PurchaseOrder.find()
       .then((poList) => {
         const lastIndexPO = poList.length;
-        res.redirect(`/po/view/${poList[lastIndexPO - 1].poNum}`);
+        if (poList[lastIndexPO - 1].poNum) {
+          res.redirect(`/po/view/${poList[lastIndexPO - 1].poNum}`);
+        } else {
+          res.redirect(`/po`);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -812,7 +864,20 @@ exports.getLoadNewReciever = (req, res, next) => {
 };
 
 exports.postCreateReceiver = (req, res, next) => {
-  console.log('created receiver');
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+
+    console.log('created receiver');
   const receiverNum = req.body.poNum;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
@@ -840,12 +905,14 @@ exports.postCreateReceiver = (req, res, next) => {
     createdBy: createdBy,
     shipToLocation: shipToLocation,
     receiverTableData: receiverTableData,
+    errorMessage: error,
+    message: message
   });
   receiver
     .save()
     .then((result) => {
       console.log('Created Receiver');
-      req.flash('createdMessage', 'Receiver was created!');
+      req.flash('message', 'Receiver was created!');
       res.redirect(`/po/receiver/view/${receiverNum}`);
     })
     .catch((err) => {
@@ -855,6 +922,19 @@ exports.postCreateReceiver = (req, res, next) => {
 };
 
 exports.getExistingReceiver = (req, res, next) => {
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+
   const receiverNum = req.params.receiverNum;
   UOM.find()
     .then((uomList) => {
@@ -913,6 +993,8 @@ exports.getExistingReceiver = (req, res, next) => {
                         receiverOrderDate: orderDate,
                         receiverReceivedDate: receivedDate,
                         uomList: uomList,
+                        message: message,
+                        errorMessage: error
                       });
                     });
                   }
@@ -929,6 +1011,18 @@ exports.getExistingReceiver = (req, res, next) => {
 };
 
 exports.postUpdateReceiver = (req, res, next) => {
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
   // console.log(req.body);
   const id = req.body.id;
   const receiverNum = req.body.receiverNum;
@@ -962,7 +1056,7 @@ exports.postUpdateReceiver = (req, res, next) => {
     })
     .then((result) => {
       console.log('Updated Receiver');
-      req.flash('updatedMessage', 'Receiver was updated!');
+      req.flash('message', 'Receiver was updated!');
       res.redirect(`/po/receiver/view/${receiverNum}`);
     })
     .catch((err) => {
@@ -992,8 +1086,12 @@ exports.postDeleteReceiver = (req, res, next) => {
 exports.getNextReceiver = (req, res, next) => {
   if (req.params.receiverNum === 'empty') {
     Receiver.find()
-      .then((receiverList) => {
-        res.redirect(`/po/receiver/view/${receiverList[0].receiverNum}`);
+      .then((receiverList) => {        
+        if (receiverList[0]) {
+          res.redirect(`/po/receiver/view/${receiverList[0].receiverNum}`);
+        } else {
+          res.redirect('/po/receiver/view/');
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -1029,9 +1127,16 @@ exports.getPreviousReceiver = (req, res, next) => {
     Receiver.find()
       .then((receiverList) => {
         const lastIndexReceiver = receiverList.length;
-        res.redirect(
-          `/po/receiver/view/${receiverList[lastIndexReceiver - 1].receiverNum}`
-        );
+        if (receiverList[lastIndexReceiver - 1].receiverNum) {          
+          res.redirect(
+            `/po/receiver/view/${receiverList[lastIndexReceiver - 1].receiverNum}`
+          );
+        } else {
+          res.redirect(
+            `/po/receiver/view/`
+          );
+        }
+        
       })
       .catch((err) => {
         console.log(err);
