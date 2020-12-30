@@ -94,12 +94,21 @@
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
-          <input
+          <% if (receiverDetails.status == "POSTED") { %>
+            <input
+            disabled
+            type="text"
+            name="vendor"
+            value="<%= receiverDetails.vendorNum %>"
+            size="30"
+          /> <% } else { %>
+            <input
             type="text"
             name="vendor"
             value="<%= receiverDetails.vendorNum %>"
             size="30"
           />
+             <% } %>          
           <button type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>

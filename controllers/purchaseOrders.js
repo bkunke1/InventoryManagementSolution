@@ -783,6 +783,19 @@ exports.getBlankReciever = (req, res, next) => {
 
 // loads unsaved receiver with current PO data
 exports.getLoadNewReciever = (req, res, next) => {
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+
   const poNum = req.params.receiverNum;
   Receiver.find()
     .then((receiverList) => {
@@ -847,6 +860,8 @@ exports.getLoadNewReciever = (req, res, next) => {
                           poExpectedDate: expectedDate,
                           receiverStatus: 'new',
                           uomList: uomList,
+                          errorMessage: error,
+                          message: message
                         });
                       });
                     });
@@ -911,6 +926,12 @@ exports.postCreateReceiver = (req, res, next) => {
   receiver
     .save()
     .then((result) => {
+      PurchaseOrder.findOne({ poNum: receiverNum }).then(po => {
+        // console.log('po', po);
+        po.status = "RECEIVED";
+        return po.save();
+      })
+
       console.log('Created Receiver');
       req.flash('message', 'Receiver was created!');
       res.redirect(`/po/receiver/view/${receiverNum}`);
