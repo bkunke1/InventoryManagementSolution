@@ -272,13 +272,24 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= poSumAmount %></h4>
         </div>        
-        <div class="poActionBtns">
-          <a href="/po/new"><button type="button">New</button></a>
-          <button id="poUpdateBtn">Update</button>
-          <button formaction="/po/delete">Delete</button>
-          <button type="button">Print PO</button>
-          <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button type="button">Receive PO</button></a>
-        </div>
+        <% if (poDetails.status == "RECEIVED") { %>
+          <div class="poActionBtns">
+            <a href="/po/new"><button type="button">New</button></a>
+            <button disabled id="poUpdateBtn">Update</button>
+            <button disabled formaction="/po/delete">Delete</button>
+            <button type="button">Print PO</button>
+            <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button disabled type="button">Receive PO</button></a>
+          </div>
+          </div>
+          <% } else { %>
+            <div class="poActionBtns">
+              <a href="/po/new"><button type="button">New</button></a>
+              <button id="poUpdateBtn">Update</button>
+              <button formaction="/po/delete">Delete</button>
+              <button type="button">Print PO</button>
+              <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button type="button">Receive PO</button></a>
+            </div>
+            <% } %>       
         <input type="hidden" name="id" value="<%= poDetails._id %>" />
       </form>
 

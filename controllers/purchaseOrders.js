@@ -90,8 +90,8 @@ exports.getNewPurchaseOrder = (req, res, next) => {
 exports.postCreatePO = (req, res, next) => {
   const poNum = req.body.poNum;
   const vendor = req.body.vendor;
-  const orderDate = req.body.orderDate;
-  const expectedDate = req.body.expectedDate;
+  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
+  const expectedDate = new Date(req.body.expectedDate.split("-")[0], req.body.expectedDate.split("-")[1] - 1, req.body.expectedDate.split("-")[2]);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -553,8 +553,8 @@ exports.postUpdatePO = (req, res, next) => {
       console.log('itemOriginalQty', itemOriginalQty);
 
       po.vendorNum = vendor;
-      po.orderDate = orderDate;
-      po.expectedDate = expectedDate;
+      po.orderDate = new Date(orderDate.split("-")[0], orderDate.split("-")[1] - 1, orderDate.split("-")[2]);
+      po.expectedDate = new Date(expectedDate.split("-")[0], expectedDate.split("-")[1] - 1, expectedDate.split("-")[2]);
       po.shippingMethod = shippingMethod;
       po.terms = terms;
       po.createdBy = createdBy;
@@ -562,6 +562,7 @@ exports.postUpdatePO = (req, res, next) => {
       console.log('oldPoTableData', po.poTableData);
       po.poTableData = poTableData;
       console.log('newPoTableData', poTableData);
+
       return po.save();
     })
     .then(result => {
@@ -842,6 +843,13 @@ exports.getLoadNewReciever = (req, res, next) => {
                             minimumIntegerDigits: 2,
                             useGrouping: false,
                           })}`;
+                          console.log(orderDate);
+                          console.log(expectedDate);
+
+                          let testDate = `${orderDate.split("-")[0]}-${(orderDate.split("-")[1]).toLocaleString('en-US', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false,
+                          })}-${orderDate.split("-")[2]}`;
 
                         res.render('purchaseOrder/receiver-new', {
                           pageTitle: 'View Receiver',
@@ -856,8 +864,10 @@ exports.getLoadNewReciever = (req, res, next) => {
                           itemList: itemList,
                           poDetails: po,
                           poList: poList,
-                          poOrderDate: orderDate,
-                          poExpectedDate: expectedDate,
+                          // poOrderDate: orderDate,
+                          // poExpectedDate: expectedDate,
+                          poOrderDate: testDate.toString(),
+                          poExpectedDate: new Date(expectedDate.split("-")[0], expectedDate.split("-")[1] - 1, expectedDate.split("-")[2]),
                           receiverStatus: 'new',
                           uomList: uomList,
                           errorMessage: error,
@@ -896,9 +906,9 @@ exports.postCreateReceiver = (req, res, next) => {
   const receiverNum = req.body.poNum;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
-  const orderDate = req.body.orderDate;
+  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
   console.log('saved orderdate', orderDate);
-  const receivedDate = req.body.receivedDate;
+  const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
   console.log('saved received date', receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
@@ -1050,14 +1060,18 @@ exports.postUpdateReceiver = (req, res, next) => {
   const receiverStatus = req.body.receiverStatus;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
-  const orderDate = req.body.orderDate;
-  const receivedDate = req.body.receivedDate;
+  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
+  const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
   // console.log(receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
   const shipToLocation = req.body.shipToLocation;
   const receiverTableData = JSON.parse(req.body.receiverTableData);
+
+  console.log(orderDate);
+  console.log(receivedDate);
+
 
   if (receiverStatus === "POSTED") {
       console.log('Receiver is already posted');
@@ -1288,8 +1302,8 @@ exports.postReceiver = (req, res, next) => {
     const receiverStatus = 'POSTED';
     const vendor = req.body.vendor;
     const vendorInvoiceNum = req.body.vendorInvoiceNum;
-    const orderDate = req.body.orderDate;
-    const receivedDate = req.body.receivedDate;
+    const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);    
+    const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
     const shippingMethod = req.body.shippingMethod;
     const terms = req.body.terms;
     const createdBy = req.body.createdBy;
