@@ -108,24 +108,42 @@
             value="<%= receiverDetails.vendorNum %>"
             size="30"
           />
-             <% } %>          
-          <button type="button" id="vendorSelectionBtn" tooltip="test">
-            <i class="fas fa-user-tie"></i>
-          </button>
+             <% } %>
+             <% if (receiverDetails.status == "POSTED") { %>
+              <button disabled type="button" id="vendorSelectionBtn" tooltip="test">
+                <i class="fas fa-user-tie"></i>
+              </button> <% } else { %>
+                <button type="button" id="vendorSelectionBtn" tooltip="test">
+                  <i class="fas fa-user-tie"></i>
+                </button>
+                <% } %>
+          
           <div id="vendorInvoiceNum">
             <label for="vendorInvoiceNum">Vendor Invoice # :</label>
-          <input
+            <% if (receiverDetails.status == "POSTED") { %>
+              <input
+              disabled
             type="text"
             name="vendorInvoiceNum"
             size="10"
             value="<%= receiverDetails.vendorInvoiceNum %>"
           />
+              <% } else { %>
+                <input
+            type="text"
+            name="vendorInvoiceNum"
+            size="10"
+            value="<%= receiverDetails.vendorInvoiceNum %>"
+          />
+                <% } %>          
           </div>
         </div>
         
         <div>
           <label for="orderDate">Order Date:</label>
-          <input
+          <% if (receiverDetails.status == "POSTED") { %>
+            <input
+            disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
@@ -133,8 +151,21 @@
             size="8"
             value="<%= receiverOrderDate %>"
           />
+            <% } else { %>
+              <input
+            id="orderDateInput"
+            class="poSelectFields"
+            type="date"
+            name="orderDate"
+            size="8"
+            value="<%= receiverOrderDate %>"
+          />
+              <% } %>
+          
           <label for="receivedDate">Received Date:</label>
-          <input
+          <% if (receiverDetails.status == "POSTED") { %>
+            <input
+            disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -142,12 +173,32 @@
             size="8"
             value="<%= receiverReceivedDate %>"
           />
+            <% } else { %>
+              <input
+            id="expectedDateInput"
+            class="poSelectFields"
+            type="date"
+            name="receivedDate"
+            size="8"
+            value="<%= receiverReceivedDate %>"
+          />
+              <% } %>
+          
           <label for="shippingMethod">Shipping Method:</label>
-          <select
+          <% if (receiverDetails.status == "POSTED") { %>
+            <select
+            disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
           >
+            <% } else { %>
+              <select
+            name="shippingMethod"
+            id="shippingMethod"
+            class="poSelectFields"
+          >
+              <% } %>          
             <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
             (shippingMethod.name == receiverDetails.shippingMethod) { %>
             <option SELECTED value="<%= shippingMethod.name %>">
@@ -160,11 +211,21 @@
             <% } %> <% }); %>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
-          <select
+          <% if (receiverDetails.status == "POSTED") { %>
+            <select
+            disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
           >
+            <% } else { %>
+              <select
+            name="shipToLocation"
+            id="shipToLocation"
+            class="poSelectFields"
+          >
+              <% } %>
+          
             <% warehouseList.forEach(function(warehouse) { %> <% if
             (warehouse.name == receiverDetails.shipToLocation) { %>
             <option SELECTED value="<%= warehouse.name %>">
@@ -175,7 +236,13 @@
             <% } %> <% }); %>
           </select>
           <label for="terms">Terms:</label>
-          <select name="terms" id="terms" class="poSelectFields">
+          <% if (receiverDetails.status == "POSTED") { %>
+            <select disabled name="terms" id="terms" class="poSelectFields">
+            <% } else { %>
+              <select name="terms" id="terms" class="poSelectFields">
+              <% } %>
+          
+
             <% paymentTermList.forEach(function(paymentTerm) { %> <% if
             (paymentTerm.code == receiverDetails.terms) { %>
             <option SELECTED value="<%= paymentTerm.code %>">
@@ -305,13 +372,22 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= receiverSumAmount %></h4>
         </div>
-        <hr>        
-        <div class="poActionBtns">
-          <button id="poUpdateBtn">Update</button>
-          <button formaction="/po/receiver/delete">Delete</button>
-          <button type="button">Print</button>
-          <button formaction="/po/receiver/post">Post</button>
-        </div>
+        <hr>
+        <% if (receiverDetails.status == "POSTED") { %>
+          <div class="poActionBtns">
+            <button disabled id="poUpdateBtn">Update</button>
+            <button disabled formaction="/po/receiver/delete">Delete</button>
+            <button type="button">Print</button>
+            <button disabled formaction="/po/receiver/post">Post</button>
+          </div>
+          <% } else { %>
+            <div class="poActionBtns">
+              <button id="poUpdateBtn">Update</button>
+              <button formaction="/po/receiver/delete">Delete</button>
+              <button type="button">Print</button>
+              <button formaction="/po/receiver/post">Post</button>
+            </div>
+            <% } %>        
         <input type="hidden" name="id" value="<%= receiverDetails._id %>" />
       </form>
 

@@ -1059,6 +1059,12 @@ exports.postUpdateReceiver = (req, res, next) => {
   const shipToLocation = req.body.shipToLocation;
   const receiverTableData = JSON.parse(req.body.receiverTableData);
 
+  if (receiverStatus === "POSTED") {
+      console.log('Receiver is already posted');
+      req.flash('message', 'Receiver was already updated!');
+      res.redirect(`/po/receiver/view/${receiverNum}`);    
+  }
+
   Receiver.findById(id)
     .then((receiver) => {
       // console.log('receiver', receiver);
