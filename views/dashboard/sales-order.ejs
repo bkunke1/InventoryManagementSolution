@@ -6,16 +6,7 @@
   <body>
     <%- include('../includes/banner.ejs') %>
     <div id="main-menu">
-      <div id="navbar">
-        <ul>
-          <li><a href="/" class="">Dashboard</a></li>
-          <li><a href="/so" class="active">Sales Orders</a></li>
-          <li><a href="/po" class="">Purchase Orders</a></li>
-          <li><a href="/inventory/item-maintenance" class="">Inventory</a></li>
-          <li><a href="/reports" class="">Reports</a></li>
-          <li><a href="/sysconfig" class="">System Config</a></li>
-        </ul>
-      </div>
+      <%- include('../includes/navbar.ejs') %>
       <div id="sub-menu">
         <ul>
           <%- include('../includes/so-submenu.ejs') %>

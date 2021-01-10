@@ -6,16 +6,7 @@
   <body>
     <%- include('../../includes/banner.ejs') %>
     <div id="main-menu">
-      <div id="navbar">
-        <ul>
-          <li><a href="/" class="">Dashboard</a></li>
-          <li><a href="/so" class="">Sales Orders</a></li>
-          <li><a href="/po" class="">Purchase Orders</a></li>
-          <li><a href="/inventory" class="active">Inventory</a></li>
-          <li><a href="/reports" class="">Reports</a></li>
-          <li><a href="/sysconfig" class="">System Config</a></li>
-        </ul>
-      </div>
+      <%- include('../../includes/navbar.ejs') %>
       <div id="sub-menu">
         <ul>
           <%- include('../../includes/items-submenu.ejs') %>
@@ -158,11 +149,11 @@
         <div class="item-field">
           <label for="type">Type:</label>
           <select id="type" name="type">
-            <% if (item.type === "FINISHED GOOD") { %>
+            <% if (item.type === "Finished Good") { %>
             <option value="FINISHED GOOD" selected>FINISHED GOOD</option>
             <option value="RAW MATERIAL">RAW MATERIAL</option>
             <option value="SERVICE">SERVICE</option>
-            <% } else if (item.type === "RAW MATERIAL") { %>
+            <% } else if (item.type === "Raw Material") { %>
             <option value="FINISHED GOOD">FINISHED GOOD</option>
             <option value="RAW MATERIAL" selected>RAW MATERIAL</option>
             <option value="SERVICE">SERVICE</option>

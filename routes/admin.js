@@ -179,7 +179,7 @@ router.post('/inventory/category-delete', adminController.postDeleteCategory);
 
 
 
-router.get('/so', salesAuth,  adminController.getSalesOrder);
+// router.get('/so', salesAuth,  adminController.getSalesOrder);
 
 
 

@@ -81,7 +81,7 @@ exports.postLogin = (req, res, next) => {
           req.session.user = user;
           return req.session.save((err) => {
             console.log('Login errors:', err);
-            return res.redirect('/');
+            return res.redirect('/po');
           });
         }
         req.flash('error', 'Invalid email or password.');

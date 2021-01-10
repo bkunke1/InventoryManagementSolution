@@ -314,7 +314,7 @@ exports.postUpdateItem = (req, res, next) => {
       item.qtyAllocated = qtyAllocated;
       item.userId = userId;
       item.avgCost = avgCost;
-      item.lotCost = lotCost;
+      // item.lotCost = lotCost; work in progress
       return item.save();
     })
     .then((result) => {

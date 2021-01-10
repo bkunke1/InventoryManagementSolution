@@ -1,10 +1,18 @@
 <div id="navbar">
     <ul>
-      <li><a href="/" class="<%= mainMenuPath === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
-      <li><a href="/so" class="<%= mainMenuPath === 'salesOrders' ? 'active' : '' %>">Sales Orders</a></li>
+      <!-- <li><a href="/" class="<%= mainMenuPath === 'dashboard' ? 'active' : '' %>">Dashboard</a></li> -->
       <li><a href="/po" class="<%= mainMenuPath === 'purchaseOrders' ? 'active' : '' %>">Purchase Orders</a></li>
+      <li><a href="/so" class="<%= mainMenuPath === 'salesOrders' ? 'active' : '' %>">Sales Orders</a></li>
       <li><a href="/inventory/item-maintenance" class="<%= mainMenuPath === 'inventory' ? 'active' : '' %>">Inventory</a></li>
       <li><a href="/reports" class="<%= mainMenuPath === 'reports' ? 'active' : '' %>">Reports</a></li>
-      <li><a href="/sysconfig" class="<%= mainMenuPath === 'sysconfig' ? 'active' : '' %>">System Config</a></li>
+      <!-- <li><a href="/sysconfig" class="<%= mainMenuPath === 'sysconfig' ? 'active' : '' %>">System Config</a></li> -->
     </ul>
+    <div class="user-login-info-area2">
+      <% if (!loggedIn) { %>
+      <% } else { %>
+        <h3 class="user-login-info-text">
+          Logged in as <%= userEmail %>    
+        </h3>
+      <% } %>
+    </div>
   </div>

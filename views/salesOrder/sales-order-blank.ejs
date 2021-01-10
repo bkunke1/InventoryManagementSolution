@@ -10,7 +10,7 @@
       <%- include('../includes/navbar.ejs') %>
       <div id="sub-menu">
         <ul>
-          <%- include('../includes/po-submenu.ejs') %>
+          <%- include('../includes/so-submenu.ejs') %>
         </ul>
       </div>
     </div>
@@ -27,7 +27,7 @@
           <h1>Order # <% %></h1>
           <input type="hidden" name="orderNum" value="2" />
 
-          <a href="/po/previous/empty"
+          <a href="/so/previous/empty"
             ><button
               id="backwardsBtn"
               type="button"
@@ -45,7 +45,7 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/empty"
+          <a href="/so/next/empty"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -73,7 +73,7 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 id="poStatus" class="poStatusText">PO Status:</h1>
+          <h1 id="soStatus" class="poStatusText">SO Status:</h1>
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
@@ -170,15 +170,15 @@
         <!-- poSearchModal content -->
         <div class="poSearchModal-content">
           <span class="close"></span>
-          <h2 class="poSelectHeading">Select a Purchase Order</h2>
+          <h2 class="poSelectHeading">Select a Sales Order</h2>
           <div class="poSearchFilter">
             <h5>Filter:</h5>
             <select name="poSearchFilterSelection" id="poSearchFilterSelection">
               <option value="orderDate">Order Date</option>
               <option value="expectedDate">Expected Date</option>
-              <option value="poNum">PO Num</option>
+              <option value="soNum">SO Num</option>
               <option value="status">Status</option>
-              <option value="vendor">Vendor</option>
+              <option value="customer">Customer</option>
             </select>
             <select name="poSearchFilterOperator" id="poSearchFilterOperator">
               <!-- <option value="equals">Equals</option> -->
@@ -196,17 +196,17 @@
             <tr>
               <th>Order Date</th>
               <th>Expected Date</th>
-              <th>PO Num</th>
+              <th>SO Num</th>
               <th>Status</th>
-              <th>Vendor</th>
+              <th>Customer</th>
             </tr>
-            <% poList.forEach(function(po) { %>
+            <% soList.forEach(function(so) { %>
             <tr>
-              <td><%= po.orderDate.getMonth() %>/<%= po.orderDate.getDate() %>/<%= po.orderDate.getFullYear() %></td>
-              <td><%= po.expectedDate.getMonth() %>/<%= po.expectedDate.getDate() %>/<%= po.expectedDate.getFullYear() %></td>
-              <td><%= po.poNum %></td>
-              <td><%= po.status %></td>
-              <td><%= po.vendorNum %></td>
+              <td><%= so.orderDate.getMonth() %>/<%= so.orderDate.getDate() %>/<%= so.orderDate.getFullYear() %></td>
+              <td><%= so.expectedDate.getMonth() %>/<%= so.expectedDate.getDate() %>/<%= so.expectedDate.getFullYear() %></td>
+              <td><%= so.soNum %></td>
+              <td><%= so.status %></td>
+              <td><%= so.CustomerNum %></td>
               <td>
                 <button id="poSelectBtn" onclick="selectPO(this)">
                   Select

@@ -6,28 +6,29 @@
   </head>
   <body>
     <%- include('../includes/banner.ejs') %>
+
     <div id="main-menu">
       <%- include('../includes/navbar.ejs') %>
       <div id="sub-menu">
         <ul>
-          <%- include('../includes/po-submenu.ejs') %>
+          <%- include('../includes/so-submenu.ejs') %>
         </ul>
       </div>
     </div>
 
     <div id="workspace">
       <form
-        action="/po/save"
+        action="/so/createSalesOrder"
         method="POST"
         autocomplete="off"
-        onsubmit="return sendTableData()"
+        onsubmit="return sendReceiverTableData()"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
-          <h1>Order # <%= newPONumber %></h1>
-          <input type="hidden" name="poNum" value="<%= newPONumber %>" />
+          <h1>Sales Order # <%= newSONumber %></h1>
+          <input type="hidden" name="poNum" value="<%= newSONumber %>" />
 
-          <a href="/po/previous/empty"
+          <a href="/so/previous/empty"
             ><button
               id="backwardsBtn"
               type="button"
@@ -45,7 +46,7 @@
               </svg></button
           ></a>
 
-          <a href="/po/next/empty"
+          <a href="/so/next/empty"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -65,27 +66,39 @@
             </button>
           </a>
 
-          <button class="poBtns" id="poSelectionBtn" type="button">Search</button>
+          <button class="poBtns" id="poSelectionBtn" type="button">
+            Search
+          </button>
           <!-- <select name="poSelection" id="poSelection" class="poBtns">
             <option value="ALL" selected>ALL</option>
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 class="poStatusText">PO Status: **NEW**</h1>
+          <h1 class="poStatusText">Order Status: **NEW**</h1>
           <input type="hidden" name="poStatus" value="NEW" />
+          <!-- this is where you would insert the flash message -->
         </div>
         <div id="vendorSelection">
-          <label for="vendor">Vendor:</label>
+          <label for="vendor">Customer:</label>
           <input
             type="text"
             name="vendor"
-            value="<%= vendorList[0].name %>"
+            value="<%= customerList[0].name %>"
             size="30"
           />
           <button type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>
+          <div id="vendorInvoiceNum">
+            <label for="vendorInvoiceNum">Customer PO # :</label>
+          <input
+            type="text"
+            name="vendorInvoiceNum"
+            size="10"
+          />
+          </div>
         </div>
+        
         <div>
           <label for="orderDate">Order Date:</label>
           <input
@@ -95,7 +108,7 @@
             name="orderDate"
             size="8"
           />
-          <label for="expectedDate">Expected Date:</label>
+          <label for="receivedDate">Ship Date:</label>
           <input
             id="expectedDateInput"
             class="poSelectFields"
@@ -136,6 +149,7 @@
           <h3>Submitted by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>
+
         <hr />
         <h1>Line Items</h1>
         <table id="poTableHeaders">
@@ -143,7 +157,8 @@
             <th class="poTableLineHeader">Line</th>
             <th class="poTableItemNum">Item Num</th>
             <th class="poTableDescription">Description</th>
-            <th class="poTableQuantity">Quantity</th>
+            <th class="poTableQuantity">Quantity Ordered</th>
+            <th class="poTableQuantity">Quantity Received</th>
             <th class="poTableUOM">UOM</th>
             <th class="poTableCost">Cost</th>
             <th class="poTableExtended">Extended</th>
@@ -158,30 +173,30 @@
               </td>
               <td class="poTableItemNum">
                 <button id="itemSelectionBtn" type="button">
-                  Item lookup <i class="fas fa-search"></i>
+                  Item lookup (F1)
                 </button>
               </td>
               <td class="poTableDescription"></td>
+              <td class="poTableQuantity"></td>
               <td class="poTableQuantity"></td>
               <td class="poTableUOM"></td>
               <td class="poTableCost"></td>
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
-            </tr>
+            </tr>            
           </table>
-          <input id="poTableData" type="hidden" name="poTableData" value="" />
+          <input id="receiverTableData" type="hidden" name="receiverTableData" value="" />
         </div>
         <div class="flex poSumLabel">
           <h4>Subtotal:</h4>
           <h4 class="poSum">0</h4>
         </div>
-        <hr>
-        
         <div class="poActionBtns">
-          <button id="poSaveBtn">Save</button>
-          <a href="/po/"><button type="button">Cancel</button></a>
-          <button type="button">Print PO</button>
+          <button id="soUpdateBtn">Save</button>
+          <a href="/so/view"><button type="button">Cancel</button></a>
+          <button type="button">Print</button>
         </div>
+        
       </form>
 
       <!-- The vendorSearchModal -->
@@ -192,11 +207,11 @@
           <h2 class="vendorSelectHeading">Select a Vendor</h2>
           <table id="vendorSelectionTable">
             <tr>
-              <th>Vendor Name</th>
+              <th>Customer Name</th>
             </tr>
-            <% for (const vendor of vendorList) { %>
+            <% for (const customer of customerList) { %>
             <tr>
-              <td><%= vendor.name %></td>
+              <td><%= customer.name %></td>
               <td>
                 <button id="vendorSelectBtn" onclick="selectVendor(this)">
                   Select
@@ -216,18 +231,28 @@
           <h2 class="itemSelectHeading">Select an item</h2>
           <div class="itemSearchFilter">
             <h5>Filter:</h5>
-            <select name="itemSearchFilterSelection" id="itemSearchFilterSelection">
+            <select
+              name="itemSearchFilterSelection"
+              id="itemSearchFilterSelection"
+            >
               <option value="itemID">Item ID</option>
               <option value="description">Description</option>
               <option value="category">Category</option>
               <option value="type">Type</option>
             </select>
-            <select name="itemSearchFilterOperator" id="itemSearchFilterOperator">
+            <select
+              name="itemSearchFilterOperator"
+              id="itemSearchFilterOperator"
+            >
               <!-- <option value="equals">Equals</option> -->
               <option value="contains">Contains</option>
               <!-- <option value="excludes">Excludes</option> -->
             </select>
-            <input type="text" id="itemSearchFilterValue" onkeyup="applyItemSelectionFilter()">
+            <input
+              type="text"
+              id="itemSearchFilterValue"
+              onkeyup="applyItemSelectionFilter()"
+            />
             <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
           </div>
           <table id="itemSelectionTable">
@@ -260,16 +285,16 @@
       <div id="poSelectionModal" class="poSearchModal">
         <!-- poSearchModal content -->
         <div class="poSearchModal-content">
-          <span class="close"></span>
-          <h2 class="poSelectHeading">Select a Purchase Order</h2>
+          <span class="close">&times;</span>
+          <h2 class="poSelectHeading">Select a Sales Order</h2>
           <div class="poSearchFilter">
             <h5>Filter:</h5>
             <select name="poSearchFilterSelection" id="poSearchFilterSelection">
               <option value="orderDate">Order Date</option>
-              <option value="expectedDate">Expected Date</option>
-              <option value="poNum">PO Num</option>
+              <option value="receivedDate">Ship Date</option>
+              <option value="poNum">SO Num</option>
               <option value="status">Status</option>
-              <option value="vendor">Vendor</option>
+              <option value="vendor">Customer</option>
             </select>
             <select name="poSearchFilterOperator" id="poSearchFilterOperator">
               <!-- <option value="equals">Equals</option> -->
@@ -286,18 +311,18 @@
           <table id="poSelectionTable">
             <tr>
               <th>Order Date</th>
-              <th>Expected Date</th>
-              <th>PO Num</th>
+              <th>Ship Date</th>
+              <th>SO Num</th>
               <th>Status</th>
-              <th>Vendor</th>
+              <th>Customer</th>
             </tr>
-            <% poList.forEach(function(po) { %>
+            <% soList.forEach(function(so) { %>
             <tr>
-              <td><%= po.orderDate.getMonth() %>/<%= po.orderDate.getDate() %>/<%= po.orderDate.getFullYear() %></td>
-              <td><%= po.expectedDate.getMonth() %>/<%= po.expectedDate.getDate() %>/<%= po.expectedDate.getFullYear() %></td>
-              <td><%= po.poNum %></td>
-              <td><%= po.status %></td>
-              <td><%= po.vendorNum %></td>
+              <td><%= so.orderDate.getMonth() %>/<%= so.orderDate.getDate() %>/<%= so.orderDate.getFullYear() %></td>
+              <td><%= so.expectedDate.getMonth() %>/<%= so.expectedDate.getDate() %>/<%= so.expectedDate.getFullYear() %></td>
+              <td><%= so.soNum %></td>
+              <td><%= so.status %></td>
+              <td><%= so.customerNum %></td>
               <td>
                 <button id="poSelectBtn" onclick="selectPO(this)">
                   Select
@@ -311,6 +336,6 @@
     </div>
 
     <script src="/js/purchaseOrder.js"></script>
-    <script src="/js/purchaseOrderNewDate.js"></script>
+    <script src="/js/receiverNewDate.js"></script> 
   </body>
 </html>

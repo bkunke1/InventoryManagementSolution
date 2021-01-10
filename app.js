@@ -27,6 +27,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const purchaseOrderRoutes = require('./routes/purchaseOrders');
+const salesOrderRoutes = require('./routes/salesOrders');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 app.use(adminRoutes);
 app.use(authRoutes);
 app.use(purchaseOrderRoutes);
+app.use(salesOrderRoutes);
 
 app.get('/500', errorController.get500);
 
