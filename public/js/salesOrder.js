@@ -63,11 +63,12 @@ const tabToNewLine = function () {
   }
 };
 
-const poOrganizeTableData = () => {
-  const poTableDataArray = [];
+const soOrganizeTableData = () => {
+  console.log('trying to organize so table data')
+  const soTableDataArray = [];
 
-  const poTable = document.getElementById('poTable');
-  const rows = poTable.getElementsByTagName('tr');
+  const soTable = document.getElementById('poTable');
+  const rows = soTable.getElementsByTagName('tr');
   //start at i = 1 to skip header row
   for (let i = 1; i < rows.length; i++) {
     // const line = {}
@@ -83,19 +84,19 @@ const poOrganizeTableData = () => {
       itemDescription: data[2].textContent.trim(),
       qtyOrdered: data[3].textContent.trim(),
       uom: data[4].firstElementChild.value,
-      cost: data[5].textContent.trim(),
+      price: data[5].textContent.trim(),
     };
     
     if (line.itemID !== '') {
-      poTableDataArray.push(line);
+      soTableDataArray.push(line);
     }
   }
-  return poTableDataArray;
+  return soTableDataArray;
 };
 
 const sendTableData = () => {
-  const poTableData = document.getElementById('poTableData');
-  poTableData.value = JSON.stringify(poOrganizeTableData());
+  const soTableData = document.getElementById('soTableData');
+  soTableData.value = JSON.stringify(soOrganizeTableData());
   //   poOrganizeTableData();
   return true;
 };
@@ -121,7 +122,7 @@ const receiverOrganizeTableData = () => {
       qtyOrdered: data[3].textContent.trim(),
       qtyReceived: data[4].textContent.trim(),
       uom: data[5].firstElementChild.value,
-      cost: data[6].textContent.trim()      
+      price: data[6].textContent.trim()      
     };
 
     if (line.itemID !== '') {
@@ -155,25 +156,25 @@ const poLineDeleteBtn = (lineBtn) => {
   poSum.textContent = poSumUpdate();
 };
 
-// updates extended cost
-const poLineUpdateExtCost = (element) => {  
+// updates extended price
+const poLineUpdateExtPrice = (element) => {  
   const qty = (document.querySelector('.quantityReceived')) ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
     .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
-  const cost = element.parentElement.querySelector('.poTableCost').textContent;
-  const updatedCost = element.parentElement.querySelector('.poTableCost');
+  const price = element.parentElement.querySelector('.poTablePrice').textContent;
+  const updatedPrice = element.parentElement.querySelector('.poTablePrice');
   
   const poSum = document.querySelector('.poSum');
-  let extCost = element.parentElement.querySelector('.poTableExtended');
-  let extCostTotal = (+qty * 1 * +cost).toFixed(2);
-  extCost.innerText = extCostTotal;
-  updatedCost.textContent = parseFloat(cost).toFixed(2);
+  let extPrice = element.parentElement.querySelector('.poTableExtended');
+  let extPriceTotal = (+qty * 1 * +price).toFixed(2);
+  extPrice.innerText = extPriceTotal;
+  updatedPrice.textContent = parseFloat(price).toFixed(2);
 
   poSum.textContent = poSumUpdate();
 };
 
-// updates costs to two decimals
-function poLineCostDecimalFormat(element) {
+// updates price to two decimals
+function poLinePriceDecimalFormat(element) {
   console.log(element);
   element.value = parseFloat(element.value).toFixed(2);
 }
@@ -208,7 +209,7 @@ const poAddNewLine = function () {
   const newPOTableDescription = newRow.insertCell(2);
   const newPOTableQuantity = newRow.insertCell(3);
   const newPOTableUOM = newRow.insertCell(4);
-  const newPOTableCost = newRow.insertCell(5);
+  const newPOTablePrice = newRow.insertCell(5);
   const newPOTableExtended = newRow.insertCell(6);
   const newPOTableDeleteBtn = newRow.insertCell(7);
 
@@ -226,7 +227,7 @@ const poAddNewLine = function () {
   newPOTableDescription.classList.add('poTableDescription');
   newPOTableQuantity.classList.add('poTableQuantity');
   newPOTableUOM.classList.add('poTableUOM');
-  newPOTableCost.classList.add('poTableCost');
+  newPOTablePrice.classList.add('poTablePrice');
   newPOTableExtended.classList.add('poTableExtended');
   newPOTableDeleteBtn.classList.add('poTableDeleteBtn');
 
@@ -234,26 +235,26 @@ const poAddNewLine = function () {
   newPOTableDescription.classList.add('poTableFocus');
   newPOTableQuantity.classList.add('poTableFocus');
   newPOTableUOM.classList.add('poTableFocus');
-  newPOTableCost.classList.add('poTableFocus');
+  newPOTablePrice.classList.add('poTableFocus');
 
   newPOTableItemNum.contentEditable = 'true';
   newPOTableDescription.contentEditable = 'true';
   newPOTableQuantity.contentEditable = 'true';
   // newPOTableUOM.contentEditable = 'true'; // removed so that users can tab directly into the select element
-  newPOTableCost.contentEditable = 'true';
+  newPOTablePrice.contentEditable = 'true';
 
-  // setup listeners to update extended cost when updating qty, uom or cost
-  newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-  newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-  newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-  newPOTableCost.setAttribute('onchange', 'poLineCostDecimalFormat(this)')
+  // setup listeners to update extended price when updating qty, uom or price
+  newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
+  newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
+  newPOTablePrice.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
+  newPOTablePrice.setAttribute('onchange', 'poLinePriceDecimalFormat(this)')
 
   // commented out, was used to fill lines with fake data during testing
   newPOTableLine.innerText = newPOTableItemNumCalc();
   // newPOTableDescription.innerText = ''.toUpperCase();
   // newPOTableQuantity.innerText = '';
   // //   newPOTableUOM.innerText = 'EACH';
-  // newPOTableCost.innerText = '';
+  // newPOTablePrice.innerText = '';
   // newPOTableExtended.innerText = '';
   newPOTableDeleteBtn.innerHTML =
     '<i id="poLineDeleteBtn" class="fas fa-minus-circle" onclick="poLineDeleteBtn(this)"></i>';
@@ -266,7 +267,7 @@ const poAddNewLine = function () {
 
   // adds event listener to new line and removes from the old allowing tabbing into a new line item
   const newLineTabListener = () => {
-    const listOfLines = poTable.getElementsByClassName('poTableCost');
+    const listOfLines = poTable.getElementsByClassName('poTablePrice');
     for (let i = 0; i <= listOfLines.length - 1; i++) {
       if (i !== listOfLines.length - 1) {
         listOfLines[i].removeEventListener('keydown', tabToNewLine, true);
@@ -351,11 +352,11 @@ const insertItem = function (itemNum) {
         const itemDescription = itemID.nextElementSibling;
         const itemQuantity = itemDescription.nextElementSibling;
         const itemPurchaseUOM = itemQuantity.nextElementSibling;
-        const itemCost = itemPurchaseUOM.nextElementSibling;
+        const itemPrice = itemPurchaseUOM.nextElementSibling;
         itemID.textContent = item.itemID;
         itemDescription.textContent = item.description;
         itemQuantity.focus();
-        itemCost.textContent = item.avgCost.toFixed(2);
+        itemPrice.textContent = item.defaultPrice;
         for (option of itemPurchaseUOM.firstElementChild.options) {
           if (option.text === item.purchaseUOM) {
             option.setAttribute('selected', true);
@@ -487,11 +488,11 @@ const insertItemFromSearchModal = function (itemNum) {
       const itemDescription = itemID.nextElementSibling;
       const itemQuantity = itemDescription.nextElementSibling;
       const itemPurchaseUOM = itemQuantity.nextElementSibling;
-      const itemCost = itemPurchaseUOM.nextElementSibling;
+      const itemPrice = itemPurchaseUOM.nextElementSibling;
       itemID.textContent = item.itemID;
       itemDescription.textContent = item.description;
       itemQuantity.focus();
-      itemCost.textContent = item.avgCost.toFixed(2);
+      itemPrice.textContent = item.defaultPrice;
       for (option of itemPurchaseUOM.firstElementChild.options) {
         if (option.text === item.purchaseUOM) {
           option.setAttribute('selected', true);

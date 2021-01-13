@@ -21,12 +21,12 @@
         action="/so/createSalesOrder"
         method="POST"
         autocomplete="off"
-        onsubmit="return sendReceiverTableData()"
+        onsubmit="return sendTableData()"
       >
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="flex">
           <h1>Sales Order # <%= newSONumber %></h1>
-          <input type="hidden" name="poNum" value="<%= newSONumber %>" />
+          <input type="hidden" name="soNum" value="<%= newSONumber %>" />
 
           <a href="/so/previous/empty"
             ><button
@@ -82,18 +82,18 @@
           <label for="vendor">Customer:</label>
           <input
             type="text"
-            name="vendor"
+            name="customer"
             value="<%= customerList[0].name %>"
             size="30"
           />
           <button type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>
-          <div id="vendorInvoiceNum">
-            <label for="vendorInvoiceNum">Customer PO # :</label>
+          <div id="customerPoNum">
+            <label for="customerPoNum">Customer PO # :</label>
           <input
             type="text"
-            name="vendorInvoiceNum"
+            name="customerPoNum"
             size="10"
           />
           </div>
@@ -146,7 +146,7 @@
             </option>
             <% } %>
           </select>
-          <h3>Submitted by: <%= createdBy %></h3>
+          <h3>Created by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>
 
@@ -157,10 +157,10 @@
             <th class="poTableLineHeader">Line</th>
             <th class="poTableItemNum">Item Num</th>
             <th class="poTableDescription">Description</th>
-            <th class="poTableQuantity">Quantity Ordered</th>
-            <th class="poTableQuantity">Quantity Received</th>
+            <th class="poTableQuantity">Quantity</th>
+            <!-- <th class="poTableQuantity">Quantity Received</th> -->
             <th class="poTableUOM">UOM</th>
-            <th class="poTableCost">Cost</th>
+            <th class="poTableCost">Price</th>
             <th class="poTableExtended">Extended</th>
             <th class="poTableDeleteBtn"></th>
           </tr>
@@ -178,14 +178,14 @@
               </td>
               <td class="poTableDescription"></td>
               <td class="poTableQuantity"></td>
-              <td class="poTableQuantity"></td>
+              <!-- <td class="poTableQuantity"></td> -->
               <td class="poTableUOM"></td>
               <td class="poTableCost"></td>
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
             </tr>            
           </table>
-          <input id="receiverTableData" type="hidden" name="receiverTableData" value="" />
+          <input id="soTableData" type="hidden" name="soTableData" value="" />
         </div>
         <div class="flex poSumLabel">
           <h4>Subtotal:</h4>
@@ -335,7 +335,7 @@
       </div>
     </div>
 
-    <script src="/js/purchaseOrder.js"></script>
-    <script src="/js/receiverNewDate.js"></script> 
+    <script src="/js/salesOrder.js"></script>
+    <script src="/js/salesOrderNewDate.js"></script> 
   </body>
 </html>

@@ -10,5 +10,6 @@ const router = express.Router();
 
 router.get('/so', salesAuth,  salesOrderController.getSalesOrder);
 router.get('/so/new', salesAuth, salesOrderController.getNewSalesOrder);
+router.post('/so/createSalesOrder', salesAuth, salesOrderController.postCreateSalesOrder);
 
 module.exports = router;

@@ -62,6 +62,12 @@ td {
   padding-right: 1rem;
 }
 
+.poTablePrice {
+  width: 10%;
+  text-align: right;
+  padding-right: 1rem;
+}
+
 .poTableExtended {
   width: 10%;
   text-align: right;

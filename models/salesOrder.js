@@ -16,6 +16,10 @@ const salesOrderSchema = new Schema({
     type: String,
     required: true
   },
+  customerPoNum: {
+    type: String,
+    required: true
+  },
   orderDate: {
     type: Date,
     required: true
