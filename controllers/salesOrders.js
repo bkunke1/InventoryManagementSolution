@@ -10,6 +10,16 @@ const Category = require('../models/category');
 const ShippingMethod = require('../models/shippingMethod');
 const PaymentTerm = require('../models/paymentTerm');
 
+// below are two helper functions to convert the uom converstion qty when updating item info
+UOM.find().then(uomList => {
+    UOMLIST = uomList;
+  });
+  
+  function UOMQty(uomName) {
+    const match = UOMLIST.find(x => x.name === uomName);
+    return match.conversionQty;
+  }
+
 exports.getSalesOrder = (req, res, next) => {
   res.render('salesOrder/sales-order-blank', {
     pageTitle: 'Sales Orders',
@@ -30,18 +40,13 @@ exports.getNewSalesOrder = (req, res, next) => {
 };
 
 exports.getNewSalesOrder = (req, res, next) => {
-    console.log('trying to load new sales order')
     Item.find()
       .then((itemList) => {
         Customer.find().then((customerList) => {
-            console.log('found customer list')
           Warehouse.find().then((warehouseList) => {
-            console.log('found whs list')
             PaymentTerm.find().then((paymentTermList) => {
               ShippingMethod.find().then((shippingMethodList) => {
                 SalesOrder.find().then((soList) => {
-                    console.log('found salesOrders list')
-                  // console.log(soList);
                   let lastSoNum;
                   if (soList.length < 1) {
                     lastSoNum = 0;
@@ -60,7 +65,6 @@ exports.getNewSalesOrder = (req, res, next) => {
                   });
                   } else {
                     lastSoNum = soList[soList.length - 1].soNum;
-                  // console.log(soList[soList.length - 1].soNum);
                   res.render('salesOrder/sales-order-new', {
                     pageTitle: 'New Sales Order',
                     mainMenuPath: 'salesOrders',
@@ -91,16 +95,15 @@ exports.getNewSalesOrder = (req, res, next) => {
     const soNum = req.body.soNum;
     const customer = req.body.customer;
     const customerPoNum = req.body.customerPoNum;
+    console.log(customerPoNum);
     const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
     const expectedDate = new Date(req.body.expectedDate.split("-")[0], req.body.expectedDate.split("-")[1] - 1, req.body.expectedDate.split("-")[2]);
     const shippingMethod = req.body.shippingMethod;
     const terms = req.body.terms;
     const createdBy = req.body.createdBy;
     const shipToLocation = req.body.shipToLocation;
-    console.log('test1');
     // const poTableData = JSON.parse(req.body.poTableData);
-    const soTableData = JSON.parse(req.body.receiverTableData);
-    console.log('made it past table data');
+    const soTableData = JSON.parse(req.body.soTableData);
     let UOMLIST;
   
     UOM.find().then(uomList => {
@@ -132,7 +135,7 @@ exports.getNewSalesOrder = (req, res, next) => {
       .then((result) => {
         soTableData.forEach((line) => {
           Item.findOne({ itemID: line.itemID }).then((item) => {          
-            item.qtyOnOrder = +item.qtyOnOrder + +line.qtyOrdered * UOMQty(line.uom);  
+            item.qtyAllocated = +item.qtyAllocated + +line.qtyOrdered * UOMQty(line.uom);  
             return item.save();
           })
         })
@@ -140,7 +143,204 @@ exports.getNewSalesOrder = (req, res, next) => {
       .then((result) => {
         console.log('Created Sales Order');
         req.flash('message', 'New Sales Order was created!');
-        res.redirect(`/po/view/${soNum}`);
+        res.redirect(`/so/view/${soNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect('/500');
+      });
+  };
+
+  exports.getExistingSalesOrder = (req, res, next) => {
+
+    let message = req.flash('message');
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+    let error = req.flash('error');
+    if (error.length > 0) {
+      error = error[0];
+    } else {
+      error = null;
+    }
+  
+    const soNum = req.params.soNum;
+    UOM.find()
+      .then((uomList) => {
+        Item.find().then((itemList) => {
+          Customer.find().then((customerList) => {
+            Warehouse.find().then((warehouseList) => {
+              PaymentTerm.find().then((paymentTermList) => {
+                ShippingMethod.find().then((shippingMethodList) => {
+                  SalesOrder.findOne({ soNum: soNum }).then((so) => {
+                    SalesOrder.find().then((soList) => {
+                      const formatOrderDate = new Date(so.orderDate);
+                      formatOrderDate.setMinutes(
+                        formatOrderDate.getMinutes() + 240
+                      );
+                      const orderDate = `${formatOrderDate.getFullYear()}-${(
+                        +formatOrderDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatOrderDate.getDate().toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}`;
+                      const formatExpectedDate = new Date(so.expectedDate);
+                      formatExpectedDate.setMinutes(
+                        formatExpectedDate.getMinutes() + 240
+                      );
+                      const expectedDate = `${formatExpectedDate.getFullYear()}-${(
+                        +formatExpectedDate.getMonth() + 1
+                      ).toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}-${formatExpectedDate.getDate().toLocaleString('en-US', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}`;
+  
+                      res.render('salesOrder/sales-order-view', {
+                        pageTitle: 'View Sales Orders',
+                        mainMenuPath: 'salesOrders',
+                        subMenuPath: 'viewSO',
+                        newSONumber: so.soNum,
+                        createdBy: so.createdBy,
+                        shippingMethodList: shippingMethodList,
+                        paymentTermList: paymentTermList,
+                        warehouseList: warehouseList,
+                        customerList: customerList,
+                        itemList: itemList,
+                        soDetails: so,
+                        soList: soList,
+                        soOrderDate: orderDate,
+                        soExpectedDate: expectedDate,
+                        uomList: uomList,
+                        errorMessage: error,
+                        message: message
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  exports.postUpdateSO = (req, res, next) => {
+    const id = req.body.id;
+    const soNum = req.body.soNum;
+    const soStatus = req.body.soStatus;
+    const customer = req.body.customer;
+    const customerPoNum = req.body.customerPoNum;
+    const orderDate = req.body.orderDate;
+    const expectedDate = req.body.expectedDate;
+    const shippingMethod = req.body.shippingMethod;
+    const terms = req.body.terms;
+    const createdBy = req.body.createdBy;
+    const shipToLocation = req.body.shipToLocation;
+    const soTableData = JSON.parse(req.body.soTableData);
+    const soTableDataOriginal = JSON.parse(req.body.soTableData);
+    const itemOriginalQty = [];
+    const itemNewQty = [];
+  
+    
+    let message = req.flash('message');
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+    let error = req.flash('error');
+    if (error.length > 0) {
+      error = error[0];
+    } else {
+      error = null;
+    }
+  
+  
+    SalesOrder.findById(id)
+      .then((so) => {
+  
+        so.soTableData.forEach(line => {
+          itemOriginalQty.push(
+            { itemID: line.itemID,
+              qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom)
+            }
+          )
+        });
+        console.log('itemOriginalQty', itemOriginalQty);
+  
+        so.customerNum = customer;
+        so.customerPoNum = customerPoNum;
+        so.orderDate = new Date(orderDate.split("-")[0], orderDate.split("-")[1] - 1, orderDate.split("-")[2]);
+        so.expectedDate = new Date(expectedDate.split("-")[0], expectedDate.split("-")[1] - 1, expectedDate.split("-")[2]);
+        so.shippingMethod = shippingMethod;
+        so.terms = terms;
+        so.createdBy = createdBy;
+        so.shipToLocation = shipToLocation;
+        console.log('oldPoTableData', so.soTableData);
+        so.soTableData = soTableData;
+        console.log('newSoTableData', soTableData);
+  
+        return so.save();
+      })
+      .then(result => {
+        soTableData.forEach(line => {
+          itemNewQty.push(
+            { itemID: line.itemID,
+              qtyOrdered: line.qtyOrdered * UOMQty(line.uom)
+            }
+          )
+        })
+        console.log('itemNewQty', itemNewQty);
+  
+        function updateItemQty(itemID) {
+          for (let i = 0; i < itemOriginalQty.length; i++) {
+            let result= 0;
+            if (itemOriginalQty[i].itemID === itemID) {
+              console.log('match found', itemID, 'qty', itemOriginalQty[i].qtyOriginallyOrdered)
+              result = Number(itemOriginalQty[i].qtyOriginallyOrdered);
+              return result;
+            }
+          }
+        }
+  
+        const itemQtyDifference = [];
+        itemNewQty.forEach(item => {
+          itemQtyDifference.push (
+            {
+              itemID: item.itemID,
+              oldQty: updateItemQty(item.itemID),
+              newQty: +item.qtyOrdered,
+              diffQty: +item.qtyOrdered - updateItemQty(item.itemID)
+            }          
+          )
+        })
+        console.log(itemQtyDifference)
+  
+        itemQtyDifference.forEach(el => {
+          Item.findOne({ itemID: el.itemID}).then(item => {
+            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+            item.qtyOnOrder = item.qtyOnOrder + el.diffQty;
+            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+            return item.save();
+          }).catch(err => {console.log(err)});
+        })
+  
+      })
+      .then((result) => {
+        console.log('Updated Purchase Order');
+        req.flash('message', 'SO was updated!');
+        res.redirect(`/so/view/${soNum}`);
       })
       .catch((err) => {
         console.log(err);

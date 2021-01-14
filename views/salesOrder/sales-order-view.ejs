@@ -19,7 +19,7 @@
 
     <div id="workspace">
       <form
-        action="/so/createSalesOrder"
+        action="/so/update"
         method="POST"
         autocomplete="off"
         onsubmit="return sendTableData()"
@@ -75,7 +75,7 @@
             <option value="OPEN">OPEN</option>
             <option value="CLOSED">CLOSED</option>
           </select> -->
-          <h1 class="poStatusText">Order Status: **NEW**</h1>
+          <h1 class="poStatusText">Order Status: <%= soDetails.status %></h1>
           <input type="hidden" name="poStatus" value="NEW" />
           <!-- this is where you would insert the flash message -->
         </div>
@@ -84,18 +84,19 @@
           <input
             type="text"
             name="customer"
-            value="<%= customerList[0].name %>"
+            value="<%= soDetails.customerNum %>"
             size="30"
           />
           <button type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>
           <div id="customerPoNum">
-            <label for="customerPoNum">Customer PO # :</label>
+            <label for="customerPoNum">Customer PO # </label>
           <input
             type="text"
             name="customerPoNum"
             size="10"
+            value="<%= soDetails.customerPoNum %>"
           />
           </div>
         </div>
@@ -108,6 +109,7 @@
             type="date"
             name="orderDate"
             size="8"
+            value="<%= soOrderDate %>"
           />
           <label for="receivedDate">Ship Date:</label>
           <input
@@ -116,6 +118,7 @@
             type="date"
             name="expectedDate"
             size="8"
+            value="<%= soExpectedDate %>"
           />
           <label for="shippingMethod">Shipping Method:</label>
           <select
@@ -123,11 +126,16 @@
             id="shippingMethod"
             class="poSelectFields"
           >
-            <% for (shippingMethod of shippingMethodList) { %>
+            <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
+            (shippingMethod.name == soDetails.shippingMethod) { %>
+            <option SELECTED value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } else { %>
             <option value="<%= shippingMethod.name %>">
               <%= shippingMethod.name %>
             </option>
-            <% } %>
+            <% } %> <% }); %>
           </select>
           <label for="shipToLocation">Ship to Location:</label>
           <select
@@ -135,17 +143,27 @@
             id="shipToLocation"
             class="poSelectFields"
           >
-            <% for (warehouse of warehouseList) { %>
+            <% warehouseList.forEach(function(warehouse) { %> <% if
+            (warehouse.name == soDetails.shipToLocation) { %>
+            <option SELECTED value="<%= warehouse.name %>">
+              <%= warehouse.name %>
+            </option>
+            <% } else { %>
             <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
-            <% } %>
+            <% } %> <% }); %>
           </select>
           <label for="terms">Terms:</label>
           <select name="terms" id="terms" class="poSelectFields">
-            <% for (paymentTerm of paymentTermList) { %>
+            <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+            (paymentTerm.code == soDetails.terms) { %>
+            <option SELECTED value="<%= paymentTerm.code %>">
+              <%= paymentTerm.code %>
+            </option>
+            <% } else { %>
             <option value="<%= paymentTerm.code %>">
               <%= paymentTerm.code %>
             </option>
-            <% } %>
+            <% } %> <% }); %>
           </select>
           <h3>Created by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
@@ -184,7 +202,65 @@
               <td class="poTableCost"></td>
               <td class="poTableExtended"></td>
               <td class="poTableDeleteBtn"></td>
-            </tr>            
+            </tr>
+            <% soDetails.soTableData.forEach(function(line) { %>
+              <tr>
+                <td class="poTableLine"><%= line.line %></td>
+                <td class="poTableItemNum poTableFocus" contenteditable="true">
+                  <%= line.itemID %>
+                </td>
+                <td
+                  class="poTableDescription poTableFocus"
+                  contenteditable="true"
+                >
+                  <%= line.itemDescription %>
+                </td>
+                <td
+                  class="poTableQuantity poTableFocus"
+                  contenteditable="true"
+                  onfocusout="poLineUpdateExtCost(this)"
+                >
+                  <%= line.qtyOrdered %>
+                </td>
+                <td
+                  class="poTableUOM poTableFocus"
+                  onfocusout="poLineUpdateExtCost(this)"
+                >
+                  <select>
+                    <% uomList.forEach(function(uom) { %> <% if                    
+                      (uom.name == line.uom) { %>
+                      <option SELECTED value="<%= uom.name %>">
+                        <%= uom.name %>
+                      </option>
+                      <% } else { %>
+                      <option value="<%= uom.name %>">
+                        <%= uom.name %>
+                      </option>
+                      <% } %> <% }); %>
+                  </select>
+                </td>
+                <td
+                  class="poTableCost poTableFocus"
+                  contenteditable="true"
+                  onfocusout="poLineUpdateExtCost(this)"
+                >
+                  <%= line.price %>
+                </td>
+                <td class="poTableExtended">
+                  <!-- <%= line.price * line.qtyOrdered %> -->
+                  <% let linePrice2Dec = (line.price * line.qtyOrdered).toFixed(2); %>
+                  <%= linePrice2Dec %>
+                </td>
+                <td class="poTableDeleteBtn">
+                  <i
+                    id="poLineDeleteBtn"
+                    class="fas fa-minus-circle"
+                    onclick="poLineDeleteBtn(this)"
+                    aria-hidden="true"
+                  ></i>
+                </td>
+              </tr>
+              <% }); %>         
           </table>
           <input id="soTableData" type="hidden" name="soTableData" value="" />
         </div>
@@ -192,11 +268,25 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum">0</h4>
         </div>
-        <div class="poActionBtns">
-          <button id="soUpdateBtn">Save</button>
-          <a href="/so/view"><button type="button">Cancel</button></a>
-          <button type="button">Print</button>
-        </div>
+        <% if (soDetails.status == "RECEIVED") { %>
+          <div class="poActionBtns">
+            <a href="/so/new"><button type="button">New</button></a>
+            <button disabled id="poUpdateBtn">Update</button>
+            <button disabled formaction="/so/delete">Delete</button>
+            <button type="button">Print SO</button>
+            <a href="/so/receiver/new/<%= newSONumber %>" method="GET"><button disabled type="button">Receive SO</button></a>
+          </div>
+          </div>
+          <% } else { %>
+            <div class="poActionBtns">
+              <a href="/so/new"><button type="button">New</button></a>
+              <button id="poUpdateBtn">Update</button>
+              <button formaction="/so/delete">Delete</button>
+              <button type="button">Print SO</button>
+              <a href="/so/receiver/new/<%= newSONumber %>" method="GET"><button type="button">Receive SO</button></a>
+            </div>
+            <% } %>       
+        <input type="hidden" name="id" value="<%= soDetails._id %>" />
         
       </form>
 
@@ -337,6 +427,5 @@
     </div>
 
     <script src="/js/salesOrder.js"></script>
-    <script src="/js/salesOrderNewDate.js"></script> 
   </body>
 </html>
