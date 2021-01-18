@@ -29,7 +29,7 @@
           <h1>Sales Order # <%= newSONumber %></h1>
           <input type="hidden" name="soNum" value="<%= newSONumber %>" />
 
-          <a href="/so/previous/empty"
+          <a href="/so/previous/<%= soDetails.soNum%>"
             ><button
               id="backwardsBtn"
               type="button"
@@ -47,7 +47,7 @@
               </svg></button
           ></a>
 
-          <a href="/so/next/empty"
+          <a href="/so/next/<%= soDetails.soNum%>"
           method="GET"
             ><button
               id="forwardsBtn"
@@ -218,13 +218,13 @@
                 <td
                   class="poTableQuantity poTableFocus"
                   contenteditable="true"
-                  onfocusout="poLineUpdateExtCost(this)"
+                  onfocusout="poLineUpdateExtPrice(this)"
                 >
                   <%= line.qtyOrdered %>
                 </td>
                 <td
                   class="poTableUOM poTableFocus"
-                  onfocusout="poLineUpdateExtCost(this)"
+                  onfocusout="poLineUpdateExtPrice(this)"
                 >
                   <select>
                     <% uomList.forEach(function(uom) { %> <% if                    
@@ -242,7 +242,7 @@
                 <td
                   class="poTableCost poTableFocus"
                   contenteditable="true"
-                  onfocusout="poLineUpdateExtCost(this)"
+                  onfocusout="poLineUpdateExtPrice(this)"
                 >
                   <%= line.price %>
                 </td>
@@ -265,9 +265,12 @@
           <input id="soTableData" type="hidden" name="soTableData" value="" />
         </div>
         <div class="flex poSumLabel">
+          <% let soSumAmount = 0; soDetails.soTableData.forEach(function(line) {
+          const lineTotal = +line.qtyOrdered * +line.price; soSumAmount =
+          (+lineTotal + +soSumAmount).toFixed(2); }) %>
           <h4>Subtotal:</h4>
-          <h4 class="poSum">0</h4>
-        </div>
+          <h4 class="poSum"><%= soSumAmount %></h4>
+        </div> 
         <% if (soDetails.status == "RECEIVED") { %>
           <div class="poActionBtns">
             <a href="/so/new"><button type="button">New</button></a>
@@ -415,7 +418,7 @@
               <td><%= so.status %></td>
               <td><%= so.customerNum %></td>
               <td>
-                <button id="poSelectBtn" onclick="selectPO(this)">
+                <button id="poSelectBtn" onclick="selectSO(this)">
                   Select
                 </button>
               </td>

@@ -74,6 +74,12 @@
             <option value="CLOSED">CLOSED</option>
           </select> -->
           <h1 id="poStatus" class="poStatusText">PO Status:</h1>
+          <% if (errorMessage) { %>
+            <div class="user-message user-message--error "><%= errorMessage %></div>
+            <% } %>
+            <% if (message) { %>
+              <div class="user-message"><%= message %></div>
+              <% } %>
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>

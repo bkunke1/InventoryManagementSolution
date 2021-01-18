@@ -14,4 +14,9 @@ router.post('/so/createSalesOrder', salesAuth, salesOrderController.postCreateSa
 router.get('/so/view/:soNum', salesAuth, salesOrderController.getExistingSalesOrder);
 router.post('/so/update', salesAuth, salesOrderController.postUpdateSO);
 
+router.get('/so/next/:soNum', salesAuth, salesOrderController.getNextSalesOrder);
+router.get('/so/previous/:soNum', salesAuth, salesOrderController.getPreviousSalesOrder);
+
+router.post('/so/delete', salesAuth, salesOrderController.postDeleteSalesOrder);
+
 module.exports = router;

@@ -18,6 +18,19 @@ const { aggregate } = require('../models/item');
 const { forEach } = require('lodash');
 
 exports.getPurchaseOrder = (req, res, next) => {
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+
   purchaseOrder
     .find()
     .then((poList) => {
@@ -26,6 +39,8 @@ exports.getPurchaseOrder = (req, res, next) => {
         mainMenuPath: 'purchaseOrders',
         subMenuPath: '',
         poList: poList,
+        errorMessage: error,
+        message: message,
       });
     })
     .catch((err) => {
@@ -45,37 +60,36 @@ exports.getNewPurchaseOrder = (req, res, next) => {
                 let lastPoNum;
                 if (poList.length < 1) {
                   lastPoNum = 0;
-                res.render('purchaseOrder/purchase-order-new', {
-                  pageTitle: 'New Purchase Orders',
-                  mainMenuPath: 'purchaseOrders',
-                  subMenuPath: '',
-                  newPONumber: +lastPoNum + 1,
-                  createdBy: req.session.user.email,
-                  shippingMethodList: shippingMethodList,
-                  paymentTermList: paymentTermList,
-                  warehouseList: warehouseList,
-                  vendorList: vendorList,
-                  itemList: itemList,
-                  poList: poList,
-                });
+                  res.render('purchaseOrder/purchase-order-new', {
+                    pageTitle: 'New Purchase Orders',
+                    mainMenuPath: 'purchaseOrders',
+                    subMenuPath: '',
+                    newPONumber: +lastPoNum + 1,
+                    createdBy: req.session.user.email,
+                    shippingMethodList: shippingMethodList,
+                    paymentTermList: paymentTermList,
+                    warehouseList: warehouseList,
+                    vendorList: vendorList,
+                    itemList: itemList,
+                    poList: poList,
+                  });
                 } else {
                   lastPoNum = poList[poList.length - 1].poNum;
-                // console.log(poList[poList.length - 1].poNum);
-                res.render('purchaseOrder/purchase-order-new', {
-                  pageTitle: 'New Purchase Orders',
-                  mainMenuPath: 'purchaseOrders',
-                  subMenuPath: '',
-                  newPONumber: +lastPoNum + 1,
-                  createdBy: req.session.user.email,
-                  shippingMethodList: shippingMethodList,
-                  paymentTermList: paymentTermList,
-                  warehouseList: warehouseList,
-                  vendorList: vendorList,
-                  itemList: itemList,
-                  poList: poList,
-                });
+                  // console.log(poList[poList.length - 1].poNum);
+                  res.render('purchaseOrder/purchase-order-new', {
+                    pageTitle: 'New Purchase Orders',
+                    mainMenuPath: 'purchaseOrders',
+                    subMenuPath: '',
+                    newPONumber: +lastPoNum + 1,
+                    createdBy: req.session.user.email,
+                    shippingMethodList: shippingMethodList,
+                    paymentTermList: paymentTermList,
+                    warehouseList: warehouseList,
+                    vendorList: vendorList,
+                    itemList: itemList,
+                    poList: poList,
+                  });
                 }
-                
               });
             });
           });
@@ -90,8 +104,16 @@ exports.getNewPurchaseOrder = (req, res, next) => {
 exports.postCreatePO = (req, res, next) => {
   const poNum = req.body.poNum;
   const vendor = req.body.vendor;
-  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
-  const expectedDate = new Date(req.body.expectedDate.split("-")[0], req.body.expectedDate.split("-")[1] - 1, req.body.expectedDate.split("-")[2]);
+  const orderDate = new Date(
+    req.body.orderDate.split('-')[0],
+    req.body.orderDate.split('-')[1] - 1,
+    req.body.orderDate.split('-')[2]
+  );
+  const expectedDate = new Date(
+    req.body.expectedDate.split('-')[0],
+    req.body.expectedDate.split('-')[1] - 1,
+    req.body.expectedDate.split('-')[2]
+  );
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
   const createdBy = req.body.createdBy;
@@ -99,12 +121,12 @@ exports.postCreatePO = (req, res, next) => {
   const poTableData = JSON.parse(req.body.poTableData);
   let UOMLIST;
 
-  UOM.find().then(uomList => {
+  UOM.find().then((uomList) => {
     UOMLIST = uomList;
   });
 
   function UOMQty(uomName) {
-    const match = UOMLIST.find(x => x.name === uomName);
+    const match = UOMLIST.find((x) => x.name === uomName);
     return match.conversionQty;
   }
 
@@ -126,11 +148,12 @@ exports.postCreatePO = (req, res, next) => {
     .save()
     .then((result) => {
       poTableData.forEach((line) => {
-        Item.findOne({ itemID: line.itemID }).then((item) => {          
-          item.qtyOnOrder = +item.qtyOnOrder + +line.qtyOrdered * UOMQty(line.uom);  
+        Item.findOne({ itemID: line.itemID }).then((item) => {
+          item.qtyOnOrder =
+            +item.qtyOnOrder + +line.qtyOrdered * UOMQty(line.uom);
           return item.save();
-        })
-      })
+        });
+      });
     })
     .then((result) => {
       console.log('Created Purchase Order');
@@ -415,7 +438,6 @@ exports.postDeletePaymentTerm = (req, res, next) => {
 // };
 
 exports.getExistingPurchaseOrder = (req, res, next) => {
-
   let message = req.flash('message');
   if (message.length > 0) {
     message = message[0];
@@ -483,7 +505,7 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
                       poExpectedDate: expectedDate,
                       uomList: uomList,
                       errorMessage: error,
-                      message: message
+                      message: message,
                     });
                   });
                 });
@@ -499,12 +521,12 @@ exports.getExistingPurchaseOrder = (req, res, next) => {
 };
 
 // below are two helper functions to convert the uom converstion qty when updating item info
-UOM.find().then(uomList => {
+UOM.find().then((uomList) => {
   UOMLIST = uomList;
 });
 
 function UOMQty(uomName) {
-  const match = UOMLIST.find(x => x.name === uomName);
+  const match = UOMLIST.find((x) => x.name === uomName);
   return match.conversionQty;
 }
 
@@ -525,7 +547,7 @@ exports.postUpdatePO = (req, res, next) => {
   const itemNewQty = [];
 
   // console.log('poTableDataOriginal', poTableDataOriginal);
-  
+
   let message = req.flash('message');
   if (message.length > 0) {
     message = message[0];
@@ -539,22 +561,27 @@ exports.postUpdatePO = (req, res, next) => {
     error = null;
   }
 
-
   PurchaseOrder.findById(id)
     .then((po) => {
-
-      po.poTableData.forEach(line => {
-        itemOriginalQty.push(
-          { itemID: line.itemID,
-            qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom)
-          }
-        )
+      po.poTableData.forEach((line) => {
+        itemOriginalQty.push({
+          itemID: line.itemID,
+          qtyOriginallyOrdered: line.qtyOrdered * UOMQty(line.uom),
+        });
       });
       console.log('itemOriginalQty', itemOriginalQty);
 
       po.vendorNum = vendor;
-      po.orderDate = new Date(orderDate.split("-")[0], orderDate.split("-")[1] - 1, orderDate.split("-")[2]);
-      po.expectedDate = new Date(expectedDate.split("-")[0], expectedDate.split("-")[1] - 1, expectedDate.split("-")[2]);
+      po.orderDate = new Date(
+        orderDate.split('-')[0],
+        orderDate.split('-')[1] - 1,
+        orderDate.split('-')[2]
+      );
+      po.expectedDate = new Date(
+        expectedDate.split('-')[0],
+        expectedDate.split('-')[1] - 1,
+        expectedDate.split('-')[2]
+      );
       po.shippingMethod = shippingMethod;
       po.terms = terms;
       po.createdBy = createdBy;
@@ -565,21 +592,25 @@ exports.postUpdatePO = (req, res, next) => {
 
       return po.save();
     })
-    .then(result => {
-      poTableData.forEach(line => {
-        itemNewQty.push(
-          { itemID: line.itemID,
-            qtyOrdered: line.qtyOrdered * UOMQty(line.uom)
-          }
-        )
-      })
+    .then((result) => {
+      poTableData.forEach((line) => {
+        itemNewQty.push({
+          itemID: line.itemID,
+          qtyOrdered: line.qtyOrdered * UOMQty(line.uom),
+        });
+      });
       console.log('itemNewQty', itemNewQty);
 
       function updateItemQty(itemID) {
         for (let i = 0; i < itemOriginalQty.length; i++) {
-          let result= 0;
+          let result = 0;
           if (itemOriginalQty[i].itemID === itemID) {
-            console.log('match found', itemID, 'qty', itemOriginalQty[i].qtyOriginallyOrdered)
+            console.log(
+              'match found',
+              itemID,
+              'qty',
+              itemOriginalQty[i].qtyOriginallyOrdered
+            );
             result = Number(itemOriginalQty[i].qtyOriginallyOrdered);
             return result;
           }
@@ -587,27 +618,28 @@ exports.postUpdatePO = (req, res, next) => {
       }
 
       const itemQtyDifference = [];
-      itemNewQty.forEach(item => {
-        itemQtyDifference.push (
-          {
-            itemID: item.itemID,
-            oldQty: updateItemQty(item.itemID),
-            newQty: +item.qtyOrdered,
-            diffQty: +item.qtyOrdered - updateItemQty(item.itemID)
-          }          
-        )
-      })
-      console.log(itemQtyDifference)
+      itemNewQty.forEach((item) => {
+        itemQtyDifference.push({
+          itemID: item.itemID,
+          oldQty: updateItemQty(item.itemID),
+          newQty: +item.qtyOrdered,
+          diffQty: +item.qtyOrdered - updateItemQty(item.itemID),
+        });
+      });
+      console.log(itemQtyDifference);
 
-      itemQtyDifference.forEach(el => {
-        Item.findOne({ itemID: el.itemID}).then(item => {
-          console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
-          item.qtyOnOrder = item.qtyOnOrder + el.diffQty;
-          console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
-          return item.save();
-        }).catch(err => {console.log(err)});
-      })
-
+      itemQtyDifference.forEach((el) => {
+        Item.findOne({ itemID: el.itemID })
+          .then((item) => {
+            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+            item.qtyOnOrder = item.qtyOnOrder + el.diffQty;
+            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+            return item.save();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
     })
     .then((result) => {
       console.log('Updated Purchase Order');
@@ -703,12 +735,12 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
   const poNum = req.body.poNum;
   const ID = req.body.id;
 
-  UOM.find().then(uomList => {
+  UOM.find().then((uomList) => {
     UOMLIST = uomList;
   });
 
   function UOMQty(uomName) {
-    const match = UOMLIST.find(x => x.name === uomName);
+    const match = UOMLIST.find((x) => x.name === uomName);
     return match.conversionQty;
   }
 
@@ -719,25 +751,34 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
         console.log('receiver exists');
         res.redirect(`/po/view/${poNum}`);
       } else {
-        PurchaseOrder.findOne({ _id: ID }).then((po) => {
-          console.log('po for deletion', po);
-          po.poTableData.forEach(line => {
-            Item.findOne({ itemID: line.itemID }).then(item => {
-              item.qtyOnOrder = +item.qtyOnOrder - +line.qtyOrdered * UOMQty(line.uom);
-              return item.save()
-            }).then(result => {
-              
-            })
-            .catch(err => {console.log(err)});
+        PurchaseOrder.findOne({ _id: ID })
+          .then((po) => {
+            console.log('po for deletion', po);
+            po.poTableData.forEach((line) => {
+              Item.findOne({ itemID: line.itemID })
+                .then((item) => {
+                  item.qtyOnOrder =
+                    +item.qtyOnOrder - +line.qtyOrdered * UOMQty(line.uom);
+                  return item.save();
+                })
+                .then((result) => {})
+                .catch((err) => {
+                  console.log(err);
+                });
+            });
           })
-        }).then(result => {
-          PurchaseOrder.deleteOne({ _id: ID })
+          .then((result) => {
+            PurchaseOrder.deleteOne({ _id: ID })
               .then(() => {
                 console.log('DESTROYED PO', poNum);
+                req.flash('message', 'PO was deleted!');
                 return res.redirect('/po');
               })
               .catch((err) => console.log(err));
-        }).catch(err => {console.log(err)});
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         // PurchaseOrder.deleteOne({ _id: ID })  // moved into block above to prevent conflict in deletion timing
         //   .then(() => {
         //     console.log('DESTROYED PO', poNum);
@@ -753,6 +794,19 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
 
 // loads blank receiver
 exports.getBlankReciever = (req, res, next) => {
+  let message = req.flash('message');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  let error = req.flash('error');
+  if (error.length > 0) {
+    error = error[0];
+  } else {
+    error = null;
+  }
+  
   Item.find()
     .then((itemList) => {
       Vendor.find().then((vendorList) => {
@@ -770,6 +824,8 @@ exports.getBlankReciever = (req, res, next) => {
                   vendorList: vendorList,
                   itemList: itemList,
                   receiverList: receiverList,
+                  errorMessage: error,
+                  message: message,
                 });
               });
             });
@@ -843,13 +899,15 @@ exports.getLoadNewReciever = (req, res, next) => {
                             minimumIntegerDigits: 2,
                             useGrouping: false,
                           })}`;
-                          console.log(orderDate);
-                          console.log(expectedDate);
+                        console.log(orderDate);
+                        console.log(expectedDate);
 
-                          let testDate = `${orderDate.split("-")[0]}-${(orderDate.split("-")[1]).toLocaleString('en-US', {
-                            minimumIntegerDigits: 2,
-                            useGrouping: false,
-                          })}-${orderDate.split("-")[2]}`;
+                        let testDate = `${
+                          orderDate.split('-')[0]
+                        }-${orderDate.split('-')[1].toLocaleString('en-US', {
+                          minimumIntegerDigits: 2,
+                          useGrouping: false,
+                        })}-${orderDate.split('-')[2]}`;
 
                         res.render('purchaseOrder/receiver-new', {
                           pageTitle: 'View Receiver',
@@ -867,11 +925,15 @@ exports.getLoadNewReciever = (req, res, next) => {
                           // poOrderDate: orderDate,
                           // poExpectedDate: expectedDate,
                           poOrderDate: testDate.toString(),
-                          poExpectedDate: new Date(expectedDate.split("-")[0], expectedDate.split("-")[1] - 1, expectedDate.split("-")[2]),
+                          poExpectedDate: new Date(
+                            expectedDate.split('-')[0],
+                            expectedDate.split('-')[1] - 1,
+                            expectedDate.split('-')[2]
+                          ),
                           receiverStatus: 'new',
                           uomList: uomList,
                           errorMessage: error,
-                          message: message
+                          message: message,
                         });
                       });
                     });
@@ -902,13 +964,21 @@ exports.postCreateReceiver = (req, res, next) => {
     error = null;
   }
 
-    console.log('created receiver');
+  console.log('created receiver');
   const receiverNum = req.body.poNum;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
-  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
+  const orderDate = new Date(
+    req.body.orderDate.split('-')[0],
+    req.body.orderDate.split('-')[1] - 1,
+    req.body.orderDate.split('-')[2]
+  );
   console.log('saved orderdate', orderDate);
-  const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
+  const receivedDate = new Date(
+    req.body.receivedDate.split('-')[0],
+    req.body.receivedDate.split('-')[1] - 1,
+    req.body.receivedDate.split('-')[2]
+  );
   console.log('saved received date', receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
@@ -931,16 +1001,16 @@ exports.postCreateReceiver = (req, res, next) => {
     shipToLocation: shipToLocation,
     receiverTableData: receiverTableData,
     errorMessage: error,
-    message: message
+    message: message,
   });
   receiver
     .save()
     .then((result) => {
-      PurchaseOrder.findOne({ poNum: receiverNum }).then(po => {
+      PurchaseOrder.findOne({ poNum: receiverNum }).then((po) => {
         // console.log('po', po);
-        po.status = "RECEIVED";
+        po.status = 'RECEIVED';
         return po.save();
-      })
+      });
 
       console.log('Created Receiver');
       req.flash('message', 'Receiver was created!');
@@ -1025,7 +1095,7 @@ exports.getExistingReceiver = (req, res, next) => {
                         receiverReceivedDate: receivedDate,
                         uomList: uomList,
                         message: message,
-                        errorMessage: error
+                        errorMessage: error,
                       });
                     });
                   }
@@ -1060,8 +1130,16 @@ exports.postUpdateReceiver = (req, res, next) => {
   const receiverStatus = req.body.receiverStatus;
   const vendor = req.body.vendor;
   const vendorInvoiceNum = req.body.vendorInvoiceNum;
-  const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);
-  const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
+  const orderDate = new Date(
+    req.body.orderDate.split('-')[0],
+    req.body.orderDate.split('-')[1] - 1,
+    req.body.orderDate.split('-')[2]
+  );
+  const receivedDate = new Date(
+    req.body.receivedDate.split('-')[0],
+    req.body.receivedDate.split('-')[1] - 1,
+    req.body.receivedDate.split('-')[2]
+  );
   // console.log(receivedDate);
   const shippingMethod = req.body.shippingMethod;
   const terms = req.body.terms;
@@ -1072,11 +1150,10 @@ exports.postUpdateReceiver = (req, res, next) => {
   console.log(orderDate);
   console.log(receivedDate);
 
-
-  if (receiverStatus === "POSTED") {
-      console.log('Receiver is already posted');
-      req.flash('message', 'Receiver was already updated!');
-      res.redirect(`/po/receiver/view/${receiverNum}`);    
+  if (receiverStatus === 'POSTED') {
+    console.log('Receiver is already posted');
+    req.flash('message', 'Receiver was already updated!');
+    res.redirect(`/po/receiver/view/${receiverNum}`);
   }
 
   Receiver.findById(id)
@@ -1118,6 +1195,7 @@ exports.postDeleteReceiver = (req, res, next) => {
     Receiver.deleteOne({ _id: ID })
       .then(() => {
         console.log('DESTROYED RECEIVER', receiverNum);
+        req.flash('message', 'Receiver was deleted!');
         return res.redirect('/po/receiver/view/');
       })
       .catch((err) => console.log(err));
@@ -1127,7 +1205,7 @@ exports.postDeleteReceiver = (req, res, next) => {
 exports.getNextReceiver = (req, res, next) => {
   if (req.params.receiverNum === 'empty') {
     Receiver.find()
-      .then((receiverList) => {        
+      .then((receiverList) => {
         if (receiverList[0]) {
           res.redirect(`/po/receiver/view/${receiverList[0].receiverNum}`);
         } else {
@@ -1168,16 +1246,15 @@ exports.getPreviousReceiver = (req, res, next) => {
     Receiver.find()
       .then((receiverList) => {
         const lastIndexReceiver = receiverList.length;
-        if (receiverList[lastIndexReceiver - 1].receiverNum) {          
+        if (receiverList[lastIndexReceiver - 1].receiverNum) {
           res.redirect(
-            `/po/receiver/view/${receiverList[lastIndexReceiver - 1].receiverNum}`
+            `/po/receiver/view/${
+              receiverList[lastIndexReceiver - 1].receiverNum
+            }`
           );
         } else {
-          res.redirect(
-            `/po/receiver/view/`
-          );
+          res.redirect(`/po/receiver/view/`);
         }
-        
       })
       .catch((err) => {
         console.log(err);
@@ -1302,8 +1379,16 @@ exports.postReceiver = (req, res, next) => {
     const receiverStatus = 'POSTED';
     const vendor = req.body.vendor;
     const vendorInvoiceNum = req.body.vendorInvoiceNum;
-    const orderDate = new Date(req.body.orderDate.split("-")[0], req.body.orderDate.split("-")[1] - 1, req.body.orderDate.split("-")[2]);    
-    const receivedDate = new Date(req.body.receivedDate.split("-")[0], req.body.receivedDate.split("-")[1] - 1, req.body.receivedDate.split("-")[2]);
+    const orderDate = new Date(
+      req.body.orderDate.split('-')[0],
+      req.body.orderDate.split('-')[1] - 1,
+      req.body.orderDate.split('-')[2]
+    );
+    const receivedDate = new Date(
+      req.body.receivedDate.split('-')[0],
+      req.body.receivedDate.split('-')[1] - 1,
+      req.body.receivedDate.split('-')[2]
+    );
     const shippingMethod = req.body.shippingMethod;
     const terms = req.body.terms;
     const createdBy = req.body.createdBy;
@@ -1357,9 +1442,7 @@ exports.postReceiver = (req, res, next) => {
 
             // console.log(receiverTableData);
             const consolidatedLines = receiverTableData.map((item) => {
-              const selectedUOM = uoms.find(
-                ({ name }) => name === item.uom
-                );
+              const selectedUOM = uoms.find(({ name }) => name === item.uom);
               const line = {};
               line.itemID = item.itemID;
               line.qtyReceived = item.qtyReceived * selectedUOM.conversionQty;
@@ -1371,7 +1454,11 @@ exports.postReceiver = (req, res, next) => {
 
             const consolLine2 = Object.values(
               consolidatedLines.reduce((acc, { itemID, qtyReceived, cost }) => {
-                acc[itemID] = acc[itemID] || { itemID, qtysReceived: [], costs: [] };
+                acc[itemID] = acc[itemID] || {
+                  itemID,
+                  qtysReceived: [],
+                  costs: [],
+                };
                 acc[itemID].qtysReceived.push(qtyReceived);
                 acc[itemID].costs.push(cost);
                 return acc;
@@ -1379,25 +1466,44 @@ exports.postReceiver = (req, res, next) => {
             );
             console.log(consolLine2);
 
-              const finalLines = consolLine2.map(item => {
-                const line = {};
-                line.itemID = item.itemID;
-                line.qtyReceived = item.qtysReceived.reduce((total, num) => {return +total + +num;}).toString();
-                line.totalCost = item.costs.reduce((total, num) => {return +total + +num;}).toString();
-                return line;
-              });
-              console.log(finalLines);
-              finalLines.forEach((line) => {
-                Item.findOne({ itemID: line.itemID }).then(item => {
-                  console.log('itemID', item.itemID, 'qty on hand', item.totalQtyOnHand);
-                  console.log(line.qtyReceived)
-                  // console.log('avg cost eq', '((', +item.totalQtyOnHand, '*', +item.avgCost,') + (',+line.totalCost,')) / (',+item.totalQtyOnHand, '+', +line.qtyReceived,')')
-                  item.avgCost = ((+item.totalQtyOnHand * +item.avgCost) + (+line.totalCost)) / (+item.totalQtyOnHand + +line.qtyReceived).toFixed(2);
-                  item.totalQtyOnHand = (+item.totalQtyOnHand + +line.qtyReceived).toString();
-                  item.qtyOnOrder = (+item.qtyOnOrder - +line.qtyReceived).toString();
-                  return item.save();
+            const finalLines = consolLine2.map((item) => {
+              const line = {};
+              line.itemID = item.itemID;
+              line.qtyReceived = item.qtysReceived
+                .reduce((total, num) => {
+                  return +total + +num;
                 })
-              })
+                .toString();
+              line.totalCost = item.costs
+                .reduce((total, num) => {
+                  return +total + +num;
+                })
+                .toString();
+              return line;
+            });
+            console.log(finalLines);
+            finalLines.forEach((line) => {
+              Item.findOne({ itemID: line.itemID }).then((item) => {
+                console.log(
+                  'itemID',
+                  item.itemID,
+                  'qty on hand',
+                  item.totalQtyOnHand
+                );
+                console.log(line.qtyReceived);
+                // console.log('avg cost eq', '((', +item.totalQtyOnHand, '*', +item.avgCost,') + (',+line.totalCost,')) / (',+item.totalQtyOnHand, '+', +line.qtyReceived,')')
+                item.avgCost =
+                  (+item.totalQtyOnHand * +item.avgCost + +line.totalCost) /
+                  (+item.totalQtyOnHand + +line.qtyReceived).toFixed(2);
+                item.totalQtyOnHand = (
+                  +item.totalQtyOnHand + +line.qtyReceived
+                ).toString();
+                item.qtyOnOrder = (
+                  +item.qtyOnOrder - +line.qtyReceived
+                ).toString();
+                return item.save();
+              });
+            });
           });
       })
       .then((result) => {

@@ -75,6 +75,12 @@
           </select> -->
           <h1 class="poStatusText">Receiver Status:</h1>
           <input type="hidden" name="poStatus" value="NEW" />
+          <% if (errorMessage) { %>
+            <div class="user-message user-message--error "><%= errorMessage %></div>
+            <% } %>
+            <% if (message) { %>
+              <div class="user-message"><%= message %></div>
+              <% } %>
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>

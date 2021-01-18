@@ -74,6 +74,12 @@
             <option value="CLOSED">CLOSED</option>
           </select> -->
           <h1 id="soStatus" class="poStatusText">SO Status:</h1>
+          <% if (errorMessage) { %>
+            <div class="user-message user-message--error "><%= errorMessage %></div>
+            <% } %>
+            <% if (message) { %>
+              <div class="user-message"><%= message %></div>
+              <% } %>
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
@@ -165,9 +171,9 @@
 
       
 
-      <!-- The poSearchModal -->
+      <!-- The soSearchModal -->
       <div id="poSelectionModal" class="poSearchModal">
-        <!-- poSearchModal content -->
+        <!-- soSearchModal content -->
         <div class="poSearchModal-content">
           <span class="close"></span>
           <h2 class="poSelectHeading">Select a Sales Order</h2>
@@ -206,9 +212,9 @@
               <td><%= so.expectedDate.getMonth() %>/<%= so.expectedDate.getDate() %>/<%= so.expectedDate.getFullYear() %></td>
               <td><%= so.soNum %></td>
               <td><%= so.status %></td>
-              <td><%= so.CustomerNum %></td>
+              <td><%= so.customerNum %></td>
               <td>
-                <button id="poSelectBtn" onclick="selectPO(this)">
+                <button id="poSelectBtn" onclick="selectSO(this)">
                   Select
                 </button>
               </td>

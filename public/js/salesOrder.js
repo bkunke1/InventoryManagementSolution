@@ -161,8 +161,8 @@ const poLineUpdateExtPrice = (element) => {
   const qty = (document.querySelector('.quantityReceived')) ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
     .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
-  const price = element.parentElement.querySelector('.poTablePrice').textContent;
-  const updatedPrice = element.parentElement.querySelector('.poTablePrice');
+  const price = element.parentElement.querySelector('.poTableCost').textContent;
+  const updatedPrice = element.parentElement.querySelector('.poTableCost');
   
   const poSum = document.querySelector('.poSum');
   let extPrice = element.parentElement.querySelector('.poTableExtended');
@@ -227,7 +227,7 @@ const poAddNewLine = function () {
   newPOTableDescription.classList.add('poTableDescription');
   newPOTableQuantity.classList.add('poTableQuantity');
   newPOTableUOM.classList.add('poTableUOM');
-  newPOTablePrice.classList.add('poTablePrice');
+  newPOTablePrice.classList.add('poTableCost');
   newPOTableExtended.classList.add('poTableExtended');
   newPOTableDeleteBtn.classList.add('poTableDeleteBtn');
 
@@ -540,23 +540,23 @@ window.onclick = function (event) {
 // Get the button that selects the vendor
 const poSelectBtn = document.getElementById('poSelectBtn');
 
-// When the user clicks the button, displays the selected PO
-const selectPO = function (poEle) {
-  console.log('poEle', poEle);
-  const poNum =
-    poEle.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
+// When the user clicks the button, displays the selected SO
+const selectSO = function (soEle) {
+  console.log('soEle', soEle);
+  const soNum =
+    soEle.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
       .textContent;
   '1'.trim();
-  console.log(poNum);
+  console.log(soNum);
   
-  displayPOFromSearchModal(poNum);
-  poSelectionModal.style.display = 'none';
+  displaySOFromSearchModal(soNum);
+  soSelectionModal.style.display = 'none';
 };
 
-const displayPOFromSearchModal = function (poNum) {
+const displaySOFromSearchModal = function (soNum) {
   const csrf = document.querySelector('[name=_csrf]').value;
 
-  fetch(`/po/view/${poNum}`, {
+  fetch(`/so/view/${soNum}`, {
     method: 'GET',
     headers: {
       'csrf-token': csrf,
