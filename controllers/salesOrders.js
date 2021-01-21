@@ -364,9 +364,9 @@ exports.postUpdateSO = (req, res, next) => {
       itemQtyDifference.forEach((el) => {
         Item.findOne({ itemID: el.itemID })
           .then((item) => {
-            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
-            item.qtyOnOrder = item.qtyOnOrder + el.diffQty;
-            console.log('item', item.itemID, 'qtyOnOrder', item.qtyOnOrder);
+            console.log('item', item.itemID, 'qtyAllocated', item.qtyAllocated);
+            item.qtyAllocated = item.qtyAllocated + el.diffQty;
+            console.log('item', item.itemID, 'qtyAllocated', item.qtyAllocated);
             return item.save();
           })
           .catch((err) => {
@@ -375,7 +375,7 @@ exports.postUpdateSO = (req, res, next) => {
       });
     })
     .then((result) => {
-      console.log('Updated Purchase Order');
+      console.log('Updated Sales Order');
       req.flash('message', 'SO was updated!');
       res.redirect(`/so/view/${soNum}`);
     })

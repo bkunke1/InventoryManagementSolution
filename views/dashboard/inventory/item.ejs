@@ -223,7 +223,11 @@
             </div>
             <div class="item-field">
               <label for="lotCost">Lot Cost:</label>
-              <button id="lotCostBtn" type="button">Details</button>
+              <% if (item.valuationMethod === "LOT") { %>
+                <button id="lotCostBtn" type="button">Details</button>
+              <% } else { %>
+              <button disabled id="lotCostBtn" type="button">Details</button>
+              <% } %>
             </div>
             <div class="item-field">
               <label for="baseUOM">Base UOM:</label>          
