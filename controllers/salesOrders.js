@@ -507,3 +507,125 @@ exports.postDeleteSalesOrder = (req, res, next) => {
       console.log(err);
     });
 };
+
+exports.postSalesOrder = (req, res, next) => {
+  const soNum = req.body.soNum;
+  if (req.body.soStatus === 'POSTED') {
+    console.log('Sales Order is already posted!');
+    req.flash('message', 'Sales Order is already posted!');
+    res.redirect(`/so/view/${soNum}`);
+  } else {
+    const id = req.body.id;
+    const salesOrderStatus = 'POSTED';
+    const customer = req.body.customer;
+    const customerPoNum = req.body.customerPoNum;
+    const date = `${req.body.orderDate}`;
+    const orderDate = new Date(
+      date.split('-')[0],
+      date.split('-')[1] - 1,
+      date.split('-')[2]
+    );
+    const expectedDate = new Date(
+      req.body.expectedDate.split('-')[0],
+      req.body.expectedDate.split('-')[1] - 1,
+      req.body.expectedDate.split('-')[2]
+    );
+    const shippingMethod = req.body.shippingMethod;
+    const terms = req.body.terms;
+    const createdBy = req.body.createdBy;
+    const shipToLocation = req.body.shipToLocation;
+    const soTableData = JSON.parse(req.body.soTableData);
+
+    UOM.find()
+      .then((uoms) => {
+        SalesOrder.findById(id)
+          .then((so) => {
+            so.soNum = soNum;
+            so.status = salesOrderStatus;
+            so.customerNum = customer;
+            so.customerPoNum = customerPoNum;
+            so.orderDate = orderDate;
+            so.expectedDate = expectedDate;
+            so.shippingMethod = shippingMethod;
+            so.terms = terms;
+            so.createdBy = createdBy;
+            so.shipToLocation = shipToLocation;
+            so.soTableData = soTableData;
+            return so.save();
+          })
+          .then((result) => {
+            const consolidatedLines = soTableData.map((item) => {
+              const selectedUOM = uoms.find(({ name }) => name === item.uom);
+              const line = {};
+              line.itemID = item.itemID;
+              line.qtyOrdered = item.qtyOrdered * selectedUOM.conversionQty;
+              line.cost = item.cost * item.qtyOrdered;
+              return line;
+            });
+
+            console.log(consolidatedLines);
+
+            const consolLine2 = Object.values(
+              consolidatedLines.reduce((acc, { itemID, qtyOrdered, cost }) => {
+                acc[itemID] = acc[itemID] || {
+                  itemID,
+                  qtysReceived: [],
+                  costs: [],
+                };
+                acc[itemID].qtysReceived.push(qtyOrdered);
+                acc[itemID].costs.push(cost);
+                return acc;
+              }, {})
+            );
+            console.log(consolLine2);
+
+            const finalLines = consolLine2.map((item) => {
+              const line = {};
+              line.itemID = item.itemID;
+              line.qtyOrdered = item.qtysReceived
+                .reduce((total, num) => {
+                  return +total + +num;
+                })
+                .toString();
+              line.totalCost = item.costs
+                .reduce((total, num) => {
+                  return +total + +num;
+                })
+                .toString();
+              return line;
+            });
+            console.log(finalLines);
+            finalLines.forEach((line) => {
+              Item.findOne({ itemID: line.itemID }).then((item) => {
+                console.log(
+                  'itemID',
+                  item.itemID,
+                  'qty on hand',
+                  item.totalQtyOnHand
+                );
+                console.log(line.qtyOrdered);
+                // console.log('avg cost eq', '((', +item.totalQtyOnHand, '*', +item.avgCost,') + (',+line.totalCost,')) / (',+item.totalQtyOnHand, '+', +line.qtyOrdered,')')
+                item.avgCost =
+                  (+item.totalQtyOnHand * +item.avgCost + +line.totalCost) /
+                  (+item.totalQtyOnHand + +line.qtyOrdered).toFixed(2);
+                item.totalQtyOnHand = (
+                  +item.totalQtyOnHand + +line.qtyOrdered
+                ).toString();
+                item.qtyOnOrder = (
+                  +item.qtyOnOrder - +line.qtyOrdered
+                ).toString();
+                return item.save();
+              });
+            });
+          });
+      })
+      .then((result) => {
+        console.log('POSTED Sales Order');
+        req.flash('message', 'Sales Order was posted!');
+        res.redirect(`/so/view/${soNum}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+};

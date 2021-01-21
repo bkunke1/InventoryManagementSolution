@@ -74,8 +74,13 @@
             <option value="CLOSED">CLOSED</option>
           </select> -->
           <h1 class="poStatusText">Order Status: <%= soDetails.status %></h1>
-          <input type="hidden" name="poStatus" value="NEW" />
-          <!-- this is where you would insert the flash message -->
+          <input type="hidden" name="soStatus" value="<%= soDetails.status %>" />
+          <% if (errorMessage) { %>
+            <div class="user-message user-message--error "><%= errorMessage %></div>
+            <% } %>
+            <% if (message) { %>
+              <div class="user-message"><%= message %></div>
+              <% } %>
         </div>
         <div id="vendorSelection">
           <label for="vendor">Customer:</label>
@@ -272,10 +277,10 @@
         <% if (soDetails.status == "RECEIVED") { %>
           <div class="poActionBtns">
             <a href="/so/new"><button type="button">New</button></a>
-            <button disabled id="poUpdateBtn">Update</button>
-            <button disabled formaction="/so/delete">Delete</button>
+            <button disabled>Update</button>
+            <button disabled>Delete</button>
             <button type="button">Print SO</button>
-            <a href="/so/receiver/new/<%= newSONumber %>" method="GET"><button disabled type="button">Receive SO</button></a>
+            <a href="" method="GET"><button disabled type="button">Post SO</button></a>
           </div>
           </div>
           <% } else { %>
@@ -284,14 +289,14 @@
               <button id="poUpdateBtn">Update</button>
               <button formaction="/so/delete">Delete</button>
               <button type="button">Print SO</button>
-              <a href="/so/receiver/new/<%= newSONumber %>" method="GET"><button type="button">Receive SO</button></a>
+              <button formaction="/so/post">Post SO</button>
             </div>
             <% } %>       
         <input type="hidden" name="id" value="<%= soDetails._id %>" />
         
       </form>
 
-      <!-- The vendorSearchModal -->
+      <!-- The CustomerSearchModal -->
       <div id="vendorSelectionModal" class="vendorSearchModal">
         <!-- vendorSearchModal content -->
         <div class="vendorSearchModal-content">
