@@ -28,11 +28,11 @@
           <h1>Order # <%= poDetails.poNum %></h1>
           <input type="hidden" name="poNum" value="<%= poDetails.poNum %>" />
 
-          <a href="/po/previous/<%= poDetails.poNum%>"
-            ><button
+          <button
               id="backwardsBtn"
-              type="button"
               class="poArrowSearchBtnLeft"
+              type="submit" formmethod="get"
+              formaction="/po/previous/<%= poDetails.poNum%>"
             >
               <svg height="20" width="20">
                 <polygon
@@ -44,27 +44,25 @@
                   "
                 />
               </svg></button
-          ></a>
+          >
 
-          <a href="/po/next/<%= poDetails.poNum%>"
-          method="GET"
-            ><button
+          <button
               id="forwardsBtn"
-              type="button"              
               class="poArrowSearchBtnRight"
+              type="submit" formmethod="get"
+              formaction="/po/next/<%= poDetails.poNum%>"
             >
-              <svg height="20" width="20">
-                <polygon
-                  points="0,20 20,10 0,0"
-                  style="
-                    fill: rgb(87, 87, 87);
-                    stroke: rgb(3, 3, 3);
-                    stroke-width: 1;
-                  "
-                />
-              </svg>
-            </button>
-          </a>
+            <svg height="20" width="20">
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
+            </svg></button
+          >
 
           <button class="poBtns" id="poSelectionBtn" type="button">
             Search

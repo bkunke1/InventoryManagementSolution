@@ -806,7 +806,7 @@ exports.getBlankReciever = (req, res, next) => {
   } else {
     error = null;
   }
-  
+
   Item.find()
     .then((itemList) => {
       Vendor.find().then((vendorList) => {

@@ -552,10 +552,43 @@ const selectPO = function (poEle) {
   poSelectionModal.style.display = 'none';
 };
 
+// Get the button that selects the vendor
+const receiverSelectBtn = document.getElementById('receiverSelectBtn');
+
+// When the user clicks the button, displays the selected Receiver
+const selectReceiver = function (receiverEl) {
+  console.log('receiverEl', receiverEl);
+  const receiverNum =
+    receiverEl.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
+      .textContent;
+  '1'.trim();
+  console.log(receiverNum);
+  
+  displayReceiverFromSearchModal(receiverNum);
+  poSelectionModal.style.display = 'none';
+};
+
 const displayPOFromSearchModal = function (poNum) {
   const csrf = document.querySelector('[name=_csrf]').value;
 
   fetch(`/po/view/${poNum}`, {
+    method: 'GET',
+    headers: {
+      'csrf-token': csrf,
+    },
+  })
+  .then(result => {
+    console.log(result);
+    window.location.href = `${result.url}`
+  }).catch((err) => {
+    console.log('err', err);
+  });
+};
+
+const displayReceiverFromSearchModal = function (receiverNum) {
+  const csrf = document.querySelector('[name=_csrf]').value;
+
+  fetch(`/po/receiver/view/${receiverNum}`, {
     method: 'GET',
     headers: {
       'csrf-token': csrf,

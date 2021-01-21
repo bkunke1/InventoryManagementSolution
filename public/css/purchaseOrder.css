@@ -93,11 +93,13 @@ td {
 }
 
 .poArrowSearchBtnLeft {
-  margin: 1.5rem 1rem 0 3rem;
+  /* margin: 1.5rem 1rem 0 3rem; */
+  margin: 1.5rem;
 }
 
 .poArrowSearchBtnRight {
-  margin: 1.5rem 1rem 0 0;
+  /* margin: 1.5rem 1rem 0 0; */
+  margin: 1.5rem 0;
 }
 
 .poStatusText {

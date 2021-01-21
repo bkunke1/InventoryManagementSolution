@@ -28,11 +28,11 @@
           <h1>Receiver # <%= receiverDetails.receiverNum %></h1>
           <input type="hidden" name="receiverNum" value="<%= receiverDetails.receiverNum %>" />
 
-          <a href="/po/receiver/previous/<%= receiverDetails.receiverNum%>"
-            ><button
+          <button
               id="backwardsBtn"
-              type="button"
               class="poArrowSearchBtnLeft"
+              type="submit" formmethod="get"
+              formaction="/po/receiver/previous/<%= receiverDetails.receiverNum%>"
             >
               <svg height="20" width="20">
                 <polygon
@@ -44,27 +44,25 @@
                   "
                 />
               </svg></button
-          ></a>
+          >
 
-          <a href="/po/receiver/next/<%= receiverDetails.receiverNum%>"
-          method="GET"
-            ><button
+          <button
               id="forwardsBtn"
-              type="button"              
               class="poArrowSearchBtnRight"
+              type="submit" formmethod="get"
+              formaction="/po/receiver/next/<%= receiverDetails.receiverNum%>"
             >
-              <svg height="20" width="20">
-                <polygon
-                  points="0,20 20,10 0,0"
-                  style="
-                    fill: rgb(87, 87, 87);
-                    stroke: rgb(3, 3, 3);
-                    stroke-width: 1;
-                  "
-                />
-              </svg>
-            </button>
-          </a>
+            <svg height="20" width="20">
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
+            </svg></button
+          >
 
           <button class="poBtns" id="poSelectionBtn" type="button">
             Search
@@ -469,13 +467,13 @@
         <!-- poSearchModal content -->
         <div class="poSearchModal-content">
           <span class="close">&times;</span>
-          <h2 class="poSelectHeading">Select a Purchase Order</h2>
+          <h2 class="poSelectHeading">Select a Receiver</h2>
           <div class="poSearchFilter">
             <h5>Filter:</h5>
             <select name="poSearchFilterSelection" id="poSearchFilterSelection">
               <option value="orderDate">Order Date</option>
               <option value="receivedDate">Received Date</option>
-              <option value="poNum">PO Num</option>
+              <option value="poNum">Receiver Num</option>
               <option value="status">Status</option>
               <option value="vendor">Vendor</option>
             </select>
@@ -495,19 +493,19 @@
             <tr>
               <th>Order Date</th>
               <th>Received Date</th>
-              <th>PO Num</th>
+              <th>Receiver Num</th>
               <th>Status</th>
               <th>Vendor</th>
             </tr>
             <% receiverList.forEach(function(receiver) { %>
             <tr>
-              <td><%= receiverDetails.orderDate.getMonth() %>/<%= receiverDetails.orderDate.getDate() %>/<%= receiverDetails.orderDate.getFullYear() %></td>
-              <td><%= receiverDetails.receivedDate.getMonth() %>/<%= receiverDetails.receivedDate.getDate() %>/<%= receiverDetails.receivedDate.getFullYear() %></td>
-              <td><%= receiverDetails.receiverDetailsNum %></td>
-              <td><%= receiverDetails.status %></td>
-              <td><%= receiverDetails.vendorNum %></td>
+              <td><%= receiver.orderDate.getMonth() %>/<%= receiver.orderDate.getDate() %>/<%= receiver.orderDate.getFullYear() %></td>
+              <td><%= receiver.receivedDate.getMonth() %>/<%= receiver.receivedDate.getDate() %>/<%= receiver.receivedDate.getFullYear() %></td>
+              <td><%= receiver.receiverNum %></td>
+              <td><%= receiver.status %></td>
+              <td><%= receiver.vendorNum %></td>
               <td>
-                <button id="poSelectBtn" onclick="selectPO(this)">
+                <button id="receiverSelectBtn" onclick="selectReceiver(this)">
                   Select
                 </button>
               </td>

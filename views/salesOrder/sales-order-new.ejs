@@ -29,11 +29,11 @@
           <h1>Sales Order # <%= newSONumber %></h1>
           <input type="hidden" name="soNum" value="<%= newSONumber %>" />
 
-          <a href="/so/previous/empty"
-            ><button
+          <button
               id="backwardsBtn"
-              type="button"
               class="poArrowSearchBtnLeft"
+              type="submit" formmethod="get"
+              formaction="/so/previous/empty"
             >
               <svg height="20" width="20">
                 <polygon
@@ -45,27 +45,25 @@
                   "
                 />
               </svg></button
-          ></a>
+          >
 
-          <a href="/so/next/empty"
-          method="GET"
-            ><button
+          <button
               id="forwardsBtn"
-              type="button"              
               class="poArrowSearchBtnRight"
+              type="submit" formmethod="get"
+              formaction="/so/next/empty"
             >
-              <svg height="20" width="20">
-                <polygon
-                  points="0,20 20,10 0,0"
-                  style="
-                    fill: rgb(87, 87, 87);
-                    stroke: rgb(3, 3, 3);
-                    stroke-width: 1;
-                  "
-                />
-              </svg>
-            </button>
-          </a>
+            <svg height="20" width="20">
+              <polygon
+                points="0,20 20,10 0,0"
+                style="
+                  fill: rgb(87, 87, 87);
+                  stroke: rgb(3, 3, 3);
+                  stroke-width: 1;
+                "
+              />
+            </svg></button
+          >
 
           <button class="poBtns" id="poSelectionBtn" type="button">
             Search
