@@ -298,3 +298,7 @@ table {
   margin: 1rem;
   text-align: right;
 }
+
+.item-message {
+  margin-top: 1rem;
+}

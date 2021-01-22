@@ -14,7 +14,15 @@
       </div>
     </div>
     <div id="workspace">
-      <div id="toolbar" class="inventory-toolbar">
+      <div class="item-message">
+        <% if (message) { %>
+          <div class="user-message">
+            <%= message %>
+          </div>
+          <% } %>
+      </div>
+      
+      <div id="toolbar" class="inventory-toolbar">        
         <h1 class="inventory-toolbar-items">Item Maintenance</h1>
         <form
           action="/inventory/previousItem/<%= item.itemID%>"
@@ -53,11 +61,7 @@
           </button>
         </form>
       </div>
-      <% if (message) { %>
-      <div class="user-message">
-        <%= message %>
-      </div>
-      <% } %>
+      
       <form action="/inventory/update-item" method="POST" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <div class="item-field">
@@ -312,8 +316,7 @@
           <input type="submit" value="Update" id="updateBtn" />
           <a href="../item/<%= item._id%>"><button type="button">Cancel</button></a>
         </div>        
-      </form>
-      
+      </form>      
     </div>
     <script src="/js/item.js"></script>
   </body>

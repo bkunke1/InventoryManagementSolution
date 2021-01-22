@@ -1465,6 +1465,7 @@ exports.postReceiver = (req, res, next) => {
               const line = {};
               line.itemID = item.itemID;
               line.qtyReceived = item.qtyReceived * selectedUOM.conversionQty;
+              line.qtyOrdered = item.qtyOrdered * selectedUOM.conversionQty;
               line.cost = item.cost * item.qtyReceived;
               return line;
             });
@@ -1472,13 +1473,15 @@ exports.postReceiver = (req, res, next) => {
             console.log(consolidatedLines);
 
             const consolLine2 = Object.values(
-              consolidatedLines.reduce((acc, { itemID, qtyReceived, cost }) => {
+              consolidatedLines.reduce((acc, { itemID, qtyReceived, qtyOrdered, cost }) => {
                 acc[itemID] = acc[itemID] || {
                   itemID,
                   qtysReceived: [],
+                  qtysOrdered: [],
                   costs: [],
                 };
                 acc[itemID].qtysReceived.push(qtyReceived);
+                acc[itemID].qtysOrdered.push(qtyOrdered);
                 acc[itemID].costs.push(cost);
                 return acc;
               }, {})
@@ -1489,6 +1492,11 @@ exports.postReceiver = (req, res, next) => {
               const line = {};
               line.itemID = item.itemID;
               line.qtyReceived = item.qtysReceived
+                .reduce((total, num) => {
+                  return +total + +num;
+                })
+                .toString();
+                line.qtyOrdered = item.qtysOrdered
                 .reduce((total, num) => {
                   return +total + +num;
                 })
@@ -1518,7 +1526,7 @@ exports.postReceiver = (req, res, next) => {
                   +item.totalQtyOnHand + +line.qtyReceived
                 ).toString();
                 item.qtyOnOrder = (
-                  +item.qtyOnOrder - +line.qtyReceived
+                  +item.qtyOnOrder - +line.qtyOrdered
                 ).toString();
                 return item.save();
               });
