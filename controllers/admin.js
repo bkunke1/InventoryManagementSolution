@@ -467,7 +467,7 @@ exports.postAddWarehouse = (req, res, next) => {
           .save()
           .then((result) => {
             console.log('Warehouse Item was created!');
-            req.flash('createdMessage', 'Warehouse was created!');
+            // req.flash('createdMessage', 'Warehouse was created!');
             return res.redirect('/inventory/warehouse-setup');
           })
           .catch((err) => {
@@ -509,7 +509,7 @@ exports.postEditWarehouse = (req, res, next) => {
             console.log(warehouse);
             return warehouse.save().then((result) => {
               console.log('Warehouse Item was Updated!');
-              req.flash('createdMessage', 'Warehouse was created!');
+              // req.flash('createdMessage', 'Warehouse was created!');
               return res.redirect('/inventory/warehouse-setup');
             });
           })
@@ -579,7 +579,7 @@ exports.postAddUOM = (req, res, next) => {
           .save()
           .then((result) => {
             console.log('Warehouse Item was created!');
-            req.flash('createdMessage', 'Warehouse was created!');
+            // req.flash('createdMessage', 'Warehouse was created!');
             return res.redirect('/inventory/uom-setup');
           })
           .catch((err) => {
@@ -621,7 +621,7 @@ exports.postEditUOM = (req, res, next) => {
             console.log(uom);
             return uom.save().then((result) => {
               console.log('UOM Item was Updated!');
-              req.flash('createdMessage', 'UOM was created!');
+              // req.flash('createdMessage', 'UOM was created!');
               return res.redirect('/inventory/uom-setup');
             });
           })
@@ -689,7 +689,7 @@ exports.postAddCategory = (req, res, next) => {
           .save()
           .then((result) => {
             console.log('Category Item was created!');
-            req.flash('createdMessage', 'Category was created!');
+            // req.flash('createdMessage', 'Category was created!');
             return res.redirect('/inventory/category-setup');
           })
           .catch((err) => {
@@ -728,7 +728,7 @@ exports.postEditCategory = (req, res, next) => {
             category.name = name.toUpperCase();
             return category.save().then((result) => {
               console.log('Category was Updated!');
-              req.flash('createdMessage', 'Category was created!');
+              // req.flash('createdMessage', 'Category was created!');
               return res.redirect('/inventory/category-setup');
             });
           })

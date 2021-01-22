@@ -37,37 +37,8 @@
             </div>
             <input type="submit" value="Save" />
           </form>
-        </div>
 
-        <div class="inventory-setup--rightCol">
-          <h1>Category List</h1>
-          <table>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-            </tr>
-            <% for (category of categoryList) { %>
-            <tr>
-              <td><%= category.ID %></td>
-              <td><%= category.name %></td>
-              <td>
-                <form action="/inventory/category-delete" method="POST">
-                  <input
-                    type="hidden"
-                    value="<%= category.ID %>"
-                    name="categoryID"
-                  />
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                  <button class="btn" type="submit">Delete</button>
-                </form>
-              </td>
-            </tr>
-            <% } %>
-          </table>
-        </div>
-      </div>
-      <div class="inventory-setup--leftCol">
-        <h1>Edit Category</h1>
+          <h1>Edit Category</h1>
         <form
           action="/inventory/category/editCategory"
           method="POST"
@@ -85,6 +56,37 @@
           </div>
           <input type="submit" value="Update Changes" />
         </form>
+
+        </div>
+
+        <div class="inventory-setup--rightCol">
+          <h1>Category List</h1>
+          <div class="inventory-setup--rightCol-overflow">
+            <table>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+              </tr>
+              <% for (category of categoryList) { %>
+              <tr>
+                <td><%= category.ID %></td>
+                <td><%= category.name %></td>
+                <td>
+                  <form action="/inventory/category-delete" method="POST">
+                    <input
+                      type="hidden"
+                      value="<%= category.ID %>"
+                      name="categoryID"
+                    />
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button class="btn" type="submit">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              <% } %>
+            </table>
+          </div>          
+        </div>
       </div>
     </div>
   </body>

@@ -257,6 +257,10 @@ table {
 .inventory-setup--rightCol {
   width: 50%;
 }
+.inventory-setup--rightCol-overflow {
+  height: 250px;
+  overflow: auto;
+}
 
 .items-table {
   margin: auto;  
