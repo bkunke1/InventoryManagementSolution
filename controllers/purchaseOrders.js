@@ -771,7 +771,7 @@ exports.postDeletePurchaseOrder = (req, res, next) => {
             PurchaseOrder.deleteOne({ _id: ID })
               .then(() => {
                 console.log('DESTROYED PO', poNum);
-                req.flash('message', 'PO was deleted!');
+                req.flash('message', `PO #${poNum} was deleted!`);
                 return res.redirect('/po');
               })
               .catch((err) => console.log(err));
@@ -934,6 +934,7 @@ exports.getLoadNewReciever = (req, res, next) => {
                           uomList: uomList,
                           errorMessage: error,
                           message: message,
+                          receiverList: receiverList
                         });
                       });
                     });
@@ -987,35 +988,37 @@ exports.postCreateReceiver = (req, res, next) => {
   const receiverTableData = JSON.parse(req.body.receiverTableData);
 
   // console.log('receiverTableData', receiverTableData);
-
-  const receiver = new Receiver({
-    receiverNum: receiverNum,
-    status: 'OPEN',
-    vendorNum: vendor,
-    vendorInvoiceNum: vendorInvoiceNum,
-    orderDate: orderDate,
-    receivedDate: receivedDate,
-    shippingMethod: shippingMethod,
-    terms: terms,
-    createdBy: createdBy,
-    shipToLocation: shipToLocation,
-    receiverTableData: receiverTableData,
-    errorMessage: error,
-    message: message,
-  });
-  receiver
-    .save()
-    .then((result) => {
-      PurchaseOrder.findOne({ poNum: receiverNum }).then((po) => {
-        // console.log('po', po);
-        po.status = 'RECEIVED';
-        return po.save();
-      });
-
-      console.log('Created Receiver');
-      req.flash('message', 'Receiver was created!');
-      res.redirect(`/po/receiver/view/${receiverNum}`);
-    })
+  Receiver.find().then((receiverList) => {
+    const receiver = new Receiver({
+      receiverNum: receiverNum,
+      status: 'OPEN',
+      vendorNum: vendor,
+      vendorInvoiceNum: vendorInvoiceNum,
+      orderDate: orderDate,
+      receivedDate: receivedDate,
+      shippingMethod: shippingMethod,
+      terms: terms,
+      createdBy: createdBy,
+      shipToLocation: shipToLocation,
+      receiverTableData: receiverTableData,
+      errorMessage: error,
+      message: message,
+      receiverList: receiverList
+    });
+    receiver
+      .save()
+      .then((result) => {
+        PurchaseOrder.findOne({ poNum: receiverNum }).then((po) => {
+          // console.log('po', po);
+          po.status = 'RECEIVED';
+          return po.save();
+        });
+  
+        console.log('Created Receiver');
+        req.flash('message', 'Receiver was created!');
+        res.redirect(`/po/receiver/view/${receiverNum}`);
+      })
+  })
     .catch((err) => {
       console.log(err);
       res.redirect('/500');
@@ -1195,7 +1198,7 @@ exports.postDeleteReceiver = (req, res, next) => {
     Receiver.deleteOne({ _id: ID })
       .then(() => {
         console.log('DESTROYED RECEIVER', receiverNum);
-        req.flash('message', 'Receiver was deleted!');
+        req.flash('message', `Receiver #${receiverNum} was deleted!`);
         return res.redirect('/po/receiver/view/');
       })
       .catch((err) => console.log(err));
@@ -1372,7 +1375,7 @@ exports.postReceiver = (req, res, next) => {
   const receiverNum = req.body.receiverNum;
   if (req.body.receiverStatus === 'POSTED') {
     console.log('Receiver is already posted!');
-    req.flash('updatedMessage', 'Receiver is already posted!');
+    req.flash('message', 'Receiver is already posted!');
     res.redirect(`/po/receiver/view/${receiverNum}`);
   } else {
     const id = req.body.id;
@@ -1508,7 +1511,7 @@ exports.postReceiver = (req, res, next) => {
       })
       .then((result) => {
         console.log('POSTED Receiver');
-        req.flash('updatedMessage', 'Receiver was posted!');
+        req.flash('message', `Receiver #${receiverNum} was posted!`);
         res.redirect(`/po/receiver/view/${receiverNum}`);
       })
       .catch((err) => {

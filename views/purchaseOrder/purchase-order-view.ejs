@@ -83,19 +83,35 @@
         </div>
         <div id="vendorSelection">
           <label for="vendor">Vendor:</label>
-          <input
+          <% if (poDetails.status == "RECEIVED") { %>
+            <input
+            disabled
             type="text"
             name="vendor"
             value="<%= poDetails.vendorNum %>"
             size="30"
           />
-          <button type="button" id="vendorSelectionBtn" tooltip="test">
+          <button disabled type="button" id="vendorSelectionBtn" tooltip="test">
             <i class="fas fa-user-tie"></i>
           </button>
+            <% } else { %>
+              <input
+            type="text"
+            name="vendor"
+            value="<%= poDetails.vendorNum %>"
+            size="30"
+          />
+          <button disabled type="button" id="vendorSelectionBtn" tooltip="test">
+            <i class="fas fa-user-tie"></i>
+          </button>
+             <% } %>
+          
         </div>
         <div>
           <label for="orderDate">Order Date:</label>
-          <input
+          <% if (poDetails.status == "RECEIVED") { %>
+            <input
+            disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
@@ -103,8 +119,21 @@
             size="8"
             value="<%= poOrderDate %>"
           />
+            <% } else { %>
+              <input
+            id="orderDateInput"
+            class="poSelectFields"
+            type="date"
+            name="orderDate"
+            size="8"
+            value="<%= poOrderDate %>"
+          />
+             <% } %>
+          
           <label for="expectedDate">Expected Date:</label>
-          <input
+          <% if (poDetails.status == "RECEIVED") { %>
+            <input
+            disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -112,8 +141,21 @@
             size="8"
             value="<%= poExpectedDate %>"
           />
+            <% } else { %>
+              <input
+            id="expectedDateInput"
+            class="poSelectFields"
+            type="date"
+            name="expectedDate"
+            size="8"
+            value="<%= poExpectedDate %>"
+          />
+             <% } %>
+          
           <label for="shippingMethod">Shipping Method:</label>
-          <select
+          <% if (poDetails.status == "RECEIVED") { %>
+            <select
+            disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
@@ -129,8 +171,29 @@
             </option>
             <% } %> <% }); %>
           </select>
+            <% } else { %>
+              <select
+            name="shippingMethod"
+            id="shippingMethod"
+            class="poSelectFields"
+          >
+            <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
+            (shippingMethod.name == poDetails.shippingMethod) { %>
+            <option SELECTED value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } else { %>
+            <option value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } %> <% }); %>
+          </select>
+             <% } %>
+          
           <label for="shipToLocation">Ship to Location:</label>
-          <select
+          <% if (poDetails.status == "RECEIVED") { %>
+            <select
+            disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
@@ -144,19 +207,52 @@
             <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
             <% } %> <% }); %>
           </select>
-          <label for="terms">Terms:</label>
-          <select name="terms" id="terms" class="poSelectFields">
-            <% paymentTermList.forEach(function(paymentTerm) { %> <% if
-            (paymentTerm.code == poDetails.terms) { %>
-            <option SELECTED value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
+            <% } else { %>
+              <select
+            name="shipToLocation"
+            id="shipToLocation"
+            class="poSelectFields"
+          >
+            <% warehouseList.forEach(function(warehouse) { %> <% if
+            (warehouse.name == poDetails.shipToLocation) { %>
+            <option SELECTED value="<%= warehouse.name %>">
+              <%= warehouse.name %>
             </option>
             <% } else { %>
-            <option value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
-            </option>
+            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
             <% } %> <% }); %>
           </select>
+             <% } %>
+          
+          <label for="terms">Terms:</label>
+          <% if (poDetails.status == "RECEIVED") { %>
+            <select disabled name="terms" id="terms" class="poSelectFields">
+              <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+              (paymentTerm.code == poDetails.terms) { %>
+              <option SELECTED value="<%= paymentTerm.code %>">
+                <%= paymentTerm.code %>
+              </option>
+              <% } else { %>
+              <option value="<%= paymentTerm.code %>">
+                <%= paymentTerm.code %>
+              </option>
+              <% } %> <% }); %>
+            </select>
+            <% } else { %>
+              <select name="terms" id="terms" class="poSelectFields">
+                <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+                (paymentTerm.code == poDetails.terms) { %>
+                <option SELECTED value="<%= paymentTerm.code %>">
+                  <%= paymentTerm.code %>
+                </option>
+                <% } else { %>
+                <option value="<%= paymentTerm.code %>">
+                  <%= paymentTerm.code %>
+                </option>
+                <% } %> <% }); %>
+              </select>
+             <% } %>
+          
           <h3>Submitted by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>

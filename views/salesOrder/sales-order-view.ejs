@@ -84,29 +84,52 @@
         </div>
         <div id="vendorSelection">
           <label for="vendor">Customer:</label>
-          <input
+          <% if (soDetails.status == "POSTED") { %>
+            <input
+            disabled
             type="text"
             name="customer"
             value="<%= soDetails.customerNum %>"
             size="30"
           />
-          <button type="button" id="vendorSelectionBtn" tooltip="test">
-            <i class="fas fa-user-tie"></i>
-          </button>
+            <% } else { %>
+              <input
+              type="text"
+              name="customer"
+              value="<%= soDetails.customerNum %>"
+              size="30"
+            />
+            <button type="button" id="vendorSelectionBtn" tooltip="test">
+              <i class="fas fa-user-tie"></i>
+            </button>
+             <% } %>          
+          
           <div id="customerPoNum">
             <label for="customerPoNum">Customer PO # </label>
-          <input
+            <% if (soDetails.status == "POSTED") { %>
+              <input
+              disabled
             type="text"
             name="customerPoNum"
             size="10"
             value="<%= soDetails.customerPoNum %>"
           />
+              <% } else { %>
+                <input
+            type="text"
+            name="customerPoNum"
+            size="10"
+            value="<%= soDetails.customerPoNum %>"
+          />
+               <% } %>          
           </div>
         </div>
         
         <div>
           <label for="orderDate">Order Date:</label>
-          <input
+          <% if (soDetails.status == "POSTED") { %>
+            <input
+            disabled
             id="orderDateInput"
             class="poSelectFields"
             type="date"
@@ -114,8 +137,21 @@
             size="8"
             value="<%= soOrderDate %>"
           />
+            <% } else { %>
+              <input
+            id="orderDateInput"
+            class="poSelectFields"
+            type="date"
+            name="orderDate"
+            size="8"
+            value="<%= soOrderDate %>"
+          />
+             <% } %>
+          
           <label for="receivedDate">Ship Date:</label>
-          <input
+          <% if (soDetails.status == "POSTED") { %>
+            <input
+            disabled
             id="expectedDateInput"
             class="poSelectFields"
             type="date"
@@ -123,8 +159,21 @@
             size="8"
             value="<%= soExpectedDate %>"
           />
+            <% } else { %>
+              <input
+            id="expectedDateInput"
+            class="poSelectFields"
+            type="date"
+            name="expectedDate"
+            size="8"
+            value="<%= soExpectedDate %>"
+          />
+             <% } %>
+          
           <label for="shippingMethod">Shipping Method:</label>
-          <select
+          <% if (soDetails.status == "POSTED") { %>
+            <select
+            disabled
             name="shippingMethod"
             id="shippingMethod"
             class="poSelectFields"
@@ -140,8 +189,29 @@
             </option>
             <% } %> <% }); %>
           </select>
+            <% } else { %>
+              <select
+            name="shippingMethod"
+            id="shippingMethod"
+            class="poSelectFields"
+          >
+            <% shippingMethodList.forEach(function(shippingMethod) { %> <% if
+            (shippingMethod.name == soDetails.shippingMethod) { %>
+            <option SELECTED value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } else { %>
+            <option value="<%= shippingMethod.name %>">
+              <%= shippingMethod.name %>
+            </option>
+            <% } %> <% }); %>
+          </select>
+             <% } %>
+          
           <label for="shipToLocation">Ship to Location:</label>
-          <select
+          <% if (soDetails.status == "POSTED") { %>
+            <select
+            disabled
             name="shipToLocation"
             id="shipToLocation"
             class="poSelectFields"
@@ -155,19 +225,53 @@
             <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
             <% } %> <% }); %>
           </select>
-          <label for="terms">Terms:</label>
-          <select name="terms" id="terms" class="poSelectFields">
-            <% paymentTermList.forEach(function(paymentTerm) { %> <% if
-            (paymentTerm.code == soDetails.terms) { %>
-            <option SELECTED value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
+          
+            <% } else { %>
+              <select
+            name="shipToLocation"
+            id="shipToLocation"
+            class="poSelectFields"
+          >
+            <% warehouseList.forEach(function(warehouse) { %> <% if
+            (warehouse.name == soDetails.shipToLocation) { %>
+            <option SELECTED value="<%= warehouse.name %>">
+              <%= warehouse.name %>
             </option>
             <% } else { %>
-            <option value="<%= paymentTerm.code %>">
-              <%= paymentTerm.code %>
-            </option>
+            <option value="<%= warehouse.name %>"><%= warehouse.name %></option>
             <% } %> <% }); %>
           </select>
+          <% } %>
+
+          <label for="terms">Terms:</label>
+          <% if (soDetails.status == "POSTED") { %>
+            <select disabled name="terms" id="terms" class="poSelectFields">
+              <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+              (paymentTerm.code == soDetails.terms) { %>
+              <option SELECTED value="<%= paymentTerm.code %>">
+                <%= paymentTerm.code %>
+              </option>
+              <% } else { %>
+              <option value="<%= paymentTerm.code %>">
+                <%= paymentTerm.code %>
+              </option>
+              <% } %> <% }); %>
+            </select>
+            <% } else { %>
+              <select name="terms" id="terms" class="poSelectFields">
+                <% paymentTermList.forEach(function(paymentTerm) { %> <% if
+                (paymentTerm.code == soDetails.terms) { %>
+                <option SELECTED value="<%= paymentTerm.code %>">
+                  <%= paymentTerm.code %>
+                </option>
+                <% } else { %>
+                <option value="<%= paymentTerm.code %>">
+                  <%= paymentTerm.code %>
+                </option>
+                <% } %> <% }); %>
+              </select>
+             <% } %>
+          
           <h3>Created by: <%= createdBy %></h3>
           <input type="hidden" name="createdBy" value="<%= createdBy %>" />
         </div>
@@ -274,7 +378,7 @@
           <h4>Subtotal:</h4>
           <h4 class="poSum"><%= soSumAmount %></h4>
         </div> 
-        <% if (soDetails.status == "RECEIVED") { %>
+        <% if (soDetails.status == "POSTED") { %>
           <div class="poActionBtns">
             <a href="/so/new"><button type="button">New</button></a>
             <button disabled>Update</button>

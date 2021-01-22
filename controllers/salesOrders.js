@@ -42,7 +42,7 @@ exports.getSalesOrder = (req, res, next) => {
         subMenuPath: '',
         soList: soList,
         errorMessage: error,
-        message: message
+        message: message,
       });
     })
     .catch((err) => {
@@ -171,7 +171,7 @@ exports.postCreateSalesOrder = (req, res, next) => {
     })
     .then((result) => {
       console.log('Created Sales Order');
-      req.flash('message', 'New Sales Order was created!');
+      req.flash('message', 'Sales Order was created!');
       res.redirect(`/so/view/${soNum}`);
     })
     .catch((err) => {
@@ -376,7 +376,7 @@ exports.postUpdateSO = (req, res, next) => {
     })
     .then((result) => {
       console.log('Updated Sales Order');
-      req.flash('message', 'SO was updated!');
+      req.flash('message', `SO was updated!`);
       res.redirect(`/so/view/${soNum}`);
     })
     .catch((err) => {
@@ -498,7 +498,7 @@ exports.postDeleteSalesOrder = (req, res, next) => {
       SalesOrder.deleteOne({ _id: ID })
         .then(() => {
           console.log('DESTROYED SO', soNum);
-          req.flash('message', 'SO was deleted!');
+          req.flash('message', `SO #${soNum} was deleted!`);
           return res.redirect('/so');
         })
         .catch((err) => console.log(err));
@@ -604,15 +604,11 @@ exports.postSalesOrder = (req, res, next) => {
                   item.totalQtyOnHand
                 );
                 console.log(line.qtyOrdered);
-                // console.log('avg cost eq', '((', +item.totalQtyOnHand, '*', +item.avgCost,') + (',+line.totalCost,')) / (',+item.totalQtyOnHand, '+', +line.qtyOrdered,')')
-                item.avgCost =
-                  (+item.totalQtyOnHand * +item.avgCost + +line.totalCost) /
-                  (+item.totalQtyOnHand + +line.qtyOrdered).toFixed(2);
                 item.totalQtyOnHand = (
-                  +item.totalQtyOnHand + +line.qtyOrdered
+                  +item.totalQtyOnHand - +line.qtyOrdered
                 ).toString();
-                item.qtyOnOrder = (
-                  +item.qtyOnOrder - +line.qtyOrdered
+                item.qtyAllocated = (
+                  +item.qtyAllocated - +line.qtyOrdered
                 ).toString();
                 return item.save();
               });
@@ -621,7 +617,7 @@ exports.postSalesOrder = (req, res, next) => {
       })
       .then((result) => {
         console.log('POSTED Sales Order');
-        req.flash('message', 'Sales Order was posted!');
+        req.flash('message', `SO #${soNum} was posted!`);
         res.redirect(`/so/view/${soNum}`);
       })
       .catch((err) => {
