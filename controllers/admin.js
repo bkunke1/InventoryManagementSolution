@@ -61,7 +61,7 @@ exports.getItem = (req, res, next) => {
                       uomList: uomList,
                       categoryList: categoryList,
                       itemLotList: itemLotList,
-                      itemList
+                      itemList,
                     });
                   });
                 })
@@ -123,15 +123,18 @@ exports.getItemMaintenance = (req, res, next) => {
             .then((uomList) => {
               Category.find()
                 .then((categoryList) => {
-                  res.render('dashboard/inventory/item-maintenance', {
-                    pageTitle: 'Item Maintenance',
-                    mainMenuPath: 'inventory',
-                    subMenuPath: 'item-maintenance',
-                    errorMessage: null,
-                    item: item,
-                    warehouseList: warehouseList,
-                    uomList: uomList,
-                    categoryList: categoryList,
+                  Item.find().then((itemList) => {
+                    res.render('dashboard/inventory/item-maintenance', {
+                      pageTitle: 'Item Maintenance',
+                      mainMenuPath: 'inventory',
+                      subMenuPath: 'item-maintenance',
+                      errorMessage: null,
+                      item: item,
+                      warehouseList: warehouseList,
+                      uomList: uomList,
+                      categoryList: categoryList,
+                      itemList: itemList,
+                    });
                   });
                 })
                 .catch((err) => {
@@ -158,19 +161,22 @@ exports.getAddItem = (req, res, next) => {
         .then((uomList) => {
           Category.find()
             .then((categoryList) => {
-              res.render('dashboard/inventory/add-item', {
-                pageTitle: 'Add Item',
-                mainMenuPath: 'inventory',
-                subMenuPath: 'add-item',
-                newItemID: req.query.newItemID,
-                errorMessage: null,
-                oldInput: { itemID: '' },
-                validationErrors: [],
-                warehouseList: warehouseList,
-                uomList: uomList,
-                categoryList: categoryList,
-              });
-            })
+              Item.find().then(itemList => {
+                res.render('dashboard/inventory/add-item', {
+                  pageTitle: 'Add Item',
+                  mainMenuPath: 'inventory',
+                  subMenuPath: 'add-item',
+                  newItemID: req.query.newItemID,
+                  errorMessage: null,
+                  oldInput: { itemID: '' },
+                  validationErrors: [],
+                  warehouseList: warehouseList,
+                  uomList: uomList,
+                  categoryList: categoryList,
+                  itemList: itemList
+                });
+              })
+              })              
             .catch((err) => {
               console.log(err);
             });
