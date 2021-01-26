@@ -46,20 +46,23 @@ exports.getItem = (req, res, next) => {
             .then((uomList) => {
               Category.find()
                 .then((categoryList) => {
-                  //testing lotcost displays
+                  Item.find().then((itemList) => {
+                    //testing lotcost displays
                     // itemLotList.forEach(function(lot) {
                     //   console.log(lot.lotNum);
                     // });
-                  res.render('./dashboard/inventory/item', {
-                    item: item,
-                    pageTitle: 'Item Profile',
-                    mainMenuPath: 'inventory',
-                    subMenuPath: 'item-maintenance',
-                    message: message,
-                    warehouseList: warehouseList,
-                    uomList: uomList,
-                    categoryList: categoryList,
-                    itemLotList: itemLotList
+                    res.render('./dashboard/inventory/item', {
+                      item: item,
+                      pageTitle: 'Item Profile',
+                      mainMenuPath: 'inventory',
+                      subMenuPath: 'item-maintenance',
+                      message: message,
+                      warehouseList: warehouseList,
+                      uomList: uomList,
+                      categoryList: categoryList,
+                      itemLotList: itemLotList,
+                      itemList
+                    });
                   });
                 })
                 .catch((err) => {

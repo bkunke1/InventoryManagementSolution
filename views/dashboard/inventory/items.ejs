@@ -13,14 +13,43 @@
         </ul>
       </div>
     </div>
-    <div class="workspace">
+    <div id="workspace" class="items-search-menu">
       <div>
         <h1 class="centered-text">Item List</h1>
+
+        <div class="itemSearchFilter">
+          <h5>Filter:</h5>
+          <select
+            name="itemSearchFilterSelection"
+            id="itemSearchFilterSelection"
+          >
+            <option value="itemID">Item ID</option>
+            <option value="description">Description</option>
+            <option value="category">Category</option>
+            <option value="type">Type</option>
+          </select>
+          <select
+            name="itemSearchFilterOperator"
+            id="itemSearchFilterOperator"
+          >
+            <!-- <option value="equals">Equals</option> -->
+            <option value="contains">Contains</option>
+            <!-- <option value="excludes">Excludes</option> -->
+          </select>
+          <input
+            type="text"
+            id="itemSearchFilterValue"
+            onkeyup="applyItemSelectionFilter()"
+          />
+          <!-- <button type="button" id="applyFilterBtn">Apply</button> -->
+        </div>
+
+        
         <table class="items-table">
           <tr>
             <th>Item ID</th>
-            <th>Description</th>
             <th>Status</th>
+            <th>Description</th>
             <th>Category</th>
             <th>Type</th>
             <th>Default Warehouse</th>
@@ -29,6 +58,9 @@
             <th>Purchase UOM</th>
             <th>Default Price</th>
             <th>Qty on Hand</th>
+            <th>Qty on Order</th>
+            <th>Qty Allocated</th>
+            <th>Qty Available</th>
           </tr>
           <% for (let item of items) { %>
           <tr>
@@ -43,6 +75,9 @@
             <td><h5><%= item.purchaseUOM%></h5></td>
             <td><h5><%= item.defaultPrice%></h5></td>
             <td><h5><%= item.totalQtyOnHand%></h5></td>
+            <td><h5><%= item.qtyOnOrder%></h5></td>
+            <td><h5><%= item.qtyAllocated%></h5></td>
+            <td><h5><%= item.totalQtyOnHand - item.qtyAllocated %></h5></td>
             <td><a href="item/<%= item._id%>" class="button">view</a></td>
           </tr>
           <% } %>

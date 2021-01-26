@@ -257,6 +257,13 @@ td {
   border-radius: 20px;
 }
 
+/* itemModal Content in item profile */
+.itemSearchModal-content2 {
+  height: 600px;
+  overflow: scroll;
+  width: 80%;
+}
+
 /* The itemModal Close Button */
 .close {
   color: #aaaaaa;

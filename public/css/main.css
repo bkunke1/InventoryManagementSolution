@@ -263,7 +263,7 @@ table {
 }
 
 .items-table {
-  margin: auto;  
+  margin: 2rem;
 }
 
 .items-table td {
@@ -301,4 +301,9 @@ table {
 
 .item-message {
   margin-top: 1rem;
+}
+
+.items-search-menu {
+  height: 600px;
+  overflow: scroll;
 }
