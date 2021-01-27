@@ -362,7 +362,7 @@
             <a href="/po/new"><button type="button">New</button></a>
             <button disabled>Update</button>
             <button disabled>Delete</button>
-            <button type="button">Print PO</button>
+            <a href="/po/printPDF/<%= newPONumber %>"><button type="button">Print PO</button></a>
             <a href="" method="GET"><button disabled type="button">Receive PO</button></a>
           </div>
           </div>
@@ -371,7 +371,7 @@
               <a href="/po/new"><button type="button">New</button></a>
               <button id="poUpdateBtn">Update</button>
               <button formaction="/po/delete">Delete</button>
-              <button type="button">Print PO</button>
+              <a href="/po/printPDF/<%= newPONumber %>"><button type="button">Print PO</button></a>
               <a href="/po/receiver/new/<%= newPONumber %>" method="GET"><button type="button">Receive PO</button></a>
             </div>
             <% } %>       

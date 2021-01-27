@@ -16,6 +16,7 @@ const receiver = require('../models/receiver');
 const uom = require('../models/uom');
 const { aggregate } = require('../models/item');
 const { forEach } = require('lodash');
+const PDFDocument = require('pdfkit');
 
 exports.getPurchaseOrder = (req, res, next) => {
   let message = req.flash('message');
@@ -1473,18 +1474,21 @@ exports.postReceiver = (req, res, next) => {
             console.log(consolidatedLines);
 
             const consolLine2 = Object.values(
-              consolidatedLines.reduce((acc, { itemID, qtyReceived, qtyOrdered, cost }) => {
-                acc[itemID] = acc[itemID] || {
-                  itemID,
-                  qtysReceived: [],
-                  qtysOrdered: [],
-                  costs: [],
-                };
-                acc[itemID].qtysReceived.push(qtyReceived);
-                acc[itemID].qtysOrdered.push(qtyOrdered);
-                acc[itemID].costs.push(cost);
-                return acc;
-              }, {})
+              consolidatedLines.reduce(
+                (acc, { itemID, qtyReceived, qtyOrdered, cost }) => {
+                  acc[itemID] = acc[itemID] || {
+                    itemID,
+                    qtysReceived: [],
+                    qtysOrdered: [],
+                    costs: [],
+                  };
+                  acc[itemID].qtysReceived.push(qtyReceived);
+                  acc[itemID].qtysOrdered.push(qtyOrdered);
+                  acc[itemID].costs.push(cost);
+                  return acc;
+                },
+                {}
+              )
             );
             console.log(consolLine2);
 
@@ -1496,7 +1500,7 @@ exports.postReceiver = (req, res, next) => {
                   return +total + +num;
                 })
                 .toString();
-                line.qtyOrdered = item.qtysOrdered
+              line.qtyOrdered = item.qtysOrdered
                 .reduce((total, num) => {
                   return +total + +num;
                 })
@@ -1542,4 +1546,114 @@ exports.postReceiver = (req, res, next) => {
         console.log(err);
       });
   }
+};
+
+exports.getPrintPurchaseOrder = (req, res, next) => {
+  const poNum = req.params.poNum;
+  console.log(poNum);
+
+  PurchaseOrder.findOne({ poNum: poNum })
+    .then((po) => {
+      const vendorNum = po.vendorNum;
+      const orderDate = `${
+        po.orderDate.getMonth() + 1
+      }/${po.orderDate.getDate()}/${po.orderDate.getFullYear()}`;
+      const expectedDate = `${
+        po.expectedDate.getMonth() + 1
+      }/${po.expectedDate.getDate()}/${po.expectedDate.getFullYear()}`;
+      const shippingMethod = po.shippingMethod;
+      const terms = po.terms;
+      const shipToLocation = po.shipToLocation;
+      const poTableData = po.poTableData;
+
+      Vendor.findOne({ name: vendorNum }).then((vendor) => {
+        console.log(vendor);
+        const vendorName = vendor.name;
+        const vendorAddress = vendor.address;
+        const vendorCity = vendor.city;
+        const vendorState = vendor.state;
+        const vendorZip = vendor.zip;
+        console.log(vendor.address, vendorAddress);
+
+        const pdfDoc = new PDFDocument();
+        res.setHeader('Content-Type', 'application/pdf');
+        // Not using the pipe below because we're not saving copies to the server.
+        // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
+        // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+        pdfDoc.pipe(res);
+
+        //Company Info
+        pdfDoc
+          .font('Helvetica')
+          .fontSize(16)
+          .text('Inventory Management Solutions', 50, 80);
+        pdfDoc.fontSize(12).text('10000 Derby Ln SE');
+        pdfDoc.text('Smyrna, GA 30082');
+        pdfDoc.text('Phone: 407-698-6113');
+        pdfDoc.text('Fax: 407-698-6119');
+        pdfDoc.text('Website: www.customwebware/ims.com');
+        pdfDoc.moveDown();
+
+        //Invoice Info
+        pdfDoc
+          .font('Helvetica-Bold')
+          .fontSize(25)
+          .text('Purchase Order', 350, 70);
+        pdfDoc
+          .font('Helvetica')
+          .fontSize(12)
+          .text(`Order Date: ${orderDate}`, pdfDoc.x + 45, pdfDoc.y);
+        pdfDoc.text(`Expected Date: ${expectedDate}`);
+        // pdfDoc.text('PO #: ' + poNum);
+        pdfDoc.text(`PO # ${poNum}`);
+        pdfDoc.moveDown();
+        pdfDoc.moveDown();
+        pdfDoc.moveDown();
+
+        // Draw bouding rectangle
+        pdfDoc.rect(pdfDoc.x - 7, 95, 150, 45).stroke();
+
+        //Vendor Info
+        pdfDoc.text(vendorNum, 50, pdfDoc.y + 20);
+        pdfDoc.text(`${vendorAddress}`);
+        pdfDoc.text(vendorCity);
+        pdfDoc.text(vendorState);
+        pdfDoc.text(vendorZip);
+
+        //Ship to Info
+        pdfDoc.text(`${shippingMethod}`, 300, pdfDoc.y - 60);
+        pdfDoc.text(shippingMethod);
+        pdfDoc.text('warehouseAddress2');
+        pdfDoc.text('warehousePhone');
+        pdfDoc.text('warehouseEmail');
+        pdfDoc.moveDown();
+
+        //PO Details
+        pdfDoc.text('Description');
+        pdfDoc.text('itemID');
+        pdfDoc.text('qty');
+        pdfDoc.text('uom');
+        pdfDoc.text('cost');
+        pdfDoc.text('extTotal');
+        pdfDoc.moveDown();
+
+        //po details test
+        pdfDoc.text('description itemid qty uom cost extTotal', {
+          columns: 6,
+          columnGap: 50,
+          height: 100,
+          width: 800,
+          align: 'justify'
+        }, 0, 0)
+
+        poTableData.forEach((line) => {
+          pdfDoc.text(line.itemID);
+        });
+
+        pdfDoc.end();
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
