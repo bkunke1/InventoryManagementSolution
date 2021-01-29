@@ -1550,7 +1550,6 @@ exports.postReceiver = (req, res, next) => {
 
 exports.getPrintPurchaseOrder = (req, res, next) => {
   const poNum = req.params.poNum;
-  console.log(poNum);
 
   PurchaseOrder.findOne({ poNum: poNum })
     .then((po) => {
@@ -1637,13 +1636,13 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           pdfDoc.moveUp();
           pdfDoc.text('BUYER', 70, pdfDoc.y);
           pdfDoc.moveUp();
-          pdfDoc.text('SHIP METHOD', pdfDoc.x + 70, pdfDoc.y);
+          pdfDoc.text('SHIP METHOD', 150, pdfDoc.y);
           pdfDoc.moveUp();
-          pdfDoc.text('TERMS', pdfDoc.x + 115, pdfDoc.y);
+          pdfDoc.text('TERMS', 260, pdfDoc.y);
           pdfDoc.moveUp();
-          pdfDoc.text('ORDER DATE', pdfDoc.x + 75, pdfDoc.y);
+          pdfDoc.text('ORDER DATE', 325, pdfDoc.y);
           pdfDoc.moveUp();
-          pdfDoc.text('EXPECTED DATE', pdfDoc.x + 100, pdfDoc.y);
+          pdfDoc.text('EXPECTED DATE', 425, pdfDoc.y);
 
           // Draw bouding rectangle
           pdfDoc.moveUp();
@@ -1661,6 +1660,7 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           pdfDoc.text(orderDate, 340, pdfDoc.y);
           pdfDoc.moveUp();
           pdfDoc.text(expectedDate, 455, pdfDoc.y);
+          
 
           //PO Details
           pdfDoc.moveDown();
@@ -1683,8 +1683,6 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
 
           pdfDoc.moveDown();
           pdfDoc.moveDown();
-          pdfDoc.moveDown();
-          pdfDoc.moveDown();
 
           let poTotal = 0;
 
@@ -1704,8 +1702,7 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
               pdfDoc.x + 55,
               pdfDoc.y
             );
-            poTotal = poTotal + line.qtyOrdered * line.cost
-            console.log(poTotal);
+            poTotal = poTotal + line.qtyOrdered * line.cost;
           });
 
           // Draw poTOTAL Line
@@ -1718,6 +1715,207 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           pdfDoc.text(poTotal.toFixed(2), pdfDoc.x, pdfDoc.y);
           pdfDoc.moveUp();
           pdfDoc.text('TOTAL', pdfDoc.x - 45, pdfDoc.y);
+
+          if (po.status === 'RECEIVED') {
+            // RECEIVED ALERT MESSAGE
+            pdfDoc.moveDown();
+            pdfDoc
+              .font('Helvetica-Bold')
+              .fillColor('red')
+              .fontSize(40)
+              .text('RECEIVED', 195, pdfDoc.y + 20);
+          }
+
+          pdfDoc.end();
+        });
+      });
+    })
+
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.getPrintReceiver = (req, res, next) => {
+  const receiverNum = req.params.receiverNum;
+
+  Receiver.findOne({ receiverNum: receiverNum })
+    .then((receiver) => {
+      const vendorNum = receiver.vendorNum;
+      const orderDate = `${
+        receiver.orderDate.getMonth() + 1
+      }/${receiver.orderDate.getDate()}/${receiver.orderDate.getFullYear()}`;
+      const receivedDate = `${
+        receiver.receivedDate.getMonth() + 1
+      }/${receiver.receivedDate.getDate()}/${receiver.receivedDate.getFullYear()}`;
+      const shippingMethod = receiver.shippingMethod;
+      const terms = receiver.terms;
+      const shipToLocation = receiver.shipToLocation;
+      const buyerName = receiver.createdBy;
+      const receiverTableData = receiver.receiverTableData;
+
+      Vendor.findOne({ name: vendorNum }).then((vendor) => {
+        const vendorName = vendor.name;
+        const vendorAddress = vendor.address;
+        const vendorCity = vendor.city;
+        const vendorState = vendor.state;
+        const vendorZip = vendor.zip;
+
+        Warehouse.findOne({ name: shipToLocation }).then((warehouse) => {
+          const pdfDoc = new PDFDocument();
+          res.setHeader('Content-Type', 'application/pdf');
+          // Not using the pipe below because we're not saving copies to the server.
+          // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
+          // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+          pdfDoc.pipe(res);
+
+          //Company Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(16)
+            .text('Inventory Management Solutions', 50, 80);
+          pdfDoc.fontSize(12).font('Helvetica').text('10000 Derby Ln SE');
+          pdfDoc.text('Smyrna, GA 30082');
+          pdfDoc.text('Phone: 407-698-6113');
+          pdfDoc.text('Fax: 407-698-6119');
+          pdfDoc.text('Website: www.customwebware/ims.com');
+          pdfDoc.moveDown();
+
+          //Invoice Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(25)
+            .text('Receiver', 410, 55);
+            pdfDoc.moveDown();
+          pdfDoc
+            .font('Helvetica')
+            .fontSize(12)
+            .text(`Order Date: ${orderDate}`, pdfDoc.x - 10, pdfDoc.y);
+          pdfDoc.text(`Received Date: ${receivedDate}`);
+          pdfDoc.text(`RECEIVER # ${receiverNum}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          // Draw bouding rectangle
+          pdfDoc.rect(pdfDoc.x - 7, 105, 150, 55).stroke();
+
+          //Vendor Info
+          pdfDoc.font('Helvetica-Bold').text('VENDOR:', 50, pdfDoc.y + 20);
+          pdfDoc.font('Helvetica').text(vendorNum);
+          pdfDoc.text(vendorAddress);
+          pdfDoc.text(`${vendorCity}, ${vendorState} ${vendorZip}`);
+
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+
+          //Ship to Info
+          pdfDoc.font('Helvetica-Bold').text('SHIP TO:', 300, pdfDoc.y);
+          pdfDoc.font('Helvetica').text(warehouse.name);
+          pdfDoc.text(warehouse.address);
+          pdfDoc.text(`${warehouse.city}, ${warehouse.state} ${warehouse.zip}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          //Receiver specLabels
+          pdfDoc.moveUp();
+          pdfDoc.text('BUYER', 70, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('SHIP METHOD', 150, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TERMS', 260, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('ORDER DATE', 325, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('EXPECTED DATE', 425, pdfDoc.y);
+
+          // Draw bouding rectangle
+          pdfDoc.moveUp();
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 19).stroke();
+
+          //Receiver specDetails
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text('Brandon Kunkel', 48, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(shippingMethod, 151, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(terms, 260, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(orderDate, 340, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(receivedDate, 455, pdfDoc.y);
+
+          //Receiver Details
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text('Item ID', 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Description', 100, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Ordered', 280, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Received', 332, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('UOM', 395, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Price', 443, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Extended', 485, pdfDoc.y);
+          pdfDoc.moveUp();
+
+          // Draw bouding rectangle
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 20).stroke();
+
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          let receiverTotal = 0;
+
+          receiverTableData.forEach((line) => {
+            pdfDoc.text(line.itemID, 52, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.itemDescription, 100, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.qtyOrdered, 295, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.qtyReceived, 350, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.uom, 395, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.cost, 445, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(
+              (line.qtyReceived * line.cost).toFixed(2),
+              490,
+              pdfDoc.y
+            );
+            receiverTotal = receiverTotal + line.qtyReceived * line.cost;
+          });
+
+          // Draw receiverTotal Line
+          pdfDoc
+            .moveTo(545, pdfDoc.y + 5)
+            .lineTo(45, pdfDoc.y + 5)
+            .stroke(5);
+          pdfDoc.moveDown();
+
+          pdfDoc.text(receiverTotal.toFixed(2), pdfDoc.x, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TOTAL', pdfDoc.x - 45, pdfDoc.y);
+
+          if (receiver.status === 'POSTED') {
+            // RECEIVED ALERT MESSAGE
+            pdfDoc.moveDown();
+            pdfDoc
+              .font('Helvetica-Bold')
+              .fillColor('red')
+              .fontSize(40)
+              .text('POSTED', 195, pdfDoc.y + 20);
+          }
 
           pdfDoc.end();
         });

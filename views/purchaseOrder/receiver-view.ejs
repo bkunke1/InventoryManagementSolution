@@ -366,7 +366,7 @@
           <div class="poActionBtns">
             <button disabled>Update</button>
             <button disabled>Delete</button>
-            <button type="button">Print</button>
+            <a href="/po/receiver/printPDF/<%= newReceiverNumber %>"><button type="button">Print</button></a>
             <button disabled>Post</button>
           </div>
           <% } else { %>
@@ -374,6 +374,7 @@
               <button id="poUpdateBtn">Update</button>
               <button formaction="/po/receiver/delete">Delete</button>
               <button type="button">Print</button>
+              <a href="/po/receiver/printPDF/<%= newReceiverNumber %>"><button type="button">Print</button></a>
               <button formaction="/po/receiver/post">Post</button>
             </div>
             <% } %>        

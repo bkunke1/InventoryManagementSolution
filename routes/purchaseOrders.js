@@ -34,6 +34,7 @@ router.get('/po/printPDF/:poNum', purchasingAuth, purchaseOrderController.getPri
 
 
 
+
 // router.post('/po/itemSelectionFilter/:filterType/:filterOperator', purchasingAuth, purchaseOrderController.postFilterItemSelectionList); might do this front side
 
 router.get('/po/options/', purchasingAuth, purchaseOrderController.getOptions);
@@ -65,6 +66,8 @@ router.post('/po/receiver/delete', purchasingAuth, purchaseOrderController.postD
 router.get('/po/receiver/next/:receiverNum', purchasingAuth, purchaseOrderController.getNextReceiver);
 router.get('/po/receiver/previous/:receiverNum', purchasingAuth, purchaseOrderController.getPreviousReceiver);
 router.post('/po/receiver/post', purchasingAuth, purchaseOrderController.postReceiver);
+
+router.get('/po/receiver/printPDF/:receiverNum', purchasingAuth, purchaseOrderController.getPrintReceiver);
 
 
 
