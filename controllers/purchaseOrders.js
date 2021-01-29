@@ -1564,95 +1564,166 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
       const shippingMethod = po.shippingMethod;
       const terms = po.terms;
       const shipToLocation = po.shipToLocation;
+      const buyerName = po.createdBy;
       const poTableData = po.poTableData;
 
       Vendor.findOne({ name: vendorNum }).then((vendor) => {
-        console.log(vendor);
         const vendorName = vendor.name;
         const vendorAddress = vendor.address;
         const vendorCity = vendor.city;
         const vendorState = vendor.state;
         const vendorZip = vendor.zip;
-        console.log(vendor.address, vendorAddress);
 
-        const pdfDoc = new PDFDocument();
-        res.setHeader('Content-Type', 'application/pdf');
-        // Not using the pipe below because we're not saving copies to the server.
-        // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
-        // pdfDoc.pipe(fs.createWriteStream(invoicePath));
-        pdfDoc.pipe(res);
+        Warehouse.findOne({ name: shipToLocation }).then((warehouse) => {
+          const pdfDoc = new PDFDocument();
+          res.setHeader('Content-Type', 'application/pdf');
+          // Not using the pipe below because we're not saving copies to the server.
+          // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
+          // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+          pdfDoc.pipe(res);
 
-        //Company Info
-        pdfDoc
-          .font('Helvetica')
-          .fontSize(16)
-          .text('Inventory Management Solutions', 50, 80);
-        pdfDoc.fontSize(12).text('10000 Derby Ln SE');
-        pdfDoc.text('Smyrna, GA 30082');
-        pdfDoc.text('Phone: 407-698-6113');
-        pdfDoc.text('Fax: 407-698-6119');
-        pdfDoc.text('Website: www.customwebware/ims.com');
-        pdfDoc.moveDown();
+          //Company Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(16)
+            .text('Inventory Management Solutions', 50, 80);
+          pdfDoc.fontSize(12).font('Helvetica').text('10000 Derby Ln SE');
+          pdfDoc.text('Smyrna, GA 30082');
+          pdfDoc.text('Phone: 407-698-6113');
+          pdfDoc.text('Fax: 407-698-6119');
+          pdfDoc.text('Website: www.customwebware/ims.com');
+          pdfDoc.moveDown();
 
-        //Invoice Info
-        pdfDoc
-          .font('Helvetica-Bold')
-          .fontSize(25)
-          .text('Purchase Order', 350, 70);
-        pdfDoc
-          .font('Helvetica')
-          .fontSize(12)
-          .text(`Order Date: ${orderDate}`, pdfDoc.x + 45, pdfDoc.y);
-        pdfDoc.text(`Expected Date: ${expectedDate}`);
-        // pdfDoc.text('PO #: ' + poNum);
-        pdfDoc.text(`PO # ${poNum}`);
-        pdfDoc.moveDown();
-        pdfDoc.moveDown();
-        pdfDoc.moveDown();
+          //Invoice Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(25)
+            .text('Purchase Order', 350, 70);
+          pdfDoc
+            .font('Helvetica')
+            .fontSize(12)
+            .text(`Order Date: ${orderDate}`, pdfDoc.x + 45, pdfDoc.y);
+          pdfDoc.text(`Expected Date: ${expectedDate}`);
+          // pdfDoc.text('PO #: ' + poNum);
+          pdfDoc.text(`PO # ${poNum}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
 
-        // Draw bouding rectangle
-        pdfDoc.rect(pdfDoc.x - 7, 95, 150, 45).stroke();
+          // Draw bouding rectangle
+          pdfDoc.rect(pdfDoc.x - 7, 95, 150, 45).stroke();
 
-        //Vendor Info
-        pdfDoc.text(vendorNum, 50, pdfDoc.y + 20);
-        pdfDoc.text(`${vendorAddress}`);
-        pdfDoc.text(vendorCity);
-        pdfDoc.text(vendorState);
-        pdfDoc.text(vendorZip);
+          //Vendor Info
+          pdfDoc.font('Helvetica-Bold').text('VENDOR:', 50, pdfDoc.y + 20);
+          pdfDoc.font('Helvetica').text(vendorNum);
+          pdfDoc.text(vendorAddress);
+          pdfDoc.text(`${vendorCity}, ${vendorState} ${vendorZip}`);
 
-        //Ship to Info
-        pdfDoc.text(`${shippingMethod}`, 300, pdfDoc.y - 60);
-        pdfDoc.text(shippingMethod);
-        pdfDoc.text('warehouseAddress2');
-        pdfDoc.text('warehousePhone');
-        pdfDoc.text('warehouseEmail');
-        pdfDoc.moveDown();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
 
-        //PO Details
-        pdfDoc.text('Description');
-        pdfDoc.text('itemID');
-        pdfDoc.text('qty');
-        pdfDoc.text('uom');
-        pdfDoc.text('cost');
-        pdfDoc.text('extTotal');
-        pdfDoc.moveDown();
+          //Ship to Info
+          pdfDoc.font('Helvetica-Bold').text('SHIP TO:', 300, pdfDoc.y);
+          pdfDoc.font('Helvetica').text(warehouse.name);
+          pdfDoc.text(warehouse.address);
+          pdfDoc.text(`${warehouse.city}, ${warehouse.state} ${warehouse.zip}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
 
-        //po details test
-        pdfDoc.text('description itemid qty uom cost extTotal', {
-          columns: 6,
-          columnGap: 50,
-          height: 100,
-          width: 800,
-          align: 'justify'
-        }, 0, 0)
+          //PO specLabels
+          pdfDoc.moveUp();
+          pdfDoc.text('BUYER', 70, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('SHIP METHOD', pdfDoc.x + 70, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TERMS', pdfDoc.x + 115, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('ORDER DATE', pdfDoc.x + 75, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('EXPECTED DATE', pdfDoc.x + 100, pdfDoc.y);
 
-        poTableData.forEach((line) => {
-          pdfDoc.text(line.itemID);
+          // Draw bouding rectangle
+          pdfDoc.moveUp();
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 19).stroke();
+
+          //PO specDetails
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text('Brandon Kunkel', 48, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(shippingMethod, 151, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(terms, 255, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(orderDate, 340, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(expectedDate, 455, pdfDoc.y);
+
+          //PO Details
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text('Item ID', 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Description', pdfDoc.x + 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('QTY', pdfDoc.x + 225, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('UOM', pdfDoc.x + 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Price', pdfDoc.x + 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Extended', pdfDoc.x + 50, pdfDoc.y);
+          pdfDoc.moveUp();
+
+          // Draw bouding rectangle
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 20).stroke();
+
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          let poTotal = 0;
+
+          poTableData.forEach((line) => {
+            pdfDoc.text(line.itemID, 52, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.itemDescription, pdfDoc.x + 50, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.qtyOrdered, pdfDoc.x + 223, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.uom, pdfDoc.x + 48, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.cost, pdfDoc.x + 55, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(
+              (line.qtyOrdered * line.cost).toFixed(2),
+              pdfDoc.x + 55,
+              pdfDoc.y
+            );
+            poTotal = poTotal + line.qtyOrdered * line.cost
+            console.log(poTotal);
+          });
+
+          // Draw poTOTAL Line
+          pdfDoc
+            .moveTo(545, pdfDoc.y + 5)
+            .lineTo(45, pdfDoc.y + 5)
+            .stroke(5);
+          pdfDoc.moveDown();
+
+          pdfDoc.text(poTotal.toFixed(2), pdfDoc.x, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TOTAL', pdfDoc.x - 45, pdfDoc.y);
+
+          pdfDoc.end();
         });
-
-        pdfDoc.end();
       });
     })
+
     .catch((err) => {
       console.log(err);
     });

@@ -451,6 +451,9 @@ exports.postAddWarehouse = (req, res, next) => {
   const ID = req.body.warehouseID;
   const name = req.body.warehouseName;
   const address = req.body.address;
+  const city = req.body.city;
+  const state = req.body.state;
+  const zip = req.body.zip;
 
   const errors = validationResult(req);
   console.log('postAddWarehouse Errors', errors);
@@ -471,6 +474,9 @@ exports.postAddWarehouse = (req, res, next) => {
           ID: ID,
           name: name.toUpperCase(),
           address: address.toUpperCase(),
+          city: city.toUpperCase(),
+          state: state.toUpperCase(),
+          zip: zip.toUpperCase(),
         });
         warehouse
           .save()
@@ -494,6 +500,9 @@ exports.postEditWarehouse = (req, res, next) => {
   const ID = req.body.editWarehouseID;
   const name = req.body.editWarehouseName;
   const address = req.body.editAddress;
+  const city = req.body.editCity;
+  const state = req.body.editState;
+  const zip = req.body.editZip;
 
   const errors = validationResult(req);
   console.log('postEditWarehouse Errors', errors);
@@ -515,6 +524,9 @@ exports.postEditWarehouse = (req, res, next) => {
             warehouse.ID = ID;
             warehouse.name = name.toUpperCase();
             warehouse.address = address.toUpperCase();
+            warehouse.city = city.toUpperCase();
+            warehouse.state = state.toUpperCase();
+            warehouse.zip = zip.toUpperCase();
             console.log(warehouse);
             return warehouse.save().then((result) => {
               console.log('Warehouse Item was Updated!');

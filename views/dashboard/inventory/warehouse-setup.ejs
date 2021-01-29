@@ -41,9 +41,39 @@
                 type="text"
                 name="address"
                 value=""
-                size="60"
-                maxlength="60"
+                size="30"
+                maxlength="30"
               />
+            </div>
+            <div class="item-field">
+              <label for="city">City:</label>
+            <input
+              type="text"
+              name="city"
+              value=""
+              size="30"
+              maxlength="30"
+            />
+            </div>
+            <div class="item-field">
+              <label for="city">State:</label>
+            <input
+              type="text"
+              name="state"
+              value=""
+              size="30"
+              maxlength="30"
+            />
+            </div>
+            <div class="item-field">
+              <label for="zip">Zip:</label>
+            <input
+              type="text"
+              name="zip"
+              value=""
+              size="10"
+              maxlength="10"
+            />
             </div>
             <input type="submit" value="Save" />
           </form>
@@ -56,12 +86,18 @@
               <th>ID</th>
               <th>Name</th>
               <th>Address</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Zip</th>
             </tr>
             <% for (warehouse of warehouseList) { %>
             <tr>
               <td><%= warehouse.ID %></td>
               <td><%= warehouse.name %></td>
               <td><%= warehouse.address %></td>
+              <td><%= warehouse.city %></td>
+              <td><%= warehouse.state %></td>
+              <td><%= warehouse.zip %></td>
               <td>
                 <form action="/inventory/warehouse-delete" method="POST">
                   <input
@@ -98,14 +134,44 @@
           <div class="item-field">
             <label for="editAddress">Address:</label>
             <input
-              type="text"
-              name="editAddress"
-              value=""
-              size="60"
-              maxlength="60"
-            />
+                type="text"
+                name="editAddress"
+                value=""
+                size="30"
+                maxlength="30"
+              />              
           </div>
-          <input type="submit" value="Update Changes" />
+          <div class="item-field">
+            <label for="editCity">City:</label>
+            <input
+                type="text"
+                name="editCity"
+                value=""
+                size="30"
+                maxlength="30"
+              />
+          </div>
+          <div class="item-field">
+            <label for="editState">City:</label>
+            <input
+                type="text"
+                name="editState"
+                value=""
+                size="30"
+                maxlength="30"
+              />
+          </div>
+          <div class="item-field">
+            <label for="editZip">Zip:</label>
+              <input
+                type="text"
+                name="editZip"
+                value=""
+                size="10"
+                maxlength="10"
+              />
+          </div>
+          <input type="submit" value="Update Changes" class="editWhsBtnUpdate"/>
         </form>
       </div>
     </div>
