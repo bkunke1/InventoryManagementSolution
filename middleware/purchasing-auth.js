@@ -4,6 +4,5 @@ module.exports = (req, res, next) => {
     return;
   }
   console.log('you dont have permission');
-    return res.redirect('/');
-  
+  return res.redirect('/');
 };

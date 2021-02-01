@@ -5,32 +5,28 @@ const Schema = mongoose.Schema;
 const customerSchema = new Schema({
   ID: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
-  }
-  ,
+    required: true,
+  },
   address: {
     type: String,
-    required: true
-  }
-  ,
+    required: true,
+  },
   city: {
     type: String,
-    required: true
-  }
-  ,
+    required: true,
+  },
   state: {
     type: String,
-    required: true
-  }
-  ,
+    required: true,
+  },
   zip: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('CUSTOMER', customerSchema);

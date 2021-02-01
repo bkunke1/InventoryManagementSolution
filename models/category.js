@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 const categorySchema = new Schema({
   ID: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Category', categorySchema);

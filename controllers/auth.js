@@ -17,8 +17,7 @@ const User = require('../models/user');
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key:
-        `${process.env.SENDGRID_API_KEY}`,
+      api_key: `${process.env.SENDGRID_API_KEY}`,
     },
   })
 );
@@ -160,8 +159,9 @@ exports.postSignup = (req, res, next) => {
         to: email,
         from: 'brandon@customwebware.com',
         subject: 'Custom Webware signup success!',
-        html: '<h1>You successfully signed up!</h1> <a href="http://www.customwebware.com/unsubscribe">Unsubscribe</a>',
-        text: '4451 Derby Ln SE Smyrna, GA 30082 407-698-6113'
+        html:
+          '<h1>You successfully signed up!</h1> <a href="http://www.customwebware.com/unsubscribe">Unsubscribe</a>',
+        text: '4451 Derby Ln SE Smyrna, GA 30082 407-698-6113',
       });
       console.log('signup confirmation email sent');
       return res.redirect('/login');
@@ -281,7 +281,14 @@ exports.postNewPassword = (req, res, next) => {
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
   let resetUser;
-  console.log('newPassword', newPassword, 'userId', userId, 'passwordToken', passwordToken);
+  console.log(
+    'newPassword',
+    newPassword,
+    'userId',
+    userId,
+    'passwordToken',
+    passwordToken
+  );
 
   User.findOne({
     resetToken: passwordToken,

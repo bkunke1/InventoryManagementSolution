@@ -11,10 +11,8 @@ router.get('/login', authController.getLogin);
 router.post(
   '/login',
   [
-    body('email')
-      .isEmail()
-      .withMessage('Please enter a valid email.'),
-      // .normalizeEmail(), //makes email all lowercase
+    body('email').isEmail().withMessage('Please enter a valid email.'),
+    // .normalizeEmail(), //makes email all lowercase
     body(
       'password',
       'Please enter a password with only numbers and text and at least 5 characters.'
@@ -49,7 +47,7 @@ router.post(
           }
         });
       }),
-      // .normalizeEmail(), // removed because it was removing "." inside the email strings!
+    // .normalizeEmail(), // removed because it was removing "." inside the email strings!
     body(
       'password',
       'Please enter a password with only numbers and text and at least 5 characters.'

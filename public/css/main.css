@@ -39,8 +39,6 @@ body {
   margin-left: 2rem;
 }
 
-
-
 .user-login-info-text {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1rem;
@@ -217,7 +215,6 @@ table {
   text-align: center;
 }
 
-
 .user-message--error {
   border: 1px solid red;
   background-color: rgb(255, 143, 143);
@@ -268,12 +265,12 @@ table {
 
 .items-table td {
   text-align: center;
-  padding-right: .4rem;
-  padding-left: .4rem;
+  padding-right: 0.4rem;
+  padding-left: 0.4rem;
 }
 
 #uomFieldsRight {
-  width: 50%;  
+  width: 50%;
 }
 
 #uomFieldsLeft {

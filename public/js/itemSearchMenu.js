@@ -14,14 +14,12 @@ if (itemSelectionBtn) {
   };
 }
 
-
 // When the user clicks on <span> (x), close the modal
 if (itemSpan) {
   itemSpan.onclick = function () {
     itemModal.style.display = 'none';
   };
 }
-
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {

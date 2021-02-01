@@ -1660,7 +1660,6 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           pdfDoc.text(orderDate, 340, pdfDoc.y);
           pdfDoc.moveUp();
           pdfDoc.text(expectedDate, 455, pdfDoc.y);
-          
 
           //PO Details
           pdfDoc.moveDown();
@@ -1689,7 +1688,11 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           poTableData.forEach((line) => {
             pdfDoc.text(line.itemID, 52, pdfDoc.y);
             pdfDoc.moveUp();
-            pdfDoc.text(line.itemDescription.substr(0,20), pdfDoc.x + 50, pdfDoc.y);
+            pdfDoc.text(
+              line.itemDescription.substr(0, 20),
+              pdfDoc.x + 50,
+              pdfDoc.y
+            );
             pdfDoc.moveUp();
             pdfDoc.text(line.qtyOrdered, pdfDoc.x + 223, pdfDoc.y);
             pdfDoc.moveUp();
@@ -1782,11 +1785,8 @@ exports.getPrintReceiver = (req, res, next) => {
           pdfDoc.moveDown();
 
           //Invoice Info
-          pdfDoc
-            .font('Helvetica-Bold')
-            .fontSize(25)
-            .text('Receiver', 410, 55);
-            pdfDoc.moveDown();
+          pdfDoc.font('Helvetica-Bold').fontSize(25).text('Receiver', 410, 55);
+          pdfDoc.moveDown();
           pdfDoc
             .font('Helvetica')
             .fontSize(12)
@@ -1878,7 +1878,7 @@ exports.getPrintReceiver = (req, res, next) => {
           receiverTableData.forEach((line) => {
             pdfDoc.text(line.itemID, 52, pdfDoc.y);
             pdfDoc.moveUp();
-            pdfDoc.text(line.itemDescription.substr(0,20), 100, pdfDoc.y);
+            pdfDoc.text(line.itemDescription.substr(0, 20), 100, pdfDoc.y);
             pdfDoc.moveUp();
             pdfDoc.text(line.qtyOrdered, 295, pdfDoc.y);
             pdfDoc.moveUp();

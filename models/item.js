@@ -5,76 +5,76 @@ const Schema = mongoose.Schema;
 const itemSchema = new Schema({
   itemID: {
     type: String,
-    required: true
+    required: true,
   },
   itemStatus: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   category: {
     type: String,
-    required: true
+    required: true,
   },
   valuationMethod: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
-    required: true
+    required: true,
   },
   defaultWarehouse: {
     type: String,
-    required: true
+    required: true,
   },
   baseUOM: {
     type: String,
-    required: true
+    required: true,
   },
   salesUOM: {
     type: String,
-    required: true
+    required: true,
   },
   purchaseUOM: {
     type: String,
-    required: true
+    required: true,
   },
   defaultPrice: {
     type: String,
-    required: true
+    required: true,
   },
   totalQtyOnHand: {
     type: Number,
-    required: true
-  },  
+    required: true,
+  },
   qtyOnOrder: {
     type: Number,
-    required: false
+    required: false,
   },
   qtyAllocated: {
     type: Number,
-    required: false
+    required: false,
   },
   userId: {
     type: String,
-    required: false
+    required: false,
   },
   id: {
     type: String,
-    required: false
+    required: false,
   },
   avgCost: {
     type: Number,
-    required: false
+    required: false,
   },
   lotCost: {
     type: Object,
-    required: false
-  }
+    required: false,
+  },
 });
 
 module.exports = mongoose.model('Item', itemSchema);

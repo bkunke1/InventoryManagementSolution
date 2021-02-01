@@ -28,32 +28,32 @@ router.post(
       .trim()
       .withMessage('Please enter valid Item ID'),
     body('description')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isString()
       .trim()
       .withMessage('Please enter an alphanumeric description'),
     body('category')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
       .withMessage('Please enter an alphanumeric category'),
     body('defaultWarehouse')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
       .withMessage('Please enter an alphanumeric warehouse'),
     body('baseUOM')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
       .withMessage('Please enter a valid base uom'),
     body('salesUOM')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
       .withMessage('Please enter a valid sales uom'),
     body('purchaseUOM')
-    .isLength({ min: 1 })
+      .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
       .withMessage('Please enter a valid purchase uom'),
@@ -72,14 +72,12 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid Item ID')
+      .withMessage('Please enter valid Item ID'),
   ],
   adminController.searchItemByNewID
 );
 
 router.get('/inventory/item/:itemId', adminController.getItem);
-
-
 
 // router.get('/edit-item', adminController.getEditItem);
 
@@ -100,7 +98,7 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid warehouse ID')
+      .withMessage('Please enter valid warehouse ID'),
   ],
   adminController.postAddWarehouse
 );
@@ -112,7 +110,7 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid warehouse ID')
+      .withMessage('Please enter valid warehouse ID'),
   ],
   adminController.postEditWarehouse
 );
@@ -128,7 +126,7 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid UOM ID')
+      .withMessage('Please enter valid UOM ID'),
   ],
   adminController.postAddUOM
 );
@@ -140,7 +138,7 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid uom ID')
+      .withMessage('Please enter valid uom ID'),
   ],
   adminController.postEditUOM
 );
@@ -156,7 +154,7 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid Category ID')
+      .withMessage('Please enter valid Category ID'),
   ],
   adminController.postAddCategory
 );
@@ -168,20 +166,14 @@ router.post(
       .isLength({ min: 1 })
       .isAlphanumeric()
       .trim()
-      .withMessage('Please enter valid Category ID')
+      .withMessage('Please enter valid Category ID'),
   ],
   adminController.postEditCategory
 );
 
 router.post('/inventory/category-delete', adminController.postDeleteCategory);
 
-
-
-
-
 // router.get('/so', salesAuth,  adminController.getSalesOrder);
-
-
 
 router.get('/reports', adminController.getReports);
 router.get('/reports/printPDF/StockStatus', adminController.getStockStatus);

@@ -5,23 +5,21 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   resetToken: String,
   resetTokenExpiration: String,
   role: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 module.exports = mongoose.model('User', userSchema);
-
-
 
 // const mongodb = require('mongodb');
 // const getDb = require('../util/database').getDb;
@@ -110,6 +108,5 @@ module.exports = mongoose.model('User', userSchema);
 //   }
 
 // }
-
 
 // module.exports = User;

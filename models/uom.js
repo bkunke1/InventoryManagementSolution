@@ -5,16 +5,16 @@ const Schema = mongoose.Schema;
 const uomSchema = new Schema({
   ID: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   conversionQty: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('UOM', uomSchema);

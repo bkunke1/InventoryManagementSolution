@@ -6,69 +6,70 @@ const Schema = mongoose.Schema;
 const salesOrderSchema = new Schema({
   soNum: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
-    required: true
+    required: true,
   },
   customerNum: {
     type: String,
-    required: true
+    required: true,
   },
   customerPoNum: {
-    type: String
+    type: String,
   },
   orderDate: {
     type: Date,
-    required: true
+    required: true,
   },
   expectedDate: {
     type: Date,
-    required: true
+    required: true,
   },
   shippingMethod: {
     type: String,
-    required: true
+    required: true,
   },
   terms: {
     type: String,
-    required: true
+    required: true,
   },
   createdBy: {
     type: String,
-    required: true
+    required: true,
   },
   shipToLocation: {
     type: String,
-    required: true
+    required: true,
   },
   soTableData: [
-    { line: {
+    {
+      line: {
         type: String,
-        required: true
+        required: true,
+      },
+      itemID: {
+        type: String,
+        required: true,
+      },
+      itemDescription: {
+        type: String,
+        required: true,
+      },
+      qtyOrdered: {
+        type: String,
+        required: true,
+      },
+      uom: {
+        type: String,
+        required: true,
+      },
+      price: {
+        type: String,
+        required: true,
+      },
     },
-    itemID: {
-        type: String,
-        required: true
-    },
-    itemDescription: {
-        type: String,
-        required: true
-    },
-    qtyOrdered: {
-        type: String,
-        required: true
-    },
-    uom: {
-        type: String,
-        required: true
-    },
-    price: {
-        type: String,
-        required: true
-    }
-    }
   ],
 });
 

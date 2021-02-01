@@ -85,7 +85,7 @@ const poOrganizeTableData = () => {
       uom: data[4].firstElementChild.value,
       cost: data[5].textContent.trim(),
     };
-    
+
     if (line.itemID !== '') {
       poTableDataArray.push(line);
     }
@@ -121,7 +121,7 @@ const receiverOrganizeTableData = () => {
       qtyOrdered: data[3].textContent.trim(),
       qtyReceived: data[4].textContent.trim(),
       uom: data[5].firstElementChild.value,
-      cost: data[6].textContent.trim()      
+      cost: data[6].textContent.trim(),
     };
 
     if (line.itemID !== '') {
@@ -156,13 +156,15 @@ const poLineDeleteBtn = (lineBtn) => {
 };
 
 // updates extended cost
-const poLineUpdateExtCost = (element) => {  
-  const qty = (document.querySelector('.quantityReceived')) ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
-    .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
+const poLineUpdateExtCost = (element) => {
+  const qty = document.querySelector('.quantityReceived')
+    ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
+        .textContent
+    : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
   const cost = element.parentElement.querySelector('.poTableCost').textContent;
   const updatedCost = element.parentElement.querySelector('.poTableCost');
-  
+
   const poSum = document.querySelector('.poSum');
   let extCost = element.parentElement.querySelector('.poTableExtended');
   let extCostTotal = (+qty * 1 * +cost).toFixed(2);
@@ -177,7 +179,6 @@ function poLineCostDecimalFormat(element) {
   console.log(element);
   element.value = parseFloat(element.value).toFixed(2);
 }
-
 
 // updated po sum
 const poSumUpdate = () => {
@@ -216,9 +217,7 @@ const poAddNewLine = function () {
   newPOTableUOM.innerHTML = '<select></select>';
 
   for (uom of UOMs) {
-    newPOTableUOM.firstElementChild.add(
-      new Option(uom.name, uom.name)
-    );
+    newPOTableUOM.firstElementChild.add(new Option(uom.name, uom.name));
   }
 
   newPOTableLine.classList.add('poTableLine');
@@ -246,7 +245,7 @@ const poAddNewLine = function () {
   newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
   newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
   newPOTableCost.setAttribute('onfocusout', 'poLineUpdateExtCost(this)');
-  newPOTableCost.setAttribute('onchange', 'poLineCostDecimalFormat(this)')
+  newPOTableCost.setAttribute('onchange', 'poLineCostDecimalFormat(this)');
 
   // commented out, was used to fill lines with fake data during testing
   newPOTableLine.innerText = newPOTableItemNumCalc();
@@ -385,14 +384,12 @@ if (itemSelectionBtn) {
   };
 }
 
-
 // When the user clicks on <span> (x), close the modal
 if (itemSpan) {
   itemSpan.onclick = function () {
     itemModal.style.display = 'none';
   };
 }
-
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -528,7 +525,6 @@ if (poSearchSpan) {
   };
 }
 
-
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
   if (event.target == poSelectionModal) {
@@ -543,11 +539,11 @@ const poSelectBtn = document.getElementById('poSelectBtn');
 const selectPO = function (poEle) {
   console.log('poEle', poEle);
   const poNum =
-    poEle.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
-      .textContent;
+    poEle.parentElement.previousElementSibling.previousElementSibling
+      .previousElementSibling.textContent;
   '1'.trim();
   console.log(poNum);
-  
+
   displayPOFromSearchModal(poNum);
   poSelectionModal.style.display = 'none';
 };
@@ -559,11 +555,11 @@ const receiverSelectBtn = document.getElementById('receiverSelectBtn');
 const selectReceiver = function (receiverEl) {
   console.log('receiverEl', receiverEl);
   const receiverNum =
-    receiverEl.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
-      .textContent;
+    receiverEl.parentElement.previousElementSibling.previousElementSibling
+      .previousElementSibling.textContent;
   '1'.trim();
   console.log(receiverNum);
-  
+
   displayReceiverFromSearchModal(receiverNum);
   poSelectionModal.style.display = 'none';
 };
@@ -577,12 +573,13 @@ const displayPOFromSearchModal = function (poNum) {
       'csrf-token': csrf,
     },
   })
-  .then(result => {
-    console.log(result);
-    window.location.href = `${result.url}`
-  }).catch((err) => {
-    console.log('err', err);
-  });
+    .then((result) => {
+      console.log(result);
+      window.location.href = `${result.url}`;
+    })
+    .catch((err) => {
+      console.log('err', err);
+    });
 };
 
 const displayReceiverFromSearchModal = function (receiverNum) {
@@ -594,12 +591,13 @@ const displayReceiverFromSearchModal = function (receiverNum) {
       'csrf-token': csrf,
     },
   })
-  .then(result => {
-    console.log(result);
-    window.location.href = `${result.url}`
-  }).catch((err) => {
-    console.log('err', err);
-  });
+    .then((result) => {
+      console.log(result);
+      window.location.href = `${result.url}`;
+    })
+    .catch((err) => {
+      console.log('err', err);
+    });
 };
 
 ////////////////////////////////
@@ -640,4 +638,3 @@ const applyPOSelectionFilter = () => {
     }
   }
 };
-

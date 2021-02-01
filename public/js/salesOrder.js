@@ -64,7 +64,7 @@ const tabToNewLine = function () {
 };
 
 const soOrganizeTableData = () => {
-  console.log('trying to organize so table data')
+  console.log('trying to organize so table data');
   const soTableDataArray = [];
 
   const soTable = document.getElementById('poTable');
@@ -86,7 +86,7 @@ const soOrganizeTableData = () => {
       uom: data[4].firstElementChild.value,
       price: data[5].textContent.trim(),
     };
-    
+
     if (line.itemID !== '') {
       soTableDataArray.push(line);
     }
@@ -122,7 +122,7 @@ const receiverOrganizeTableData = () => {
       qtyOrdered: data[3].textContent.trim(),
       qtyReceived: data[4].textContent.trim(),
       uom: data[5].firstElementChild.value,
-      price: data[6].textContent.trim()      
+      price: data[6].textContent.trim(),
     };
 
     if (line.itemID !== '') {
@@ -157,13 +157,15 @@ const poLineDeleteBtn = (lineBtn) => {
 };
 
 // updates extended price
-const poLineUpdateExtPrice = (element) => {  
-  const qty = (document.querySelector('.quantityReceived')) ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
-    .textContent : element.parentElement.querySelector('.poTableQuantity').textContent;
+const poLineUpdateExtPrice = (element) => {
+  const qty = document.querySelector('.quantityReceived')
+    ? element.parentElement.querySelector('.poTableQuantity').nextElementSibling
+        .textContent
+    : element.parentElement.querySelector('.poTableQuantity').textContent;
   const uom = element.parentElement.querySelector('.poTableUOM').textContent;
   const price = element.parentElement.querySelector('.poTableCost').textContent;
   const updatedPrice = element.parentElement.querySelector('.poTableCost');
-  
+
   const poSum = document.querySelector('.poSum');
   let extPrice = element.parentElement.querySelector('.poTableExtended');
   let extPriceTotal = (+qty * 1 * +price).toFixed(2);
@@ -178,7 +180,6 @@ function poLinePriceDecimalFormat(element) {
   console.log(element);
   element.value = parseFloat(element.value).toFixed(2);
 }
-
 
 // updated po sum
 const poSumUpdate = () => {
@@ -217,9 +218,7 @@ const poAddNewLine = function () {
   newPOTableUOM.innerHTML = '<select></select>';
 
   for (uom of UOMs) {
-    newPOTableUOM.firstElementChild.add(
-      new Option(uom.name, uom.name)
-    );
+    newPOTableUOM.firstElementChild.add(new Option(uom.name, uom.name));
   }
 
   newPOTableLine.classList.add('poTableLine');
@@ -247,7 +246,7 @@ const poAddNewLine = function () {
   newPOTableQuantity.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
   newPOTableUOM.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
   newPOTablePrice.setAttribute('onfocusout', 'poLineUpdateExtPrice(this)');
-  newPOTablePrice.setAttribute('onchange', 'poLinePriceDecimalFormat(this)')
+  newPOTablePrice.setAttribute('onchange', 'poLinePriceDecimalFormat(this)');
 
   // commented out, was used to fill lines with fake data during testing
   newPOTableLine.innerText = newPOTableItemNumCalc();
@@ -386,14 +385,12 @@ if (itemSelectionBtn) {
   };
 }
 
-
 // When the user clicks on <span> (x), close the modal
 if (itemSpan) {
   itemSpan.onclick = function () {
     itemModal.style.display = 'none';
   };
 }
-
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -529,7 +526,6 @@ if (poSearchSpan) {
   };
 }
 
-
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
   if (event.target == poSelectionModal) {
@@ -544,11 +540,11 @@ const poSelectBtn = document.getElementById('poSelectBtn');
 const selectSO = function (soEle) {
   console.log('soEle', soEle);
   const soNum =
-    soEle.parentElement.previousElementSibling.previousElementSibling.previousElementSibling
-      .textContent;
+    soEle.parentElement.previousElementSibling.previousElementSibling
+      .previousElementSibling.textContent;
   '1'.trim();
   console.log(soNum);
-  
+
   displaySOFromSearchModal(soNum);
   soSelectionModal.style.display = 'none';
 };
@@ -562,12 +558,13 @@ const displaySOFromSearchModal = function (soNum) {
       'csrf-token': csrf,
     },
   })
-  .then(result => {
-    console.log(result);
-    window.location.href = `${result.url}`
-  }).catch((err) => {
-    console.log('err', err);
-  });
+    .then((result) => {
+      console.log(result);
+      window.location.href = `${result.url}`;
+    })
+    .catch((err) => {
+      console.log('err', err);
+    });
 };
 
 ////////////////////////////////
@@ -608,4 +605,3 @@ const applyPOSelectionFilter = () => {
     }
   }
 };
-

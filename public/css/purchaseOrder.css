@@ -305,7 +305,7 @@ td {
 
 .itemSearchFilter h5 {
   margin-top: 0;
-  padding-top: .2rem;
+  padding-top: 0.2rem;
 }
 
 .itemSearchFilter > * {
@@ -314,7 +314,7 @@ td {
 
 #itemSelectionTable button {
   margin-left: 5px;
-  margin-bottom: .6rem;
+  margin-bottom: 0.6rem;
 }
 
 /* #itemSelectionTable th {
@@ -373,7 +373,7 @@ td {
 
 .poSearchFilter h5 {
   margin-top: 0;
-  padding-top: .2rem;
+  padding-top: 0.2rem;
 }
 
 .poSearchFilter > * {

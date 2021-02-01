@@ -678,7 +678,7 @@ exports.getPrintSalesOrder = (req, res, next) => {
             .font('Helvetica-Bold')
             .fontSize(25)
             .text('Sales Order', 390, 55);
-            pdfDoc.moveDown();
+          pdfDoc.moveDown();
           pdfDoc
             .font('Helvetica')
             .fontSize(12)
@@ -772,7 +772,7 @@ exports.getPrintSalesOrder = (req, res, next) => {
           soTableData.forEach((line) => {
             pdfDoc.text(line.itemID, 52, pdfDoc.y);
             pdfDoc.moveUp();
-            pdfDoc.text(line.itemDescription.substr(0,20), 100, pdfDoc.y);
+            pdfDoc.text(line.itemDescription.substr(0, 20), 100, pdfDoc.y);
             pdfDoc.moveUp();
             pdfDoc.text(line.qtyOrdered, 295, pdfDoc.y);
             pdfDoc.moveUp();
@@ -781,7 +781,7 @@ exports.getPrintSalesOrder = (req, res, next) => {
             pdfDoc.text(line.price, 430, pdfDoc.y);
             pdfDoc.moveUp();
             pdfDoc.text(
-              (line.qtyOrdered * line.price).toFixed(2), 
+              (line.qtyOrdered * line.price).toFixed(2),
               490,
               pdfDoc.y
             );

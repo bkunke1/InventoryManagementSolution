@@ -7,6 +7,7 @@ const UOM = require('../models/uom');
 const Category = require('../models/category');
 const PDFDocument = require('pdfkit');
 
+// gets main page
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
     pageTitle: 'IMS Dashboard',
@@ -14,6 +15,7 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
+// gets item list page
 exports.getItems = (req, res, next) => {
   Item.find()
     .then((items) => {
@@ -29,6 +31,7 @@ exports.getItems = (req, res, next) => {
     });
 };
 
+// gets page for a single item
 exports.getItem = (req, res, next) => {
   let message = req.flash('createdMessage');
   if (message.length > 0) {
@@ -780,7 +783,6 @@ exports.getStockStatus = (req, res, next) => {
   let items;
   Item.find()
     .then((itemList) => {
-      
       const pdfDoc = new PDFDocument({
         layout: 'landscape',
       });
@@ -789,7 +791,7 @@ exports.getStockStatus = (req, res, next) => {
       // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
       // pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
-    
+
       //Report Headers
       pdfDoc
         .font('Helvetica-Bold')
@@ -815,34 +817,33 @@ exports.getStockStatus = (req, res, next) => {
       pdfDoc.text('Cost', 630, pdfDoc.y);
       // Draw Line
       pdfDoc
-      .moveTo(670, pdfDoc.y - 2)
-      .lineTo(60, pdfDoc.y - 2)
-      .stroke(5);
+        .moveTo(670, pdfDoc.y - 2)
+        .lineTo(60, pdfDoc.y - 2)
+        .stroke(5);
       pdfDoc.moveDown();
-    
-      for (item of itemList) {
-      pdfDoc.text(item.itemID, 60, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.description.substr(0, 20), 120, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.totalQtyOnHand, 320, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.qtyOnOrder, 400, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.qtyAllocated, 480, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.totalQtyOnHand - item.qtyAllocated, 560, pdfDoc.y);
-      pdfDoc.moveUp();
-      pdfDoc.text(item.avgCost.toFixed(2), 630, pdfDoc.y);
-      // Draw Line
-      pdfDoc
-      .moveTo(670, pdfDoc.y - 2)
-      .lineTo(60, pdfDoc.y - 2)
-      .stroke(5);
-      }
-    
-      pdfDoc.end();
 
+      for (item of itemList) {
+        pdfDoc.text(item.itemID, 60, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.description.substr(0, 20), 120, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.totalQtyOnHand, 320, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.qtyOnOrder, 400, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.qtyAllocated, 480, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.totalQtyOnHand - item.qtyAllocated, 560, pdfDoc.y);
+        pdfDoc.moveUp();
+        pdfDoc.text(item.avgCost.toFixed(2), 630, pdfDoc.y);
+        // Draw Line
+        pdfDoc
+          .moveTo(670, pdfDoc.y - 2)
+          .lineTo(60, pdfDoc.y - 2)
+          .stroke(5);
+      }
+
+      pdfDoc.end();
     })
     .catch((err) => {
       console.log(err);

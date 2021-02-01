@@ -24,39 +24,39 @@ ul {
 }
 
 li {
-    margin: 1rem;
+  margin: 1rem;
 }
 
 .login-resetPassword {
-    margin: .25rem;
+  margin: 0.25rem;
 }
 
 .login-resetPassword a {
-    color: rgb(0, 132, 255);
+  color: rgb(0, 132, 255);
 }
 
 .login-resetPassword a:hover {
-    color: rgb(0, 183, 255);
+  color: rgb(0, 183, 255);
 }
 
 .login-button {
-    margin: .75rem;
+  margin: 0.75rem;
 }
 
 .login-password {
-    margin: .75rem;
+  margin: 0.75rem;
 }
 
 .login-roles {
-    margin-top: 5rem;
+  margin-top: 5rem;
 }
 
 #emailLabel {
-    margin-right: 220px;
+  margin-right: 220px;
 }
 
 #passwordLabel {
-    margin-right: 180px;
+  margin-right: 180px;
 }
 
 #signup-emailInput {
@@ -72,7 +72,7 @@ li {
 }
 
 #signup-signupBtn {
-  margin: .4rem;
+  margin: 0.4rem;
 }
 
 .signup-login-redirect {
@@ -85,4 +85,8 @@ li {
 
 .signup-login-redirect a:hover {
   color: rgb(0, 183, 255);
+}
+
+.login-projectName {
+  margin-bottom: 3rem;
 }
