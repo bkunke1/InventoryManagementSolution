@@ -184,6 +184,7 @@ router.post('/inventory/category-delete', adminController.postDeleteCategory);
 
 
 router.get('/reports', adminController.getReports);
+router.get('/reports/printPDF/StockStatus', adminController.getStockStatus);
 
 router.get('/sysconfig', systemConfigAuth, adminController.getSysconfig);
 

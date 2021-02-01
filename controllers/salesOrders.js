@@ -9,6 +9,7 @@ const UOM = require('../models/uom');
 const Category = require('../models/category');
 const ShippingMethod = require('../models/shippingMethod');
 const PaymentTerm = require('../models/paymentTerm');
+const PDFDocument = require('pdfkit');
 
 // below are two helper functions to convert the uom converstion qty when updating item info
 UOM.find().then((uomList) => {
@@ -624,4 +625,196 @@ exports.postSalesOrder = (req, res, next) => {
         console.log(err);
       });
   }
+};
+
+exports.getPrintSalesOrder = (req, res, next) => {
+  const soNum = req.params.soNum;
+
+  SalesOrder.findOne({ soNum: soNum })
+    .then((so) => {
+      const customerNum = so.customerNum;
+      const customerPoNum = so.customerPoNum;
+      const orderDate = `${
+        so.orderDate.getMonth() + 1
+      }/${so.orderDate.getDate()}/${so.orderDate.getFullYear()}`;
+      const expectedDate = `${
+        so.expectedDate.getMonth() + 1
+      }/${so.expectedDate.getDate()}/${so.expectedDate.getFullYear()}`;
+      const shippingMethod = so.shippingMethod;
+      const terms = so.terms;
+      const shipToLocation = so.shipToLocation;
+      const buyerName = so.createdBy;
+      const soTableData = so.soTableData;
+
+      Customer.findOne({ name: customerNum }).then((customer) => {
+        const customerName = customer.name;
+        const customerAddress = customer.address;
+        const customerCity = customer.city;
+        const customerState = customer.state;
+        const customerZip = customer.zip;
+
+        Warehouse.findOne({ name: shipToLocation }).then((warehouse) => {
+          const pdfDoc = new PDFDocument();
+          res.setHeader('Content-Type', 'application/pdf');
+          // Not using the pipe below because we're not saving copies to the server.
+          // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
+          // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+          pdfDoc.pipe(res);
+
+          //Company Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(16)
+            .text('Inventory Management Solutions', 50, 80);
+          pdfDoc.fontSize(12).font('Helvetica').text('10000 Derby Ln SE');
+          pdfDoc.text('Smyrna, GA 30082');
+          pdfDoc.text('Phone: 407-698-6113');
+          pdfDoc.text('Fax: 407-698-6119');
+          pdfDoc.text('Website: www.customwebware/ims.com');
+          pdfDoc.moveDown();
+
+          //Invoice Info
+          pdfDoc
+            .font('Helvetica-Bold')
+            .fontSize(25)
+            .text('Sales Order', 390, 55);
+            pdfDoc.moveDown();
+          pdfDoc
+            .font('Helvetica')
+            .fontSize(12)
+            .text(`Order Date: ${orderDate}`, pdfDoc.x - 10, pdfDoc.y);
+          pdfDoc.text(`Expected Date: ${expectedDate}`);
+          pdfDoc.text(`Sales Order # ${soNum}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          // Draw bouding rectangle
+          pdfDoc.rect(pdfDoc.x - 7, 105, 150, 55).stroke();
+
+          //Customer Info
+          pdfDoc.font('Helvetica-Bold').text('BILL TO:', 50, pdfDoc.y + 20);
+          pdfDoc.font('Helvetica').text(customerName);
+          pdfDoc.text(customerAddress);
+          pdfDoc.text(`${customerCity}, ${customerState} ${customerZip}`);
+
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+          pdfDoc.moveUp();
+
+          //Ship to Info
+          // pdfDoc.font('Helvetica-Bold').text('SHIP TO:', 300, pdfDoc.y);
+          // pdfDoc.font('Helvetica').text(warehouse.name);
+          // pdfDoc.text(warehouse.address);
+          // pdfDoc.text(`${warehouse.city}, ${warehouse.state} ${warehouse.zip}`);
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          //Sales Order specLabels
+          pdfDoc.moveUp();
+          pdfDoc.text('CUSTOMER PO #', 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('SHIP METHOD', 165, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TERMS', 260, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('ORDER DATE', 325, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('EXPECTED DATE', 425, pdfDoc.y);
+
+          // Draw bouding rectangle
+          pdfDoc.moveUp();
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 19).stroke();
+
+          //Sales Order specDetails
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text(customerPoNum, 80, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(shippingMethod, 170, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(terms, 260, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(orderDate, 340, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text(expectedDate, 455, pdfDoc.y);
+
+          //Sales Order Details
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+          pdfDoc.text('Item ID', 50, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Description', 100, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Shipped', 280, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('UOM', 380, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Price', 430, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('Extended', 485, pdfDoc.y);
+          pdfDoc.moveUp();
+
+          // Draw bounding rectangle
+          pdfDoc.rect(45, pdfDoc.y - 5, 500, 20).stroke();
+
+          pdfDoc.moveDown();
+          pdfDoc.moveDown();
+
+          let salesOrderTotal = 0;
+
+          soTableData.forEach((line) => {
+            pdfDoc.text(line.itemID, 52, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.itemDescription.substr(0,20), 100, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.qtyOrdered, 295, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.uom, 380, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(line.price, 430, pdfDoc.y);
+            pdfDoc.moveUp();
+            pdfDoc.text(
+              (line.qtyOrdered * line.price).toFixed(2), 
+              490,
+              pdfDoc.y
+            );
+            salesOrderTotal = salesOrderTotal + line.qtyOrdered * line.price;
+          });
+
+          // Draw salesOrderTotal Line
+          pdfDoc
+            .moveTo(545, pdfDoc.y + 5)
+            .lineTo(45, pdfDoc.y + 5)
+            .stroke(5);
+          pdfDoc.moveDown();
+
+          pdfDoc.text(salesOrderTotal.toFixed(2), pdfDoc.x, pdfDoc.y);
+          pdfDoc.moveUp();
+          pdfDoc.text('TOTAL', pdfDoc.x - 45, pdfDoc.y);
+
+          if (so.status === 'POSTED') {
+            // POSTED ALERT MESSAGE
+            pdfDoc.moveDown();
+            pdfDoc
+              .font('Helvetica-Bold')
+              .fillColor('red')
+              .fontSize(40)
+              .text('POSTED', 195, pdfDoc.y + 20);
+          }
+
+          pdfDoc.end();
+        });
+      });
+    })
+
+    .catch((err) => {
+      console.log(err);
+    });
 };

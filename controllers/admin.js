@@ -5,6 +5,7 @@ const Item = require('../models/item');
 const Warehouse = require('../models/warehouse');
 const UOM = require('../models/uom');
 const Category = require('../models/category');
+const PDFDocument = require('pdfkit');
 
 exports.getIndex = (req, res, next) => {
   res.render('./dashboard/index', {
@@ -161,7 +162,7 @@ exports.getAddItem = (req, res, next) => {
         .then((uomList) => {
           Category.find()
             .then((categoryList) => {
-              Item.find().then(itemList => {
+              Item.find().then((itemList) => {
                 res.render('dashboard/inventory/add-item', {
                   pageTitle: 'Add Item',
                   mainMenuPath: 'inventory',
@@ -173,10 +174,10 @@ exports.getAddItem = (req, res, next) => {
                   warehouseList: warehouseList,
                   uomList: uomList,
                   categoryList: categoryList,
-                  itemList: itemList
+                  itemList: itemList,
                 });
-              })
-              })              
+              });
+            })
             .catch((err) => {
               console.log(err);
             });
@@ -775,22 +776,75 @@ exports.postDeleteCategory = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// router.get('/transfer-item', adminController.getTransferItem);
+exports.getStockStatus = (req, res, next) => {
+  let items;
+  Item.find()
+    .then((itemList) => {
+      
+      const pdfDoc = new PDFDocument({
+        layout: 'landscape',
+      });
+      res.setHeader('Content-Type', 'application/pdf');
+      // Not using the pipe below because we're not saving copies to the server.
+      // res.setHeader('Content-Disposition', 'inline filename="' + invoiceName + '"');
+      // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+    
+      //Report Headers
+      pdfDoc
+        .font('Helvetica-Bold')
+        .fontSize(20)
+        .text('Stock Status Report', 60, 40);
+      pdfDoc.fontSize(12).font('Helvetica').text(new Date());
+      pdfDoc.moveDown();
+      pdfDoc.moveDown();
+      pdfDoc.moveDown();
+      pdfDoc.moveDown();
+      pdfDoc.text('Item ID');
+      pdfDoc.moveUp();
+      pdfDoc.text('Description', 120, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text('Qty On Hand', 300, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text('Qty On Order', 380, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text('Qty Allocated', 460, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text('Qty Available', 540, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text('Cost', 630, pdfDoc.y);
+      // Draw Line
+      pdfDoc
+      .moveTo(670, pdfDoc.y - 2)
+      .lineTo(60, pdfDoc.y - 2)
+      .stroke(5);
+      pdfDoc.moveDown();
+    
+      for (item of itemList) {
+      pdfDoc.text(item.itemID, 60, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.description.substr(0, 20), 120, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.totalQtyOnHand, 320, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.qtyOnOrder, 400, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.qtyAllocated, 480, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.totalQtyOnHand - item.qtyAllocated, 560, pdfDoc.y);
+      pdfDoc.moveUp();
+      pdfDoc.text(item.avgCost.toFixed(2), 630, pdfDoc.y);
+      // Draw Line
+      pdfDoc
+      .moveTo(670, pdfDoc.y - 2)
+      .lineTo(60, pdfDoc.y - 2)
+      .stroke(5);
+      }
+    
+      pdfDoc.end();
 
-// router.post('/transfer-item', adminController.postTransferItem);
-
-// router.get('/adjust-item', adminController.getAdjustItem);
-
-// router.post('/adjust-item', adminController.postAdjustItem);
-
-// router.get('/purchase-item', adminController.getPurchaseItem);
-
-// router.post('/purchase-item', adminController.postPurchaseItem);
-
-// router.get('/invoice-item', adminController.getInvoiceItem);
-
-// router.post('/invoice-item', adminController.postInvoiceItem);
-
-// router.get('/bill-of-materials', adminController.getBOM);
-
-// router.post('/bill-of-materials', adminController.postBOM);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

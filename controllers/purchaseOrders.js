@@ -1689,7 +1689,7 @@ exports.getPrintPurchaseOrder = (req, res, next) => {
           poTableData.forEach((line) => {
             pdfDoc.text(line.itemID, 52, pdfDoc.y);
             pdfDoc.moveUp();
-            pdfDoc.text(line.itemDescription, pdfDoc.x + 50, pdfDoc.y);
+            pdfDoc.text(line.itemDescription.substr(0,20), pdfDoc.x + 50, pdfDoc.y);
             pdfDoc.moveUp();
             pdfDoc.text(line.qtyOrdered, pdfDoc.x + 223, pdfDoc.y);
             pdfDoc.moveUp();
@@ -1878,7 +1878,7 @@ exports.getPrintReceiver = (req, res, next) => {
           receiverTableData.forEach((line) => {
             pdfDoc.text(line.itemID, 52, pdfDoc.y);
             pdfDoc.moveUp();
-            pdfDoc.text(line.itemDescription, 100, pdfDoc.y);
+            pdfDoc.text(line.itemDescription.substr(0,20), 100, pdfDoc.y);
             pdfDoc.moveUp();
             pdfDoc.text(line.qtyOrdered, 295, pdfDoc.y);
             pdfDoc.moveUp();

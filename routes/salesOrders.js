@@ -20,5 +20,8 @@ router.get('/so/previous/:soNum', salesAuth, salesOrderController.getPreviousSal
 router.post('/so/delete', salesAuth, salesOrderController.postDeleteSalesOrder);
 router.post('/so/post', salesAuth, salesOrderController.postSalesOrder);
 
+router.get('/so/printPDF/:soNum', salesAuth, salesOrderController.getPrintSalesOrder);
+
+
 
 module.exports = router;

@@ -383,7 +383,7 @@
             <a href="/so/new"><button type="button">New</button></a>
             <button disabled>Update</button>
             <button disabled>Delete</button>
-            <button type="button">Print SO</button>
+            <a href="/so/printPDF/<%= newSONumber %>"><button type="button">Print</button></a>
             <a href="" method="GET"><button disabled type="button">Post SO</button></a>
           </div>
           </div>
@@ -392,7 +392,7 @@
               <a href="/so/new"><button type="button">New</button></a>
               <button id="poUpdateBtn">Update</button>
               <button formaction="/so/delete">Delete</button>
-              <button type="button">Print SO</button>
+              <a href="/so/printPDF/<%= newSONumber %>"><button type="button">Print</button></a>
               <button formaction="/so/post">Post SO</button>
             </div>
             <% } %>       
