@@ -87,3 +87,5 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+// To Launch type npm start in console
