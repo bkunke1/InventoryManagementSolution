@@ -8,6 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const helmet = require('helmet');
+const compression = require('compression');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -76,7 +77,10 @@ app.use(authRoutes);
 app.use(purchaseOrderRoutes);
 app.use(salesOrderRoutes);
 
+// middlware used to add some secure response headers
 app.use(helmet());
+// middlware used to help compress file size for production
+app.use(compression());
 
 app.get('/500', errorController.get500);
 

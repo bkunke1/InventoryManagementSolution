@@ -5,13 +5,14 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -e js,ejs,html app.js",
+    "start": "node app.js",
     "start:dev": "nodemon -e js,ejs,html app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^2.4.1",
     "csurf": "^1.11.0",
@@ -20,6 +21,7 @@
     "express-session": "^1.17.1",
     "express-validation": "^3.0.5",
     "express-validator": "^6.6.1",
+    "helmet": "^4.4.1",
     "lodash": "^4.17.20",
     "mongodb": "^3.6.0",
     "mongoose": "^5.10.2",
