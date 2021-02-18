@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const helmet = require('helmet');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -74,6 +75,8 @@ app.use(adminRoutes);
 app.use(authRoutes);
 app.use(purchaseOrderRoutes);
 app.use(salesOrderRoutes);
+
+app.use(helmet());
 
 app.get('/500', errorController.get500);
 
