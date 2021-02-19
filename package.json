@@ -1,17 +1,17 @@
 {
-  "name": "chuchu",
+  "name": "IMS-Project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Inventory Management Solution",
   "main": "app.js",
   "engines": {
     "node": "12.14.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "start:dev": "nodemon -e js,ejs,html app.js"
   },
-  "author": "",
+  "author": "Brandon Kunkel",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
