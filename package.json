@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production MONGO_USER=herokuAdmin MONGO_PASSWORD=GtSieTbn9xMxqfHR MONGO_DEFAULT_DATABASE=shop SENDGRID_API_KEY=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 node app.js",
+    "start": "node app.js",
     "start:dev": "nodemon -e js,ejs,html app.js"
   },
   "author": "Brandon Kunkel",
