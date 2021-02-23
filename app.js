@@ -95,4 +95,4 @@ mongoose
     console.log(err);
   });
 
-// To Launch type npm start in console
+// To Launch on localhost type npm run start:dev in console
