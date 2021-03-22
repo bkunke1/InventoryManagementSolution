@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/auth.css" />
   </head>
   <body class="login-page centered v-centered">
+    <%- include('../includes/viewMessage.ejs') %>
     <% if (errorMessage) { %>
     <div class="user-message user-message--error"><%= errorMessage %></div>
     <% } %>
@@ -13,7 +14,7 @@
         <h1>Forgot your password?</h1>
         <h5>Enter your email address and we will send you a password reset email.</h5>
         <label for="email">Email:</label>
-        <input type="email" name="email" size="64" maxlength="64" />
+        <input type="email" name="email" size="32" maxlength="64" />
       </div>
       <button type="submit" class="btn btn-primary">Reset Password</button>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

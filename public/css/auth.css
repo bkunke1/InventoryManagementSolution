@@ -3,10 +3,12 @@ html {
 }
 
 .login-page {
-  background-image: linear-gradient(black, rgb(34, 34, 34));
-  background-position: center;
-  background-repeat: no-repeat;
-  color: rgb(243, 242, 242);
+  background: linear-gradient(to bottom, black 0%, rgb(34, 34, 34) 100%);
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: rgb(243, 242, 242);
 }
 
 .centered {
@@ -90,3 +92,65 @@ li {
 .login-projectName {
   margin-bottom: 3rem;
 }
+
+/* corrects spacing on mobile login page */
+@media screen and (max-width: 375px) {
+
+  body {
+    margin: 0px;
+  }
+
+  li {
+    margin: .5rem;
+  }
+
+  ul {
+    padding: 0px;
+  }
+}
+
+/* corrects spacing on mobile login page */
+@media screen and (max-width: 320px) {
+
+  body {
+    margin: 0px;
+  }
+
+  li {
+    margin: .15rem;
+  }
+
+  ul {
+    padding: 0px;
+  }
+}
+
+/* corrects spacing on mobile login page */
+@media screen and (max-width: 414px) {
+
+  body {
+    margin: 0px;
+  }
+
+  li {
+    margin: .15rem;
+  }
+
+  ul {
+    padding: 0px;
+  }
+}
+
+/* corrects spacing on mobile login page */
+@media screen and (max-width: 812px) {
+  .v-centered {
+    margin-top: 5%;
+  }
+}
+
+li:hover { 
+  cursor: pointer;
+  color:rgb(0, 183, 255);
+ }
+
+ 
