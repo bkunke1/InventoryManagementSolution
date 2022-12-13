@@ -21,7 +21,7 @@
     "csurf": "^1.11.0",
     "debug": "^4.3.1",
     "ejs": "^3.1.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.1",
     "express-validation": "^3.0.7",
     "express-validator": "^6.6.1",
