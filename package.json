@@ -31,7 +31,7 @@
     "mongoose": "^5.10.2",
     "nodemailer": "^6.4.11",
     "nodemailer-sendgrid-transport": "^0.2.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "pdfkit": "^0.11.0"
   }
 }
